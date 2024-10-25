@@ -17,9 +17,11 @@
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.10",
-    "@nuxtjs/tailwindcss": "^6.12.2",
+    "autoprefixer": "^10.4.20",
     "element-plus": "^2.8.6",
+    "postcss": "^8.4.47",
     "postcss-px-to-viewport-8-plugin": "^1.2.5",
-    "sass": "^1.80.4"
+    "sass": "^1.80.4",
+    "tailwindcss": "^3.4.14"
   }
 }

@@ -1,10 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@element-plus/nuxt", "@nuxtjs/tailwindcss"],
+  modules: ["@element-plus/nuxt"],
   postcss: {
     plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
       "postcss-px-to-viewport-8-plugin": {
         // 需要转换的单位，默认为"px"
         unitToConvert: "px",
@@ -40,7 +43,7 @@ export default defineNuxtConfig({
         exclude: [/node_modules/, /dist/, /.output/, /.nuxt/, /.vscode/],
 
         // 如果设置了include，那将只有匹配到的文件才会被转换
-        include: [/pages/, /assets\/styles\/*/],
+        include: ["app.vue", /pages/, /assets\/styles\/*/],
 
         // 是否添加根据 landscapeWidth 生成的媒体查询条件 @media (orientation: landscape)
         landscape: false,
