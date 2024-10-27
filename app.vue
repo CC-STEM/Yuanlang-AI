@@ -1,10 +1,16 @@
+import { AppFooter } from './.nuxt/components';
 <template>
   <div class="contain">
-    <div class="h-[93px] flex items-center">
-      <img src="~/assets/logo.png" alt="" class="ml-[20px] w-[126px] h-[45px] mr-[44px]">
-      <span>一站式创作AI工具</span>
+    <AppHeader />
+    <div class="h-[calc(100vh-169px)] w-full flex">
+      <div class="w-[157px] h-full">
+        <AppSidebar />
+      </div>
+      <div class="w-[calc(100%-157px)] h-full bg-black bg-opacity-[.38]">
+        <NuxtPage />
+      </div>
     </div>
-    <NuxtPage />
+    <AppFooter />
   </div>
 </template>
 <style lang="scss" scoped>
