@@ -12,9 +12,16 @@
         </div>
       </div>
       <div class="w-[1px] h-[58px] bg-[#2B4187] mr-[30px]"></div>
-      <div
-        class="w-[108px] h-[64px] bg-[#1F2FFF] rounded-[15px] bg-opacity-[.45] flex items-center justify-center sortTxt">
+      <div @click="handleClickExpandSortOption"
+        class="relative w-[108px] h-[64px] bg-[#1F2FFF] rounded-[15px] bg-opacity-[.45] flex items-center justify-center sortTxt">
         排序
+        <div v-show="expandSortOption"
+          class="absolute w-[108px] h-[145px] bg-[#000000] rounded-[15px] bottom-[-145px] z-[10] flex flex-col items-center justify-around sortOption">
+          <span>最新</span>
+          <span>点击量</span>
+          <span>收藏数</span>
+          <span>种草下单</span>
+        </div>
       </div>
     </div>
     <div class="h-[calc(100%-78px)] w-full">
@@ -28,7 +35,7 @@
                 @click="() => { }">
                 <!-- <div class="overflow-hidden"> -->
                 <LazyImg :url="url" title="title" :alt="item.name"
-                  class="cursor-pointer transition-all duration-300 ease-linear group-hover:scale-110" />
+                  class="cursor-pointer transition-all duration-300 ease-linear group-hover:scale-110 rounded-[20px]" />
                 <!-- </div> -->
                 <ImgUser class="absolute bottom-0" />
               </div>
@@ -60,6 +67,7 @@ import Img14 from '~/assets/img14.jpeg'
 import ImgError from '~/assets/error.png'
 import ImgLoading from '~/assets/loading.png'
 
+const expandSortOption = ref(false)
 const waterfall = ref(null)
 const mockFilterOptions1 = [
   '全部', '个性化杯子', '流行风', '复古风', '高原风'
@@ -78,6 +86,10 @@ const handleClickOption1 = (option: string) => {
 
 const handleClickOption2 = (option: string) => {
   curSelectedFilterOption2.value = option
+}
+
+const handleClickExpandSortOption = () => {
+  expandSortOption.value = !expandSortOption.value
 }
 
 const mockImgList = [{
@@ -201,5 +213,16 @@ const loadProps = {
 
 .card {
   // cursor: pointer;
+}
+
+.sortOption {
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  font-size: 12px;
+  color: #FFFFFF;
+
+  span {
+    cursor: pointer;
+  }
 }
 </style>

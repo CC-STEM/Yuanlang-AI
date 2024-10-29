@@ -1,15 +1,18 @@
 <template>
   <div class="flex w-full flex-col items-center">
-    <div class="sideItem mb-[32px]">
+    <div class="sideItem mb-[32px]" @click="clickShowLoginDialog">
       <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt="">
       <span class="text-white text-xs">AI创作者</span>
     </div>
     <NuxtLink :to="item.path" @click="handleClick(item)" v-for="(item, index) in routeInfo">
       <div :class="'sideItem ' + (curSelectedRouteItem?.name === item.name ? 'curClick' : '')">
-        <img class="w-[24px] h-[24px]" :src="item.url" alt="">
+        <div class="relative outerDiv">
+          <img class="w-[24px] h-[24px]" :src="item.url" alt="">
+        </div>
         <span>{{ item.name }}</span>
       </div>
     </NuxtLink>
+    <LoginDialog ref="loginDialogRef" />
   </div>
 </template>
 
@@ -53,9 +56,15 @@ const handleClick = (item: RouteItemInfo) => {
   curSelectedRouteItem.value = item
   console.log('curSelectedRouteItem', curSelectedRouteItem)
 }
+const loginDialogRef = ref()
+
+const clickShowLoginDialog = () => {
+  loginDialogRef.value.loginRef.dialogVisible = true
+}
+
 </script>
 
-<style>
+<style scoped lang="scss">
 .sideItem {
   width: 104px;
   height: 88px;
@@ -69,9 +78,29 @@ const handleClick = (item: RouteItemInfo) => {
   font-size: 16px;
   color: #FFFFFF;
   cursor: pointer;
+  position: relative;
 }
 
 .curClick {
   background: #0054FF;
+}
+
+.outerDiv::after {
+  width: 26px;
+  height: 16px;
+  content: url(~/assets/hot.png);
+  position: absolute;
+  top: -16px;
+  right: -26px;
+}
+
+:deep(.el-dialog__close) {
+  width: 16px;
+  height: 16px;
+  color: #0F0F0F;
+}
+
+:deep(.el-dialog__header) {
+  padding-bottom: 0px;
 }
 </style>
