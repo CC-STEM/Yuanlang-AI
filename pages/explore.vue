@@ -28,7 +28,7 @@
       <ClientOnly>
         <el-scrollbar>
           <Waterfall :gutter="10" :rowKey="'id'" ref="waterfall" :list="mockImgList" :background-color="'none'"
-            :align="'right'" :load-props="loadProps">
+            :align="'left'" :load-props="loadProps">
             <template #default="{ item, url, index }">
               <div
                 class="relative rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg group"

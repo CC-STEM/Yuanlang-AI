@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full flex-col items-center">
-    <div class="sideItem mb-[32px]" @click="clickShowLoginDialog">
+    <div class="sideItem mb-[32px]" @click="clickShowOrderDialog">
       <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt="">
       <span class="text-white text-xs">AI创作者</span>
     </div>
@@ -13,6 +13,10 @@
       </div>
     </NuxtLink>
     <LoginDialog ref="loginDialogRef" />
+    <BuyPayDialog ref="payDialogRef" />
+    <BuyReceiveDialog ref="receiveDialogRef" />
+    <UserSettingDialog ref="settingDialogRef" />
+    <UserOrderDialog ref="orderDialogRef" />
   </div>
 </template>
 
@@ -57,9 +61,29 @@ const handleClick = (item: RouteItemInfo) => {
   console.log('curSelectedRouteItem', curSelectedRouteItem)
 }
 const loginDialogRef = ref()
+const payDialogRef = ref()
+const receiveDialogRef = ref()
+const settingDialogRef = ref()
+const orderDialogRef = ref()
+
+const clickShowSettingDialog = () => {
+  settingDialogRef.value.userSettingRef.dialogVisible = true
+}
 
 const clickShowLoginDialog = () => {
   loginDialogRef.value.loginRef.dialogVisible = true
+}
+
+const clickShowPayDialog = () => {
+  payDialogRef.value.payRef.dialogVisible = true
+}
+
+const clickShowReceiveDialog = () => {
+  receiveDialogRef.value.receiveRef.dialogVisible = true
+}
+
+const clickShowOrderDialog = () => {
+  orderDialogRef.value.userOrderRef.dialogVisible = true
 }
 
 </script>
@@ -98,6 +122,10 @@ const clickShowLoginDialog = () => {
   width: 16px;
   height: 16px;
   color: #0F0F0F;
+}
+
+:deep(.el-dialog) {
+  padding: 30px;
 }
 
 :deep(.el-dialog__header) {
