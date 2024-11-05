@@ -25,24 +25,22 @@
       </div>
     </div>
     <div class="h-[calc(100%-78px)] w-full">
-      <ClientOnly>
-        <el-scrollbar>
-          <Waterfall :gutter="10" :rowKey="'id'" ref="waterfall" :list="mockImgList" :background-color="'none'"
-            :align="'left'" :load-props="loadProps">
-            <template #default="{ item, url, index }">
-              <div
-                class="relative rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg group"
-                @click="() => { }">
-                <!-- <div class="overflow-hidden"> -->
-                <LazyImg :url="url" title="title" :alt="item.name"
-                  class="cursor-pointer transition-all duration-300 ease-linear group-hover:scale-110 rounded-[20px]" />
-                <!-- </div> -->
-                <ImgUser class="absolute bottom-0" />
-              </div>
-            </template>
-          </Waterfall>
-        </el-scrollbar>
-      </ClientOnly>
+      <el-scrollbar>
+        <Waterfall :gutter="10" :rowKey="'id'" ref="waterfall" :list="mockImgList" :background-color="'none'"
+          :align="'left'" :load-props="loadProps">
+          <template #default="{ item, url, index }">
+            <div
+              class="relative rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg group"
+              @click="() => { }">
+              <!-- <div class="overflow-hidden"> -->
+              <LazyImg :url="url" title="title" :alt="item.name"
+                class="cursor-pointer transition-all duration-300 ease-linear group-hover:scale-110 rounded-[20px]" />
+              <!-- </div> -->
+              <ImgUser class="absolute bottom-0" />
+            </div>
+          </template>
+        </Waterfall>
+      </el-scrollbar>
     </div>
   </div>
 </template>

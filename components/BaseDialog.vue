@@ -1,17 +1,15 @@
 <template>
-  <ClientOnly>
-    <el-dialog v-model="dialogVisible" :title="props.title" :style="{
-      width: px2vw(props.width), height: px2vw(props.height), background: 'linear-gradient(-72deg, #B5CFFF, #FFFFFF, #FFFFFF, #C2F9FF)',
-      borderRadius: '20px'
-    }">
-      <template #header="{ close, titleId, titleClass }">
-        <div class="my-header">
-          {{ props.title }}
-        </div>
-      </template>
-      <slot></slot>
-    </el-dialog>
-  </ClientOnly>
+  <el-dialog v-model="dialogVisible" :title="props.title" :style="{
+    width: px2vw(props.width), height: px2vw(props.height), background: 'linear-gradient(-72deg, #B5CFFF, #FFFFFF, #FFFFFF, #C2F9FF)',
+    borderRadius: '20px'
+  }">
+    <template #header="{ close, titleId, titleClass }">
+      <div class="my-header">
+        {{ props.title }}
+      </div>
+    </template>
+    <slot></slot>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
