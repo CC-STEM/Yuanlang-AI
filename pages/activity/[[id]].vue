@@ -32,6 +32,7 @@
           <ActivityInfo class="w-[calc(100%-23px)] info" :content="item.content" :title="item.title"
             v-for="item in infoList">
           </ActivityInfo>
+          <img class="absolute right-[9px] bottom-[33px]" src="~/assets/activity-detail.png" alt="">
         </div>
         <div class="w-full text-center hope mt-[53px]">期待您的加入</div>
         <div class="w-full flex flex-row flex-wrap justify-around mt-[44px]">
