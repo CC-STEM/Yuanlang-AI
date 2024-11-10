@@ -6,7 +6,7 @@ import { AppFooter } from './.nuxt/components';
       <div class="w-[157px] h-full">
         <AppSidebar />
       </div>
-      <div class="w-[calc(100%-157px)] h-full bg-black bg-opacity-[.38]">
+      <div class="w-[calc(100%-157px)] h-full ">
         <NuxtPage />
       </div>
     </div>
