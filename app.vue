@@ -13,6 +13,9 @@ import { AppFooter } from './.nuxt/components';
     <AppFooter />
   </div>
 </template>
+<script>
+
+</script>
 <style lang="scss" scoped>
 .contain {
   background-image: url(~/assets/bg.png);

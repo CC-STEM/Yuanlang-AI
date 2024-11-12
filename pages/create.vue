@@ -1,74 +1,77 @@
 <template>
-  <div class="w-full h-full flex justify-center">
-    <div class="w-[80%] h-full pt-[20px] flex justify-between">
-      <div class="w-[50%] pl-[20px] pr-[20px]">
-        <div class="h-[50px] w-full flex justify-between items-center text-white mb-[40px]">
-          <span class="create-title">绘画创作</span>
-          <div class="flex">
-            <span tabindex="1" class="title-btn mr-[20px]">1000 积分</span>
-            <span tabindex="2" class="title-btn">我的创作</span>
-          </div>
-        </div>
-        <div class="w-full mb-[20px]">
-          <div class="h-[24px] text-left text-white">* 模型选择</div>
-          <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
-            <div :tabindex="index" class="model-item flex flex-col items-center text-[12px] justify-around"
-              v-for="(item, index) in mockModelTypes">
-              <span class="text-white ">{{ item.name }}</span>
-              <span class="text-[#b1b5c4]">{{ item.desc }}</span>
+  <el-scrollbar>
+    <div class="w-full h-full flex justify-center">
+      <div class="w-[80%] h-full pt-[20px] flex justify-between">
+        <div class="w-[50%] pl-[20px] pr-[20px]">
+          <div class="h-[50px] w-full flex justify-between items-center text-white mb-[40px]">
+            <span class="create-title">绘画创作</span>
+            <div class="flex">
+              <span tabindex="1" class="title-btn mr-[20px]">1000 积分</span>
+              <span tabindex="2" class="title-btn">我的创作</span>
             </div>
           </div>
-        </div>
-        <div class="w-full mb-[20px]">
-          <div class="w-full text-left text-white mb-[8px]">* 模型主题选择</div>
           <div class="w-full mb-[20px]">
-            <el-radio-group v-model="curModelStyle" size="default">
-              <el-radio-button v-for="item in modelStyleList" :label="item" :value="item" />
-            </el-radio-group>
+            <div class="h-[24px] text-left text-white">* 模型选择</div>
+            <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
+              <div :tabindex="index" class="model-item flex flex-col items-center text-[12px] justify-around"
+                v-for="(item, index) in mockModelTypes">
+                <span class="text-white ">{{ item.name }}</span>
+                <span class="text-[#b1b5c4]">{{ item.desc }}</span>
+              </div>
+            </div>
           </div>
-          <div class="w-full flex flex-wrap">
-            <div class="model-theme-item flex justify-center items-center text-white" :tabindex="index"
-              v-for="(item, index) in modelThemes">
-              {{ item.name }}</div>
-          </div>
-        </div>
-        <div class="w-full mb-[40px]">
-          <div class="h-[30px] mb-[8px] flex justify-between items-center">
-            <span class="text-white">* 画面描述</span>
-            <span
-              class="relative bg-[#23262f] text-xs font-semibold py-1 px-3 rounded-full text-white cursor-pointer">标签生成器</span>
+          <div class="w-full mb-[20px]">
+            <div class="w-full text-left text-white mb-[8px]">* 模型主题选择</div>
+            <div class="w-full mb-[20px]">
+              <el-radio-group v-model="curModelStyle" size="default">
+                <el-radio-button v-for="item in modelStyleList" :label="item" :value="item" />
+              </el-radio-group>
+            </div>
+            <div class="w-full flex flex-wrap">
+              <div class="model-theme-item flex justify-center items-center text-white" :tabindex="index"
+                v-for="(item, index) in modelThemes">
+                {{ item.name }}</div>
+            </div>
           </div>
           <div class="w-full mb-[40px]">
-            <el-input :maxlength="1000" :autosize="{ minRows: 4 }" :show-word-limit="true" v-model="promptStr"
-              style="width: 100%" :rows="4" type="textarea" resize="none" placeholder="请输入咒语" />
-          </div>
-          <div class="w-full mb-[30px]">
-            <div class="w-full text-left text-white mb-[8px]">* 画面大小</div>
-            <div class="w-full flex h-[94px] mb-[20px]">
-              <div :tabindex="index" v-for="(item, index) in aspectRatios"
-                class="ratio-item flex flex-col items-center justify-around text-white">
-                <span>{{ item.name }}</span>
-                <span>{{ item.size }}</span>
-              </div>
+            <div class="h-[30px] mb-[8px] flex justify-between items-center">
+              <span class="text-white">* 画面描述</span>
+              <span
+                class="relative bg-[#23262f] text-xs font-semibold py-1 px-3 rounded-full text-white cursor-pointer">标签生成器</span>
             </div>
-            <div class="w-full flex h-[40px]">
-              <div :tabindex="index" v-for="(item, index) in resolutions"
-                class="resolute-item flex items-center justify-center text-white">
-                <span>{{ item }}</span>
+            <div class="w-full mb-[40px]">
+              <el-input :maxlength="1000" :autosize="{ minRows: 4 }" :show-word-limit="true" v-model="promptStr"
+                style="width: 100%" :rows="4" type="textarea" resize="none" placeholder="请输入咒语" />
+            </div>
+            <div class="w-full mb-[30px]">
+              <div class="w-full text-left text-white mb-[8px]">* 画面大小</div>
+              <div class="w-full flex h-[94px] mb-[20px]">
+                <div :tabindex="index" v-for="(item, index) in aspectRatios"
+                  class="ratio-item flex flex-col items-center justify-around text-white">
+                  <span>{{ item.name }}</span>
+                  <span>{{ item.size }}</span>
+                </div>
+              </div>
+              <div class="w-full flex h-[40px]">
+                <div :tabindex="index" v-for="(item, index) in resolutions"
+                  class="resolute-item flex items-center justify-center text-white">
+                  <span>{{ item }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="w-[50%] h-full">
-        <div class="w-full h-[700px] bg-[#23262f] relative">
-          <ClientOnly>
-            <CreateLoading />
-          </ClientOnly>
+        <div class="w-[50%] h-full">
+          <div class="w-full h-[700px] bg-[#23262f] relative">
+            <ClientOnly>
+              <CreateLoading />
+            </ClientOnly>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </el-scrollbar>
+
 </template>
 
 <script lang="ts" setup>
@@ -324,5 +327,13 @@ const curModelStyle = ref('')
 :deep(.el-radio-button__inner) {
   border: 1px solid rgb(35, 38, 47);
   background: none;
+}
+
+:deep(.el-radio-button:first-child .el-radio-button__inner) {
+  border-left: 1px solid rgb(35, 38, 47);
+}
+
+:deep(.el-radio-button__inner) {
+  color: white;
 }
 </style>
