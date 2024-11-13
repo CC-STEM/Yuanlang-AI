@@ -2,7 +2,7 @@
   <el-scrollbar>
     <div class="w-full h-full flex justify-center">
       <div class="w-[80%] h-full pt-[20px] flex justify-between">
-        <div class="w-[50%] pl-[20px] pr-[20px]">
+        <div class="w-[50%] pl-[20px] pr-[20px] relative">
           <div class="h-[50px] w-full flex justify-between items-center text-white mb-[40px]">
             <span class="create-title">绘画创作</span>
             <div class="flex">
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full mb-[20px]">
+          <div class="w-full mb-[40px]">
             <div class="w-full text-left text-white mb-[8px]">* 模型主题选择</div>
             <div class="w-full mb-[20px]">
               <el-radio-group v-model="curModelStyle" size="default">
@@ -31,6 +31,21 @@
               <div class="model-theme-item flex justify-center items-center text-white" :tabindex="index"
                 v-for="(item, index) in modelThemes">
                 {{ item.name }}</div>
+            </div>
+          </div>
+          <div class="w-full mb-[40px]">
+            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>主题标签选择</span>
+              <el-switch v-model="openConfigTag" />
+            </div>
+            <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenLabelSetDialog">标签库
+            </div>
+            <div class="w-full text-left text-white text-[14px] mb-[20px]">已选标签项</div>
+            <div class="w-full mb-[8px] flex flex-wrap">
+              <div class="seletedTagContainer">
+                <div
+                  class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
+                  v-for="item in selectedTags">{{ item }}</div>
+              </div>
             </div>
           </div>
           <div class="w-full mb-[40px]">
@@ -59,7 +74,23 @@
                 </div>
               </div>
             </div>
+            <div class="w-full mb-[30px]">
+              <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>高级设置</span>
+                <el-switch v-model="openAdvancedSetting" />
+              </div>
+              <div class="w-full flex flex-col">
+                <span class="text-white">参考图</span>
+                <el-upload class="avatar-uploader" action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                  :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <el-icon v-else class="avatar-uploader-icon">
+                    <Plus />
+                  </el-icon>
+                </el-upload>
+              </div>
+            </div>
           </div>
+          <div class="createWorkBtn flex items-center justify-center"><span>立即生成</span></div>
         </div>
         <div class="w-[50%] h-full">
           <div class="w-full h-[700px] bg-[#23262f] relative">
@@ -70,11 +101,48 @@
         </div>
       </div>
     </div>
+    <el-drawer v-model="openLabelSet" title="标签选择" direction="rtl" size="60%">
+      <template #header="{ titleId }">
+        <div class="flex">
+          <h1 :id="titleId" class="text-white text-[26px]">标签选择器</h1>
+          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
+            :suffix-icon="Search" />
+        </div>
+      </template>
+      <el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" />
+      <!-- <el-table :data="gridData">
+        <el-table-column property="date" label="Date" width="150" />
+        <el-table-column property="name" label="Name" width="200" />
+        <el-table-column property="address" label="Address" />
+      </el-table> -->
+
+      <div class="w-full mt-[20px] h-[calc(100%-92px)]">
+        <el-scrollbar>
+          <div class="w-full flex flex-wrap">
+            <el-check-tag :checked="checked" @change="onChange1" v-for="item in mockTags">{{ item }}</el-check-tag>
+          </div>
+        </el-scrollbar>
+      </div>
+      <template #footer>
+        <div style="flex: auto">
+          <el-button @click="cancelLabelSet">取消</el-button>
+          <el-button type="primary" @click="confirmLabelSet">确认</el-button>
+        </div>
+      </template>
+    </el-drawer>
   </el-scrollbar>
 
 </template>
 
 <script lang="ts" setup>
+import { Search } from '@element-plus/icons-vue'
+
+const tagSearchInput = ref('')
+const checked = ref(false)
+const onChange1 = (status: boolean) => {
+  console.log('status', status)
+  checked.value = status
+}
 const mockModelTypes = [{ name: '通用模型', desc: '描人绘景，真实生动' }, { name: '漫画模型', desc: '激发想象，创作二次元' }, { name: '风格模型', desc: '有趣多彩' }, { name: 'mj模型', desc: '专业质量，表现力强' }]
 const promptStr = ref('请输入咒语')
 const aspectRatios = ref([{
@@ -227,6 +295,113 @@ const resolutions = ref(['1024*1024', '1360*1360', '2048*2048'])
 
 const modelStyleList = ref(['收藏', '推荐', 'MJ', '二次元', '真人', '科幻', '儿童', '设计', '画风', '中国风', '风景'])
 const curModelStyle = ref('')
+const openConfigTag = ref(false)
+const openAdvancedSetting = ref(false)
+const openLabelSet = ref(false)
+
+const clickOpenLabelSetDialog = () => {
+  openLabelSet.value = true
+}
+
+const gridData = [
+  {
+    date: '2016-05-02',
+    name: 'Peter Parker',
+    address: 'Queens, New York City',
+  },
+  {
+    date: '2016-05-04',
+    name: 'Peter Parker',
+    address: 'Queens, New York City',
+  },
+  {
+    date: '2016-05-01',
+    name: 'Peter Parker',
+    address: 'Queens, New York City',
+  },
+  {
+    date: '2016-05-03',
+    name: 'Peter Parker',
+    address: 'Queens, New York City',
+  },
+]
+
+const tagTypes = ['风格', '网络热词', '上衣', '下装', '外衣', '配饰', '背景', '衬衫', '连衣裙', '连帽衫', '牛仔裤', '紧身裤', '开衫', '大衣', '夹克']
+const tagType = ref(tagTypes[0])
+
+const mockTags = [
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+]
+
+const selectedTags = [
+  '宽松的BF晚秋外套',
+  '灰色印花猫耳领贴钻石短t恤',
+  '条纹短袖t恤',
+  '条纹马球衫',
+  '黑白格子羊袖不对称设计连衣裙',
+  '宽松的BF晚秋外套',
+]
+
+const cancelLabelSet = () => {
+  openLabelSet.value = false
+}
+
+const confirmLabelSet = () => {
+  openLabelSet.value = false
+}
+
+import { Plus } from '@element-plus/icons-vue'
+
+import type { UploadProps } from 'element-plus'
+
+const imageUrl = ref('')
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg') {
+    ElMessage.error('Avatar picture must be JPG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!')
+    return false
+  }
+  return true
+}
 </script>
 
 <style scoped lang="scss">
@@ -335,5 +510,103 @@ const curModelStyle = ref('')
 
 :deep(.el-radio-button__inner) {
   color: white;
+}
+
+.createWorkBtn {
+  width: 100%;
+  padding: 7px 16px;
+  border-width: 2px;
+  font-weight: bold;
+  height: 48px;
+  font-size: 16px;
+  border-radius: 90px;
+  box-shadow: none;
+  color: black;
+  position: sticky;
+  bottom: 0px;
+  background: #FFD925;
+}
+
+:deep(.el-switch__core) {
+  background: none
+}
+
+.label-set {
+  width: 100px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #23262f;
+  cursor: pointer;
+}
+
+:deep(.el-drawer) {
+  // --el-drawer-bg-color: rgb(35, 38, 47)
+  --el-drawer-bg-color: rgb(20, 20, 22);
+}
+
+.el-segmented {
+  --el-segmented-bg-color: none;
+  --el-segmented-color: white;
+  --el-segmented-item-selected-bg-color: #ebedf0;
+  --el-segmented-item-selected-color: #000;
+}
+
+:deep(.el-segmented__item:not(.is-disabled):not(.is-selected):hover) {
+  color: #fff;
+  background: none;
+}
+
+:deep(.el-check-tag) {
+  width: auto;
+  margin: 5px;
+  border-radius: 90px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(35, 38, 47);
+  color: #fff;
+}
+
+:deep(.el-check-tag.el-check-tag--primary.is-checked) {
+  background-color: #fff;
+  color: #000;
+}
+
+.seletedTagContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-row-gap: 10px;
+  justify-items: center;
+  align-items: center;
+}
+
+:deep(.el-input__wrapper) {
+  background: none;
+}
+
+:deep(.el-switch) {
+  --el-switch-on-color: #FFD925;
+}
+
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
 }
 </style>

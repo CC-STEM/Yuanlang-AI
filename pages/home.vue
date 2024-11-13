@@ -1,6 +1,7 @@
 import { ImgCard, UserAssets } from '../.nuxt/components';
 <template>
   <div class="w-full h-full pl-[44px] pt-[51px]">
+  <el-scrollbar>
     <div class="w-full flex pb-[19px] border-b-solid border-b-[1px] border-b-[#262F4E]">
       <img class="w-[100px] h-[100px] rounded-[50%]" src="~/assets/head.jpeg" alt="">
       <div class="flex flex-col h-[100px] justify-around ml-[28px]">
@@ -37,6 +38,7 @@ import { ImgCard, UserAssets } from '../.nuxt/components';
         <UserAssets />
       </div>
     </div>
+  </el-scrollbar>
   </div>
 </template>
 

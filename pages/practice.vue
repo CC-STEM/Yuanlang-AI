@@ -1,5 +1,6 @@
 <template>
   <div class="w-full h-full pl-[30px] pr-[30px]">
+  <el-scrollbar>
     <div class="flex">
       <div class="pra-btn mr-[11px]" @click="handleClickBase"
         :style="{ backgroundColor: praType === 'base' ? '#0054FF' : '#030a67' }">基础练习场</div>
@@ -24,6 +25,7 @@
       <el-tab-pane label="手机壳设计" name="third"></el-tab-pane>
       <el-tab-pane label="手机壳设计" name="fourth"></el-tab-pane>
     </el-tabs>
+  </el-scrollbar>
   </div>
 </template>
 
