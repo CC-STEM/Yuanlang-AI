@@ -75,18 +75,62 @@
               </div>
             </div>
             <div class="w-full mb-[30px]">
-              <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>高级设置</span>
+              <div class="w-full flex items-center justify-between text-white mb-[40px]"><span>高级设置</span>
                 <el-switch v-model="openAdvancedSetting" />
               </div>
               <div class="w-full flex flex-col">
-                <span class="text-white">参考图</span>
-                <el-upload class="avatar-uploader" action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                  :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                <span class="text-white mb-[8px]">参考图</span>
+                <el-upload class="avatar-uploader mb-[30px]"
+                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
+                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                   <el-icon v-else class="avatar-uploader-icon">
                     <Plus />
                   </el-icon>
                 </el-upload>
+                <span class="text-white mb-[8px]">风格参考</span>
+                <el-upload class="avatar-uploader mb-[30px]"
+                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
+                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <el-icon v-else class="avatar-uploader-icon">
+                    <Plus />
+                  </el-icon>
+                </el-upload>
+                <span class="text-white mb-[8px]">角色参考</span>
+                <el-upload class="avatar-uploader mb-[30px]"
+                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
+                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <el-icon v-else class="avatar-uploader-icon">
+                    <Plus />
+                  </el-icon>
+                </el-upload>
+                <span class="text-white mb-[8px]">结构参考</span>
+                <el-upload class="avatar-uploader mb-[30px]"
+                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
+                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <el-icon v-else class="avatar-uploader-icon">
+                    <Plus />
+                  </el-icon>
+                </el-upload>
+              </div>
+            </div>
+          </div>
+          <div class="w-full mb-[40px]">
+            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>融合模型选择</span>
+              <el-switch v-model="openConfigMixModel" />
+            </div>
+            <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenMixModelSetDialog">
+              模型库
+            </div>
+            <div class="w-full text-left text-white text-[14px] mb-[20px]">已选模型项</div>
+            <div class="w-full mb-[8px] flex flex-wrap">
+              <div class="seletedTagContainer">
+                <div
+                  class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
+                  v-for="item in selectedTags">{{ item }}</div>
               </div>
             </div>
           </div>
@@ -110,12 +154,6 @@
         </div>
       </template>
       <el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" />
-      <!-- <el-table :data="gridData">
-        <el-table-column property="date" label="Date" width="150" />
-        <el-table-column property="name" label="Name" width="200" />
-        <el-table-column property="address" label="Address" />
-      </el-table> -->
-
       <div class="w-full mt-[20px] h-[calc(100%-92px)]">
         <el-scrollbar>
           <div class="w-full flex flex-wrap">
@@ -130,6 +168,29 @@
         </div>
       </template>
     </el-drawer>
+    <el-drawer v-model="openMixModelSet" title="融合模型选择" direction="rtl" size="60%">
+      <template #header="{ titleId }">
+        <div class="flex">
+          <h1 :id="titleId" class="text-white text-[26px]">模型库</h1>
+          <el-input v-model="mixModelSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
+            :suffix-icon="Search" />
+        </div>
+      </template>
+      <el-segmented v-model="mixModelType" :options="mixModelTypes" size="default" class="w-full" />
+      <div class="w-full mt-[20px] h-[calc(100%-92px)]">
+        <el-scrollbar>
+          <div class="w-full flex flex-wrap justify-around">
+            <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :name="item" :num="1" />
+          </div>
+        </el-scrollbar>
+      </div>
+      <template #footer>
+        <div style="flex: auto">
+          <el-button @click="cancelMixModel">取消</el-button>
+          <el-button type="primary" @click="confirmMixModel">确认</el-button>
+        </div>
+      </template>
+    </el-drawer>
   </el-scrollbar>
 
 </template>
@@ -137,7 +198,14 @@
 <script lang="ts" setup>
 import { Search } from '@element-plus/icons-vue'
 
+import { Plus } from '@element-plus/icons-vue'
+
+import type { UploadProps } from 'element-plus'
+
+const imageUrl = ref('')
+
 const tagSearchInput = ref('')
+const mixModelSearchInput = ref('')
 const checked = ref(false)
 const onChange1 = (status: boolean) => {
   console.log('status', status)
@@ -298,9 +366,15 @@ const curModelStyle = ref('')
 const openConfigTag = ref(false)
 const openAdvancedSetting = ref(false)
 const openLabelSet = ref(false)
+const openConfigMixModel = ref(false)
+const openMixModelSet = ref(false)
 
 const clickOpenLabelSetDialog = () => {
   openLabelSet.value = true
+}
+
+const clickOpenMixModelSetDialog = () => {
+  openMixModelSet.value = true
 }
 
 const gridData = [
@@ -362,6 +436,27 @@ const mockTags = [
   '黑白格子羊袖不对称设计连衣裙',
 ]
 
+
+const mixModelTypes = ['推荐',
+  '摄影',
+  '产品',
+  '插画',
+  '漫画',
+  '绘本',
+  '人物',
+  '设计',
+  '国风',
+  '室内',
+  '奇幻']
+const mixModelType = ref(mixModelTypes[0])
+const mockMixModels = [
+  '黑神话',
+  '黑悟空',
+  '自然之歌',
+  '感官刺激',
+  '万物有灵',
+  '野性斑斓']
+
 const selectedTags = [
   '宽松的BF晚秋外套',
   '灰色印花猫耳领贴钻石短t恤',
@@ -371,6 +466,8 @@ const selectedTags = [
   '宽松的BF晚秋外套',
 ]
 
+// const
+
 const cancelLabelSet = () => {
   openLabelSet.value = false
 }
@@ -379,11 +476,13 @@ const confirmLabelSet = () => {
   openLabelSet.value = false
 }
 
-import { Plus } from '@element-plus/icons-vue'
+const cancelMixModel = () => {
+  openMixModelSet.value = false
+}
 
-import type { UploadProps } from 'element-plus'
-
-const imageUrl = ref('')
+const confirmMixModel = () => {
+  openMixModelSet.value = false
+}
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
@@ -422,6 +521,10 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   height: 40px;
   border-radius: 90px;
   box-shadow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // line-height: 40px;
 }
 
 .title-btn:focus {
@@ -598,11 +701,20 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   display: block;
 }
 
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
+:deep(.avatar-uploader .el-upload) {
+  border: 2px dashed rgb(35, 38, 47);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: .2s;
 }
 
-.el-icon.avatar-uploader-icon {
+:deep(.avatar-uploader .el-upload:hover) {
+  border-color: #fff;
+}
+
+:deep(.el-icon.avatar-uploader-icon) {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
