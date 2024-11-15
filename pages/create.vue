@@ -128,12 +128,22 @@
             <div class="w-full text-left text-white text-[14px] mb-[20px]">已选模型项</div>
             <div class="w-full mb-[8px] flex flex-wrap">
               <div class="seletedTagContainer">
-                <div
+                <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :name="item" :num="1" />
+                <!-- <div
                   class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                  v-for="item in selectedTags">{{ item }}</div>
+                  v-for="item in selectedTags">{{ item }}</div> -->
               </div>
             </div>
           </div>
+          <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
+            <span class="text-[12px] mb-[8px]">随机种子</span>
+            <el-input style="margin-bottom: 10px" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
+            <div class="flex justify-between items-center">
+              <span class="text-white text-[12px]">提示词相关性</span>
+              <el-slider style="width: 80%" v-model="CFGScale" show-input />
+            </div>
+          </div>
+
           <div class="createWorkBtn flex items-center justify-center"><span>立即生成</span></div>
         </div>
         <div class="w-[50%] h-full">
@@ -466,7 +476,7 @@ const selectedTags = [
   '宽松的BF晚秋外套',
 ]
 
-// const
+const selectedMixModels = mockMixModels
 
 const cancelLabelSet = () => {
   openLabelSet.value = false
@@ -501,6 +511,11 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   }
   return true
 }
+
+const uniqueCreateNum = ref(0)
+const CFGScale = ref(0)
+const stylize = ref(0)
+const chaos = ref(0)
 </script>
 
 <style scoped lang="scss">
@@ -720,5 +735,9 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   width: 178px;
   height: 178px;
   text-align: center;
+}
+
+.randomBox {
+  border: 2px solid #353945
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full h-full flex justify-center items-center flex-col rounded-[8px]"
-    :style="{ backgroundColor: bgColor, color: textColor, border: `1px solid ${borderColor}` }">
-    <div class="text-white text-[14px]">{{ props.name }}</div>
-    <el-input-number v-model="curNum" :min="1" :max="10" @change="handleChange" />
+  <div class="flex justify-center items-center flex-col rounded-[8px]"
+    :style="{ backgroundColor: bgColor, color: textColor }" @click="handleClick">
+    <div class="text-[14px]" :style="{ color: textColor }">{{ props.name }}</div>
+    <el-input-number v-model="curNum" :min="1" :max="10" @change="handleChange" @click="handleNumClick" />
   </div>
 </template>
 
@@ -26,6 +26,14 @@ const textColor = computed(() => {
 const handleChange = () => {
   // 更新外部数组中对应项值
 
+}
+
+const handleClick = () => {
+  isDefaultState.value = !isDefaultState.value
+}
+
+const handleNumClick = (e: Event) => {
+  e.stopPropagation()
 }
 </script>
 
