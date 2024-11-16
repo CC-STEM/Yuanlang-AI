@@ -4,3 +4,7 @@ html, body, #__nuxt {
     margin: 0;
     padding: 0;
 }
+
+:root {
+    --el-color-primary: #FFD925!important;
+}

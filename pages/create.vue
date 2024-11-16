@@ -136,15 +136,27 @@
             </div>
           </div>
           <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
-            <span class="text-[12px] mb-[8px]">随机种子</span>
-            <el-input style="margin-bottom: 10px" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
-            <div class="flex justify-between items-center">
+            <span class="text-[12px] mb-[8px] text-white">随机种子</span>
+            <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
+            <div class="flex justify-between items-center mb-[14px]">
               <span class="text-white text-[12px]">提示词相关性</span>
               <el-slider style="width: 80%" v-model="CFGScale" show-input />
             </div>
+            <div class="flex justify-between items-center mb-[14px]">
+              <span class="text-white text-[12px]">风格参数</span>
+              <el-slider style="width: 80%" v-model="stylize" show-input />
+            </div>
+            <div class="flex justify-between items-center mb-[14px]">
+              <span class="text-white text-[12px]">混沌参数</span>
+              <el-slider style="width: 80%" v-model="chaos" show-input />
+            </div>
           </div>
-
-          <div class="createWorkBtn flex items-center justify-center"><span>立即生成</span></div>
+          <div class="w-full flex justify-between items-center mb-[40px]">
+            <span class="text-white text-[14px]">作图数量</span>
+            <el-input-number v-model="createNum" :min="1" :max="10" @change=""
+              style="width: 130px;margin-right: 12px" />
+          </div>
+          <div class="createWorkBtn flex items-center justify-center z-[99]"><span>立即生成</span></div>
         </div>
         <div class="w-[50%] h-full">
           <div class="w-full h-[700px] bg-[#23262f] relative">
@@ -516,6 +528,7 @@ const uniqueCreateNum = ref(0)
 const CFGScale = ref(0)
 const stylize = ref(0)
 const chaos = ref(0)
+const createNum = ref(1)
 </script>
 
 <style scoped lang="scss">
@@ -739,5 +752,23 @@ const chaos = ref(0)
 
 .randomBox {
   border: 2px solid #353945
+}
+
+:deep(.el-input-number__decrease) {
+  background: none;
+  // color: #fff;
+}
+
+:deep(.el-input-number__increase) {
+  background: none;
+  // color: #fff;
+}
+
+:deep(.el-input__inner) {
+  color: #fff;
+}
+
+:deep(.el-input__wrapper) {
+  border-radius: 9px;
 }
 </style>
