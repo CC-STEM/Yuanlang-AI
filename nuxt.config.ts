@@ -67,4 +67,21 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: "http://localhost:9520/api",
+        changeOrigin: true,
+        prependPath: true,
+
+        //nitro 没有重写路径
+      }
+    },
+    logLevel: "info",
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || ''
+    }
+  }
 });

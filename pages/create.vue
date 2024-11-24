@@ -13,25 +13,44 @@
           <div class="w-full mb-[20px]">
             <div class="h-[24px] text-left text-white">* 模型选择</div>
             <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
-              <div :tabindex="index" class="model-item flex flex-col items-center text-[12px] justify-around"
-                v-for="(item, index) in mockModelTypes">
+              <div :tabindex="index"
+                :style="{ border: selectedModelType.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
+                class="model-item flex flex-col items-center text-[12px] justify-around"
+                v-for="(item, index) in modelTypes" @click="selectModelType(item)">
                 <span class="text-white ">{{ item.name }}</span>
-                <span class="text-[#b1b5c4]">{{ item.desc }}</span>
               </div>
             </div>
           </div>
           <div class="w-full mb-[40px]">
             <div class="w-full text-left text-white mb-[8px]">* 模型主题选择</div>
-            <div class="w-full mb-[20px]">
+            <!-- <div class="w-full mb-[20px]">
               <el-radio-group v-model="curModelStyle" size="default">
                 <el-radio-button v-for="item in modelStyleList" :label="item" :value="item" />
               </el-radio-group>
-            </div>
+            </div> -->
             <div class="w-full flex flex-wrap">
-              <div class="model-theme-item flex justify-center items-center text-white" :tabindex="index"
-                v-for="(item, index) in modelThemes">
-                {{ item.name }}</div>
+              <div @click="selectModel(item)" class="model-theme-item flex justify-center items-center text-white"
+                :style="{ border: selectedModel === item ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
+                :tabindex="index" v-for="(item, index) in modelList">
+                {{ item.model_desc }}</div>
             </div>
+          </div>
+          <div class="w-full mb-[40px]">
+            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>画面类型选择</span>
+              <el-switch v-model="openConfigImageType" />
+            </div>
+            <template v-if="openConfigImageType">
+              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenLabelSetDialog">标签库
+              </div>
+              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选标签项</div>
+              <div class="w-full mb-[8px] flex flex-wrap">
+                <div class="seletedTagContainer">
+                  <div
+                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
+                    v-for="item in selectedTags">{{ item }}</div>
+                </div>
+              </div>
+            </template>
           </div>
           <div class="w-full mb-[40px]">
             <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>主题标签选择</span>
@@ -57,6 +76,13 @@
             <div class="w-full mb-[40px]">
               <el-input :maxlength="1000" :autosize="{ minRows: 4 }" :show-word-limit="true" v-model="promptStr"
                 style="width: 100%" :rows="4" type="textarea" resize="none" placeholder="请输入咒语" />
+            </div>
+            <div class="h-[30px] mb-[8px] flex justify-between items-center">
+              <span class="text-white">负面描述 (描述不需要在图片里看到的内容)</span>
+            </div>
+            <div class="w-full mb-[40px]">
+              <el-input :maxlength="1000" :autosize="{ minRows: 4 }" :show-word-limit="true" v-model="negativePromptStr"
+                style="width: 100%" :rows="4" type="textarea" resize="none" placeholder="请输入描述内容" />
             </div>
             <div class="w-full mb-[30px]">
               <div class="w-full text-left text-white mb-[8px]">* 画面大小</div>
@@ -223,6 +249,7 @@ import { Search } from '@element-plus/icons-vue'
 import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
+import type { CreateOptionWithPicResponse } from '../types'
 
 const imageUrl = ref('')
 
@@ -233,8 +260,49 @@ const onChange1 = (status: boolean) => {
   console.log('status', status)
   checked.value = status
 }
-const mockModelTypes = [{ name: '通用模型', desc: '描人绘景，真实生动' }, { name: '漫画模型', desc: '激发想象，创作二次元' }, { name: '风格模型', desc: '有趣多彩' }, { name: 'mj模型', desc: '专业质量，表现力强' }]
+
+
+// 1.模型大类选择
+const modelTypes = ref(MODEL_TYPE_LIST)
+const selectedModelType = ref(modelTypes.value[0])
+const selectModelType = (item: typeof MODEL_TYPE_LIST[number]) => {
+  selectedModelType.value = item
+}
+
+// 2.模型主题选择
+const { data: modelTypeList, status, error } = getModelInfo()
+console.log(modelTypeList, status, error)
+// 根据当前模型类型计算模型列表
+const modelList = computed(() => {
+  if (modelTypeList.value?.data) {
+    return modelTypeList.value.data.filter(item => item.type === selectedModelType.value.value)
+  }
+  return []
+})
+
+const selectedModel = ref(modelList.value[0])
+const selectModel = (item: typeof modelList.value[number]) => {
+  selectedModel.value = item
+}
+
+// 3.正面描述Prompt 与 负面描述
 const promptStr = ref('请输入咒语')
+const negativePromptStr = ref('请输入描述') // 图片中不需要包含的内容
+
+// 4. 画面类型/
+const openConfigImageType = ref(false)
+const imageTypes = ref<CreateOptionWithPicResponse[]>([])
+watch(selectedModel, async (newVal) => {
+  if (newVal?.model_code !== undefined) {
+    const { data } = await getModuleResourceInfo(newVal.model_code)
+    console.log('getModuleResourceInfo', data)
+  }
+}, {
+  deep: true,
+  immediate: true,
+})
+
+
 const aspectRatios = ref([{
   name: '头像图',
   size: '1:1'
@@ -255,136 +323,10 @@ const aspectRatios = ref([{
   size: '9:16'
 }])
 
-const modelThemes = ref([
-  {
-    "name": "汽车设计"
-  },
-  {
-    "name": "服装模型"
-  },
-  {
-    "name": "儿童摄影"
-  },
-  {
-    "name": "玩具设计"
-  },
-  {
-    "name": "影视（架空）"
-  },
-  {
-    "name": "私人影像"
-  },
-  {
-    "name": "室内设计XL"
-  },
-  {
-    "name": "影视近代"
-  },
-  {
-    "name": "艺术插画"
-  },
-  {
-    "name": "NJXL V6"
-  },
-  {
-    "name": "加密艺术"
-  },
-  {
-    "name": "头像"
-  },
-  {
-    "name": "植物花卉"
-  },
-  {
-    "name": "纹样"
-  },
-  {
-    "name": "家居设计"
-  },
-  {
-    "name": "MJXL V6"
-  },
-  {
-    "name": "国漫"
-  },
-  {
-    "name": "NJXL V5"
-  },
-  {
-    "name": "游戏设计"
-  },
-  {
-    "name": "工艺美术"
-  },
-  {
-    "name": "宠物摄影"
-  },
-  {
-    "name": "美食"
-  },
-  {
-    "name": "壁纸"
-  },
-  {
-    "name": "产品美学"
-  },
-  {
-    "name": "汉服"
-  },
-  {
-    "name": "插画"
-  },
-  {
-    "name": "文字"
-  },
-  {
-    "name": "室内设计"
-  },
-  {
-    "name": "MJ"
-  },
-  {
-    "name": "二次元"
-  },
-  {
-    "name": "风景"
-  },
-  {
-    "name": "科幻"
-  },
-  {
-    "name": "女性漫"
-  },
-  {
-    "name": "中国风"
-  },
-  {
-    "name": "儿童"
-  },
-  {
-    "name": "奇幻"
-  },
-  {
-    "name": "游戏"
-  },
-  {
-    "name": "艺术"
-  },
-  {
-    "name": "珠宝"
-  },
-  {
-    "name": "动物"
-  },
-  {
-    "name": "通用"
-  }
-])
-
 const resolutions = ref(['1024*1024', '1360*1360', '2048*2048'])
 
-const modelStyleList = ref(['收藏', '推荐', 'MJ', '二次元', '真人', '科幻', '儿童', '设计', '画风', '中国风', '风景'])
-const curModelStyle = ref('')
+// const modelStyleList = ref(['收藏', '推荐', 'MJ', '二次元', '真人', '科幻', '儿童', '设计', '画风', '中国风', '风景'])
+// const curModelStyle = ref('')
 const openConfigTag = ref(false)
 const openAdvancedSetting = ref(false)
 const openLabelSet = ref(false)
@@ -529,6 +471,7 @@ const CFGScale = ref(0)
 const stylize = ref(0)
 const chaos = ref(0)
 const createNum = ref(1)
+
 </script>
 
 <style scoped lang="scss">
@@ -570,9 +513,9 @@ const createNum = ref(1)
   border-radius: 12px;
 }
 
-.model-item:focus {
-  border: 2px solid rgb(177, 181, 196);
-}
+// .model-item:focus {
+//   border: 2px solid rgb(177, 181, 196);
+// }
 
 :deep(.el-textarea__inner) {
   background: none;
@@ -618,17 +561,19 @@ const createNum = ref(1)
 
 .model-theme-item {
   // flex: 1;
-  width: 13%;
-  height: 36px;
+  width: 18%;
+  height: 40px;
   background: #23262f;
   margin: 3px;
   border-radius: 90px;
   font-size: 12px;
+  text-wrap: wrap;
+  text-align: center
 }
 
-.model-theme-item:focus {
-  border: 2px solid rgb(177, 181, 196);
-}
+// .model-theme-item:focus {
+//   border: 2px solid rgb(177, 181, 196);
+// }
 
 :deep(.el-radio-button__inner) {
   border: 1px solid rgb(35, 38, 47);
