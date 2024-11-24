@@ -249,7 +249,10 @@ import { Search } from '@element-plus/icons-vue'
 import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
-import type { CreateOptionWithPicResponse } from '../types'
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse } from '../types'
+import { getModuleResourceInfo } from '../composables/wujie';
+const runtimeConfig = useRuntimeConfig();
+
 
 const imageUrl = ref('')
 
@@ -280,7 +283,13 @@ const modelList = computed(() => {
   return []
 })
 
-const selectedModel = ref(modelList.value[0])
+const selectedModel = ref()
+const seletectedModelCode = ref()
+watch(modelList, (newVal, oldVal) => {
+  if (oldVal.length === 0 && newVal.length > 0) {
+    selectedModel.value = newVal[0]
+  }
+})
 const selectModel = (item: typeof modelList.value[number]) => {
   selectedModel.value = item
 }
@@ -289,18 +298,50 @@ const selectModel = (item: typeof modelList.value[number]) => {
 const promptStr = ref('请输入咒语')
 const negativePromptStr = ref('请输入描述') // 图片中不需要包含的内容
 
-// 4. 画面类型/
+// 4. 画面类型/画面风格/艺术家/元素魔法/风格参数/角色同人/融合模型/推荐分辨率
 const openConfigImageType = ref(false)
-const imageTypes = ref<CreateOptionWithPicResponse[]>([])
-watch(selectedModel, async (newVal) => {
-  if (newVal?.model_code !== undefined) {
-    const { data } = await getModuleResourceInfo(newVal.model_code)
-    console.log('getModuleResourceInfo', data)
+// const imageTypes = ref<CreateOptionWithPicResponse[]>([])
+const resolutionList = ref<CreateOptionResolutionResponse[]>([])
+const styles = ref<CreateOptionWithPicResponse[]>([])
+const artists = ref<CreateOptionWithPicResponse[]>([])
+const elementMagic = ref<SimpleOptionResponse[]>([])
+const stylesDecoration = ref<SimpleOptionResponse[]>([])
+const characters = ref<CreateOptionWithDecorationResponse[]>([])
+const modelsFusion = ref<CreateOptionWithDecorationResponse[]>([])
+// watch(selectedModel, async (newVal) => {
+//   console.log('selectedModel', newVal)
+//   if (newVal?.model_code !== undefined) {
+//     const { data, status, error } = getModuleResourceInfo(newVal.model_code)
+//     console.log('getModuleResourceInfo', status)
+//     if (data) {
+//       imageTypes.value = data.value?.data?.create_option_menu?.image_type || []
+//       console.log('imageTypes', imageTypes.value)
+//     }
+//   }
+// }, {
+//   deep: true,
+//   immediate: true,
+// })
+const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, error: getModuleResourceInfoError } = useLazyFetch<GetModuleResourceInfoRes>(
+  () => `/api/wujie/getResourseModule?model=${selectedModel.value?.model_code}`,
+  {
+    baseURL: runtimeConfig.public.apiBase,
+    pick: ["data"],
+    immediate: false
   }
-}, {
-  deep: true,
-  immediate: true,
+);
+
+const imageTypes = computed(() => {
+  return (getModuleResourceInfoData.value?.data.create_option_menu?.image_type) || []
 })
+
+
+// watch(imageTypes, (newVal, oldVal) => {
+//   console.log('imageTypes', newVal)
+// })
+
+
+// 5. 风格模型
 
 
 const aspectRatios = ref([{
@@ -340,29 +381,6 @@ const clickOpenLabelSetDialog = () => {
 const clickOpenMixModelSetDialog = () => {
   openMixModelSet.value = true
 }
-
-const gridData = [
-  {
-    date: '2016-05-02',
-    name: 'Peter Parker',
-    address: 'Queens, New York City',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Peter Parker',
-    address: 'Queens, New York City',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Peter Parker',
-    address: 'Queens, New York City',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Peter Parker',
-    address: 'Queens, New York City',
-  },
-]
 
 const tagTypes = ['风格', '网络热词', '上衣', '下装', '外衣', '配饰', '背景', '衬衫', '连衣裙', '连帽衫', '牛仔裤', '紧身裤', '开衫', '大衣', '夹克']
 const tagType = ref(tagTypes[0])
