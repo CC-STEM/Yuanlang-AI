@@ -40,14 +40,15 @@
               <el-switch v-model="openConfigImageType" />
             </div>
             <template v-if="openConfigImageType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenLabelSetDialog">标签库
+              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
+                @click="clickOpenImageTypeSetDialog">类型库
               </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选标签项</div>
+              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
               <div class="w-full mb-[8px] flex flex-wrap">
                 <div class="seletedTagContainer">
                   <div
                     class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedTags">{{ item }}</div>
+                    v-for="item in selectedImageTypes" @click="clickImageType(item)">{{ item.name }}</div>
                 </div>
               </div>
             </template>
@@ -193,6 +194,35 @@
         </div>
       </div>
     </div>
+    <el-drawer v-model="openImageTypeSet" title="画面类型选择" direction="rtl" size="60%">
+      <template #header="{ titleId }">
+        <div class="flex">
+          <h1 :id="titleId" class="text-white text-[26px]">画面选择器</h1>
+          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
+            :suffix-icon="Search" />
+        </div>
+      </template>
+      <!-- <el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" /> -->
+      <div class="w-full h-[calc(100%-92px)]">
+        <el-scrollbar>
+          <div class="w-full flex flex-wrap">
+            <!-- <el-check-tag :checked="checked" @change="onChange1" v-for="item in imageTypes">{{ item.name
+              }}</el-check-tag> -->
+            <div @click="clickImageType(item)" v-for="item in imageOptions"
+              :style="{ backgroundImage: `url(${item.url})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
+              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
+              <span class="text-white">{{ item.name }}</span>
+            </div>
+          </div>
+        </el-scrollbar>
+      </div>
+      <template #footer>
+        <div style="flex: auto">
+          <el-button @click="cancelImageTypeSet">取消</el-button>
+          <el-button type="primary" @click="confirmImageTypeSet">确认</el-button>
+        </div>
+      </template>
+    </el-drawer>
     <el-drawer v-model="openLabelSet" title="标签选择" direction="rtl" size="60%">
       <template #header="{ titleId }">
         <div class="flex">
@@ -251,9 +281,10 @@ import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps } from 'element-plus'
 import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse } from '../types'
 import { getModuleResourceInfo } from '../composables/wujie';
+
+interface ImageTypeOption extends CreateOptionWithPicResponse { selected: boolean }
+
 const runtimeConfig = useRuntimeConfig();
-
-
 const imageUrl = ref('')
 
 const tagSearchInput = ref('')
@@ -308,20 +339,7 @@ const elementMagic = ref<SimpleOptionResponse[]>([])
 const stylesDecoration = ref<SimpleOptionResponse[]>([])
 const characters = ref<CreateOptionWithDecorationResponse[]>([])
 const modelsFusion = ref<CreateOptionWithDecorationResponse[]>([])
-// watch(selectedModel, async (newVal) => {
-//   console.log('selectedModel', newVal)
-//   if (newVal?.model_code !== undefined) {
-//     const { data, status, error } = getModuleResourceInfo(newVal.model_code)
-//     console.log('getModuleResourceInfo', status)
-//     if (data) {
-//       imageTypes.value = data.value?.data?.create_option_menu?.image_type || []
-//       console.log('imageTypes', imageTypes.value)
-//     }
-//   }
-// }, {
-//   deep: true,
-//   immediate: true,
-// })
+
 const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, error: getModuleResourceInfoError } = useLazyFetch<GetModuleResourceInfoRes>(
   () => `/api/wujie/getResourseModule?model=${selectedModel.value?.model_code}`,
   {
@@ -331,9 +349,42 @@ const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, er
   }
 );
 
-const imageTypes = computed(() => {
-  return (getModuleResourceInfoData.value?.data.create_option_menu?.image_type) || []
+const imageOptions = ref<(ImageTypeOption)[]>([])
+
+watch(getModuleResourceInfoData, (newVal) => {
+  console.log('getModuleResourceInfoData', newVal?.data.create_option_menu?.image_type)
+  if (newVal?.data.create_option_menu?.image_type) {
+    imageOptions.value = newVal.data.create_option_menu.image_type.map(item => {
+      return { ...item, selected: false }
+    })
+  }
+}, {
+  deep: true,
+  immediate: true
 })
+
+const selectedImageTypes = computed(() => imageOptions.value.filter(item => item.selected))
+
+const clickImageType = (item: ImageTypeOption) => {
+  item.selected = !item.selected
+}
+
+// const imageTypes = computed(() => {
+//   return (getModuleResourceInfoData.value?.data.create_option_menu?.image_type) || []
+// })
+
+const openImageTypeSet = ref(false)
+const clickOpenImageTypeSetDialog = () => {
+  openImageTypeSet.value = true
+}
+
+const cancelImageTypeSet = () => {
+  openImageTypeSet.value = false
+}
+
+const confirmImageTypeSet = () => {
+  openImageTypeSet.value = false
+}
 
 
 // watch(imageTypes, (newVal, oldVal) => {
