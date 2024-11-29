@@ -70,7 +70,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: "http://localhost:9520/api",
+        target: "http://localhost:19520/api",
         changeOrigin: true,
         prependPath: true,
 
