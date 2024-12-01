@@ -2,8 +2,8 @@
 export default defineNuxtConfig({
   app: {
     pageTransition: {
-      name: 'page',
-      mode: 'out-in' // 默认值
+      name: "page",
+      mode: "out-in", // 默认值
     },
   },
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
@@ -11,9 +11,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@element-plus/nuxt"],
   routeRules: {
-    '/create': {
-      ssr: false
-    }
+    "/create": {
+      ssr: false,
+    },
   },
   postcss: {
     plugins: {
@@ -69,19 +69,19 @@ export default defineNuxtConfig({
   },
   nitro: {
     devProxy: {
-      '/api': {
-        target: "http://localhost:19520/api",
+      "/api": {
+        target: "http://localhost:9520/api",
         changeOrigin: true,
         prependPath: true,
 
         //nitro 没有重写路径
-      }
+      },
     },
     logLevel: "info",
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || ''
-    }
-  }
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "",
+    },
+  },
 });

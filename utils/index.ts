@@ -1,3 +1,5 @@
+import type { ModelFusionTypeOption } from "@/types";
+
 export const px2vw = (px: number): string => {
   return `${(px / 1920) * 100}vw`;
 };
@@ -38,3 +40,7 @@ export const MODEL_TYPE_LIST = [
     value: MODEL_TYPE_VALUE_MAP.STYLE_MODEL_TYPE,
   },
 ];
+
+export const modelFusionOptionsKey = Symbol() as InjectionKey<
+  Ref<ModelFusionTypeOption[]>
+>;

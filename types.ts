@@ -4,8 +4,8 @@ export interface BaseRes {
    */
   code?: string;
   /**
- * 失败信息
- */
+   * 失败信息
+   */
   message?: string;
 }
 
@@ -51,7 +51,6 @@ export interface ModelBaseInfoResponse {
    * 模型分类（1-通用模型，3-漫画模型，7-MJ模型）
    */
   type?: number;
-
 }
 
 /**
@@ -77,7 +76,6 @@ export interface ModelBaseInfoPatternInfoResponse {
    * 其他controlNet pattern是否支持由{@link #controlnetSupport}决定
    */
   pattern_code?: number;
-
 }
 
 /**
@@ -92,7 +90,6 @@ export interface LayerDiffusionMethodVOResponse {
    * 模式
    */
   name?: string;
-
 }
 
 export interface GetModuleResourceInfoRes extends BaseRes {
@@ -109,7 +106,6 @@ export interface AiArtworkDefaultResourceVoResponse {
    * (object)
    */
   create_option_menu?: AiArtworkCreateOptionMenuVoResponse;
-
 }
 
 /**
@@ -167,7 +163,6 @@ export interface AiArtworkCreateOptionMenuVoResponse {
    * 风格，艺术家，元素魔法的集合（还包括其他所有风格选项参数）
    */
   style_decoration?: SimpleOptionResponse[];
-
 }
 
 /**
@@ -190,7 +185,6 @@ export interface CreateOptionWithPicResponse {
    * 暂无值，可忽略
    */
   url?: string;
-
 }
 
 /**
@@ -200,24 +194,23 @@ export interface CreateOptionWithDecorationResponse {
   /**
    * category（分组）
    */
-  category?: string;
+  category: string;
   /**
    * key（唯一标识）
    */
-  key?: string;
+  key: string;
   /**
    * name（展示名称）
    */
-  name?: string;
+  name: string;
   /**
    * 推荐权重，浮点型，范围是-1.0~2.0
    */
-  recommended_weight?: number;
+  recommended_weight: number;
   /**
    * 支持的模型版本。只能用于对应支持的版本的模型
    */
   support_model_versions?: string[];
-
 }
 
 /**
@@ -236,7 +229,6 @@ export interface SimpleOptionResponse {
    * 展示名称
    */
   name?: string;
-
 }
 
 /**
@@ -259,7 +251,6 @@ export interface AiArtworkCreateOptionMenuVoPatternParamResponse {
    * SEG：语义分割识别
    */
   name?: string;
-
 }
 
 /**
@@ -406,3 +397,37 @@ export interface SamplerModelInfoOptionResponse {
    */
   sampler_model_name?: string;
 }
+
+//
+
+export interface ImageTypeOption extends CreateOptionWithPicResponse {
+  selected: boolean;
+}
+
+export interface StyleTypeOption extends ImageTypeOption {}
+
+export interface ArtistTypeOption extends ImageTypeOption {}
+
+export interface ElementMagicTypeOption extends SimpleOptionResponse {
+  selected: boolean;
+}
+
+export interface StyleDecorationTypeOption extends ElementMagicTypeOption {}
+
+export interface CharacterTypeOption
+  extends CreateOptionWithDecorationResponse {
+  selected: boolean;
+}
+
+export interface ModelFusionTypeOption extends CharacterTypeOption {
+  weight: number;
+}
+
+export type ResourceOption =
+  | ImageTypeOption
+  | StyleTypeOption
+  | ArtistTypeOption
+  | ElementMagicTypeOption
+  | StyleDecorationTypeOption
+  | CharacterTypeOption
+  | ModelFusionTypeOption;

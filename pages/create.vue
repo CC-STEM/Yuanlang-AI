@@ -35,107 +35,19 @@
                 {{ item.model_desc }}</div>
             </div>
           </div>
-          <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>画面类型选择</span>
-              <el-switch v-model="openConfigImageType" />
-            </div>
-            <template v-if="openConfigImageType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
-                @click="clickOpenImageTypeSetDialog">类型库
-              </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
-              <div class="w-full mb-[8px] flex flex-wrap">
-                <div class="seletedTagContainer">
-                  <div
-                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedImageTypes" @click="clickImageType(item)"
-                    :style="item.selected ? 'border: 2px solid rgb(177, 181, 196);' : ''">{{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>风格类型选择</span>
-              <el-switch v-model="openConfigStyleType" />
-            </div>
-            <template v-if="openConfigStyleType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
-                @click="clickOpenStyleTypeSetDialog">类型库
-              </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
-              <div class="w-full mb-[8px] flex flex-wrap">
-                <div class="seletedTagContainer">
-                  <div
-                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedStyleTypes" @click="clickStyleType(item)"
-                    :style="item.selected ? 'border: 2px solid rgb(177, 181, 196);' : ''">{{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>艺术家类型选择</span>
-              <el-switch v-model="openConfigArtistType" />
-            </div>
-            <template v-if="openConfigArtistType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
-                @click="clickOpenArtistTypeSetDialog">类型库
-              </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
-              <div class="w-full mb-[8px] flex flex-wrap">
-                <div class="seletedTagContainer">
-                  <div
-                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedArtistTypes" @click="clickArtistType(item)"
-                    :style="item.selected ? 'border: 2px solid rgb(177, 181, 196);' : ''">{{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>元素魔法类型选择</span>
-              <el-switch v-model="openConfigElementMagicType" />
-            </div>
-            <template v-if="openConfigElementMagicType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
-                @click="clickOpenElementMagicTypeSetDialog">类型库
-              </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
-              <div class="w-full mb-[8px] flex flex-wrap">
-                <div class="seletedTagContainer">
-                  <div
-                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedElementMagicTypes" @click="clickElementMagicType(item)"
-                    :style="item.selected ? 'border: 2px solid rgb(177, 181, 196);' : ''">{{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>风格参数类型选择</span>
-              <el-switch v-model="openConfigStyleDecorationType" />
-            </div>
-            <template v-if="openConfigStyleDecorationType">
-              <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]"
-                @click="clickOpenStyleDecorationTypeSetDialog">类型库
-              </div>
-              <div class="w-full text-left text-white text-[14px] mb-[20px]">已选类型项</div>
-              <div class="w-full mb-[8px] flex flex-wrap">
-                <div class="seletedTagContainer">
-                  <div
-                    class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                    v-for="item in selectedStyleDecorationTypes" @click="clickStyleDecorationType(item)"
-                    :style="item.selected ? 'border: 2px solid rgb(177, 181, 196);' : ''">{{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div class="w-full mb-[40px]">
+          <CreateModuleResourceSelector ref="imageTypeSelectorRef" :outerTitle="'画面类型选择'" :drawerTitle="'画面选择器'"
+            :resource-options="imageOptions" />
+          <CreateModuleResourceSelector ref="styleSelectorRef" :outerTitle="'风格类型选择'" :drawerTitle="'风格选择器'"
+            :resource-options="styleOptions" />
+          <CreateModuleResourceSelector ref="artistSelectorRef" :outerTitle="'艺术家类型选择'" :drawerTitle="'艺术家选择器'"
+            :resource-options="artistOptions" />
+          <CreateModuleResourceSelector ref="elementMagicSelectorRef" :outerTitle="'元素魔法类型选择'" :drawer-title="'元素魔法选择器'"
+            :resource-options="elementMagicOptions" />
+          <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
+            :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
+          <CreateModuleResourceSelector ref="characterSelectorRef" :outerTitle="'角色与人物类型选择'" :drawer-title="'角色与人物选择器'"
+            :resource-options="characterOptions" />
+          <!-- <div class="w-full mb-[40px]">
             <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>主题标签选择</span>
               <el-switch v-model="openConfigTag" />
             </div>
@@ -149,7 +61,8 @@
                   v-for="item in selectedTags">{{ item }}</div>
               </div>
             </div>
-          </div>
+          </div> -->
+          <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
           <div class="w-full mb-[40px]">
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
               <span class="text-white">* 画面描述</span>
@@ -227,7 +140,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full mb-[40px]">
+          <!-- <div class="w-full mb-[40px]">
             <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>融合模型选择</span>
               <el-switch v-model="openConfigMixModel" />
             </div>
@@ -238,12 +151,9 @@
             <div class="w-full mb-[8px] flex flex-wrap">
               <div class="seletedTagContainer">
                 <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :name="item" :num="1" />
-                <!-- <div
-                  class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                  v-for="item in selectedTags">{{ item }}</div> -->
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
             <span class="text-[12px] mb-[8px] text-white">随机种子</span>
             <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
@@ -276,138 +186,7 @@
         </div>
       </div>
     </div>
-    <el-drawer v-model="openImageTypeSet" title="画面类型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">画面选择器 ({{ selectedImageTypes.length }} / 10)</h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <div class="w-full h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <div @click="clickImageType(item)" v-for="item in imageOptions"
-              :style="{ backgroundImage: `url(${item.url})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
-              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
-              <span class="text-white">{{ item.name }}</span>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelImageTypeSet">取消</el-button>
-          <el-button type="primary" @click="confirmImageTypeSet">确认</el-button>
-        </div>
-      </template>
-    </el-drawer>
-    <el-drawer v-model="openStyleTypeSet" title="风格类型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">风格选择器 ({{ selectedStyleTypes.length }} / 10)</h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <div class="w-full h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <div @click="clickStyleType(item)" v-for="item in styleOptions"
-              :style="{ backgroundImage: `url(${item.url})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
-              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
-              <span class="text-white">{{ item.name }}</span>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelStyleTypeSet">取消</el-button>
-          <el-button type="primary" @click="confirmStyleTypeSet">确认</el-button>
-        </div>
-      </template>
-    </el-drawer>
-    <el-drawer v-model="openArtistTypeSet" title="艺术家类型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">风格选择器 ({{ selectedArtistTypes.length }} / 10)</h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <div class="w-full h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <div @click="clickArtistType(item)" v-for="item in artistOptions"
-              :style="{ backgroundImage: `url(${item.url})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
-              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
-              <span class="text-white">{{ item.name }}</span>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelArtistTypeSet">取消</el-button>
-          <el-button type="primary" @click="confirmArtistTypeSet">确认</el-button>
-        </div>
-      </template>
-    </el-drawer>
-    <el-drawer v-model="openElementMagicTypeSet" title="元素魔法类型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">元素魔法选择器 ({{ selectedElementMagicTypes.length }} / 10)</h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <div class="w-full h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <div @click="clickElementMagicType(item)" v-for="item in elementMagicOptions"
-              :style="{ border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
-              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
-              <span class="text-white">{{ item.name }}</span>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelElementMagicTypeSet">取消</el-button>
-          <el-button type="primary" @click="confirmElementMagicTypeSet">确认</el-button>
-        </div>
-      </template>
-    </el-drawer>
-    <el-drawer v-model="openStyleDecorationTypeSet" title="风格参数类型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">风格参数选择器 ({{ selectedStyleDecorationTypes.length }} / 10)
-          </h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <div class="w-full h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <div @click="clickStyleDecorationType(item)" v-for="item in styleDecorationOptions"
-              :style="{ border: item.selected ? '2px solid rgb(177, 181, 196)' : 'none' }"
-              class="flex justify-center items-center w-[200px] h-[150px] m-[10px] rounded-[8px] cursor-pointer">
-              <span class="text-white">{{ item.name }}</span>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelStyleDecorationTypeSet">取消</el-button>
-          <el-button type="primary" @click="confirmStyleDecorationTypeSet">确认</el-button>
-        </div>
-      </template>
-    </el-drawer>
-    <el-drawer v-model="openLabelSet" title="标签选择" direction="rtl" size="60%">
+    <!-- <el-drawer v-model="openLabelSet" title="标签选择" direction="rtl" size="60%">
       <template #header="{ titleId }">
         <div class="flex">
           <h1 :id="titleId" class="text-white text-[26px]">标签选择器</h1>
@@ -415,22 +194,22 @@
             :suffix-icon="Search" />
         </div>
       </template>
-      <el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" />
-      <div class="w-full mt-[20px] h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap">
-            <el-check-tag :checked="checked" @change="onChange1" v-for="item in mockTags">{{ item }}</el-check-tag>
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
+<el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" />
+<div class="w-full mt-[20px] h-[calc(100%-92px)]">
+  <el-scrollbar>
+    <div class="w-full flex flex-wrap">
+      <el-check-tag :checked="checked" @change="onChange1" v-for="item in mockTags">{{ item }}</el-check-tag>
+    </div>
+  </el-scrollbar>
+</div>
+<template #footer>
         <div style="flex: auto">
           <el-button @click="cancelLabelSet">取消</el-button>
           <el-button type="primary" @click="confirmLabelSet">确认</el-button>
         </div>
       </template>
-    </el-drawer>
-    <el-drawer v-model="openMixModelSet" title="融合模型选择" direction="rtl" size="60%">
+</el-drawer> -->
+    <!-- <el-drawer v-model="openMixModelSet" title="融合模型选择" direction="rtl" size="60%">
       <template #header="{ titleId }">
         <div class="flex">
           <h1 :id="titleId" class="text-white text-[26px]">模型库</h1>
@@ -452,7 +231,7 @@
           <el-button type="primary" @click="confirmMixModel">确认</el-button>
         </div>
       </template>
-    </el-drawer>
+    </el-drawer> -->
   </el-scrollbar>
 
 </template>
@@ -463,19 +242,12 @@ import { Search } from '@element-plus/icons-vue'
 import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse } from '../types'
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption } from '../types'
 import { getModuleResourceInfo } from '../composables/wujie';
 import { Style } from '../.nuxt/components';
+import CreateFusionModelSelectorVue from '~/components/Create/CreateFusionModelSelector.vue';
+import { modelFusionOptionsKey } from '@/utils'
 
-interface ImageTypeOption extends CreateOptionWithPicResponse { selected: boolean }
-
-interface StyleTypeOption extends ImageTypeOption { }
-
-interface ArtistTypeOption extends ImageTypeOption { }
-
-interface ElementMagicTypeOption extends SimpleOptionResponse { selected: boolean }
-
-interface StyleDecorationTypeOption extends ElementMagicTypeOption { }
 
 const runtimeConfig = useRuntimeConfig();
 const imageUrl = ref('')
@@ -558,10 +330,24 @@ watch(getModuleResourceInfoData, (newVal) => {
     })
   }
 
-  // 风格参数
+  // 风格修饰参数
   if (newVal?.data.create_option_menu?.style_decoration) {
     styleDecorationOptions.value = newVal.data.create_option_menu.style_decoration.map(item => {
       return { ...item, selected: false }
+    })
+  }
+
+  // 角色与人物
+  if (newVal?.data.create_option_menu?.character) {
+    characterOptions.value = newVal.data.create_option_menu.character.map(item => {
+      return { ...item, selected: false }
+    })
+  }
+
+  // 融合模型
+  if (newVal?.data.create_option_menu?.model_fusion) {
+    modelFusionOptions.value = newVal.data.create_option_menu.model_fusion.map(item => {
+      return { ...item, selected: false, weight: item.recommended_weight }
     })
   }
 }, {
@@ -574,173 +360,39 @@ const promptStr = ref('请输入咒语')
 const negativePromptStr = ref('请输入描述') // 图片中不需要包含的内容
 
 // 4. 画面类型
-const openConfigImageType = ref(false)
+const imageTypeSelectorRef = ref<any>()
+const imageOptions = ref<ResourceOption[]>([])
+
 const resolutionList = ref<CreateOptionResolutionResponse[]>([])
-// const elementMagic = ref<SimpleOptionResponse[]>([])
-// const stylesDecoration = ref<SimpleOptionResponse[]>([])
 const characters = ref<CreateOptionWithDecorationResponse[]>([])
 const modelsFusion = ref<CreateOptionWithDecorationResponse[]>([])
 
-const imageOptions = ref<(ImageTypeOption)[]>([])
-
-const selectedImageTypes = computed(() => imageOptions.value.filter(item => item.selected))
-
-const clickImageType = (item: ImageTypeOption) => {
-  // 判断当前已选择项数量是否达到10
-  if (selectedImageTypes.value.length >= 10) {
-    // 如果当前未选择，则不允许进行选择
-    if (!item.selected) {
-      console.log('最多10种')
-      return
-    }
-  }
-  item.selected = !item.selected
-}
-
-const openImageTypeSet = ref(false)
-const clickOpenImageTypeSetDialog = () => {
-  openImageTypeSet.value = true
-}
-
-const cancelImageTypeSet = () => {
-  openImageTypeSet.value = false
-}
-
-const confirmImageTypeSet = () => {
-  openImageTypeSet.value = false
-}
-
 // 5. 画面风格
-const openConfigStyleType = ref(false)
-
-const styleOptions = ref<(StyleTypeOption)[]>([])
-
-const selectedStyleTypes = computed(() => styleOptions.value.filter(item => item.selected))
-
-const clickStyleType = (item: StyleTypeOption) => {
-  // 判断当前已选择项数量是否达到10
-  if (selectedStyleTypes.value.length >= 10) {
-    // 如果当前未选择，则不允许进行选择
-    if (!item.selected) {
-      console.log('最多10钟')
-      return
-    }
-  }
-  item.selected = !item.selected
-}
-
-const openStyleTypeSet = ref(false)
-const clickOpenStyleTypeSetDialog = () => {
-  openStyleTypeSet.value = true
-}
-
-const cancelStyleTypeSet = () => {
-  openStyleTypeSet.value = false
-}
-
-const confirmStyleTypeSet = () => {
-  openStyleTypeSet.value = false
-}
+const styleSelectorRef = ref<any>()
+const styleOptions = ref<ResourceOption[]>([])
 
 // 6. 艺术家
-const openConfigArtistType = ref(false)
-
-const artistOptions = ref<(ArtistTypeOption)[]>([])
-
-const selectedArtistTypes = computed(() => artistOptions.value.filter(item => item.selected))
-
-const clickArtistType = (item: ArtistTypeOption) => {
-  // 判断当前已选择项数量是否达到10
-  if (selectedArtistTypes.value.length >= 10) {
-    // 如果当前未选择，则不允许进行选择
-    if (!item.selected) {
-      console.log('最多10钟')
-      return
-    }
-  }
-  item.selected = !item.selected
-}
-
-const openArtistTypeSet = ref(false)
-const clickOpenArtistTypeSetDialog = () => {
-  openArtistTypeSet.value = true
-}
-
-const cancelArtistTypeSet = () => {
-  openArtistTypeSet.value = false
-}
-
-const confirmArtistTypeSet = () => {
-  openArtistTypeSet.value = false
-}
+const artistSelectorRef = ref<any>()
+const artistOptions = ref<ResourceOption[]>([])
 
 // 7. 元素魔法
-const openConfigElementMagicType = ref(false)
+const elementMagicSelectorRef = ref<any>()
+const elementMagicOptions = ref<ResourceOption[]>([])
 
-const elementMagicOptions = ref<(ElementMagicTypeOption)[]>([])
-
-const selectedElementMagicTypes = computed(() => elementMagicOptions.value.filter(item => item.selected))
-
-const clickElementMagicType = (item: ElementMagicTypeOption) => {
-  // 判断当前已选择项数量是否达到10
-  if (selectedElementMagicTypes.value.length >= 10) {
-    // 如果当前未选择，则不允许进行选择
-    if (!item.selected) {
-      console.log('最多10钟')
-      return
-    }
-  }
-  item.selected = !item.selected
-}
-
-const openElementMagicTypeSet = ref(false)
-const clickOpenElementMagicTypeSetDialog = () => {
-  openElementMagicTypeSet.value = true
-}
-
-const cancelElementMagicTypeSet = () => {
-  openElementMagicTypeSet.value = false
-}
-
-const confirmElementMagicTypeSet = () => {
-  openElementMagicTypeSet.value = false
-}
 
 // 8. 风格参数
-const openConfigStyleDecorationType = ref(false)
+const styleDecorationSelectorRef = ref<any>()
+const styleDecorationOptions = ref<(ResourceOption)[]>([])
 
-const styleDecorationOptions = ref<(StyleDecorationTypeOption)[]>([])
-
-const selectedStyleDecorationTypes = computed(() => styleDecorationOptions.value.filter(item => item.selected))
-
-const clickStyleDecorationType = (item: StyleDecorationTypeOption) => {
-  // 判断当前已选择项数量是否达到10
-  if (selectedStyleDecorationTypes.value.length >= 10) {
-    // 如果当前未选择，则不允许进行选择
-    if (!item.selected) {
-      console.log('最多10钟')
-      return
-    }
-  }
-  item.selected = !item.selected
-}
-
-const openStyleDecorationTypeSet = ref(false)
-const clickOpenStyleDecorationTypeSetDialog = () => {
-  openStyleDecorationTypeSet.value = true
-}
-
-const cancelStyleDecorationTypeSet = () => {
-  openStyleDecorationTypeSet.value = false
-}
-
-const confirmStyleDecorationTypeSet = () => {
-  openStyleDecorationTypeSet.value = false
-}
-
-// 9. 角色同人
+// 9. 角色与人物
+const characterSelectorRef = ref<any>()
+const characterOptions = ref<ResourceOption[]>([])
 
 // 10. 融合模型
+const modelFusionSelectorRef = ref<any>()
+const modelFusionOptions = ref<ModelFusionTypeOption[]>([])
+provide(modelFusionOptionsKey, modelFusionOptions)
+
 
 // 11. 推荐分辨率
 
