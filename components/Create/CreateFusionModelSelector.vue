@@ -10,7 +10,7 @@
       <div class="w-full text-left text-white text-[14px] mb-[20px]">已选模型项</div>
       <div class="w-full mb-[8px] flex flex-wrap">
         <div class="seletedTagContainer">
-          <!-- <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :option="{}" /> -->
+          <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in selectedFusionModels" :option="item" />
         </div>
       </div>
     </template>
@@ -75,26 +75,14 @@ const clickOpenMixModelSetDialog = () => {
   openMixModelSet.value = true
 }
 
-const mockMixModels = [
-  '黑神话',
-  '黑悟空',
-  '自然之歌',
-  '感官刺激',
-  '万物有灵',
-  '野性斑斓']
-
-const mixModelTypes = ['推荐',
-  '摄影',
-  '产品',
-  '插画',
-  '漫画',
-  '绘本',
-  '人物',
-  '设计',
-  '国风',
-  '室内',
-  '奇幻']
-const mixModelType = ref(mixModelTypes[0])
+const selectedFusionModels = ref<ModelFusionTypeOption[]>([])
+watch(() => props.resourceOptions, (newVal, oldVal) => {
+  console.log('resourceOptions------------', newVal, oldVal)
+  selectedFusionModels.value = newVal.filter(item => item.selected)
+}, {
+  deep: true,
+  immediate: true
+})
 
 const cancelMixModel = () => {
   openMixModelSet.value = false

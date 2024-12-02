@@ -17,9 +17,9 @@ interface Props {
 const props = defineProps<Props>()
 const resourceOptions = inject(modelFusionOptionsKey, ref([]))
 
-watch(resourceOptions, (newVal) => {
-  // console.log('resourceOptions', newVal)
-}, { immediate: true })
+// watch(resourceOptions, (newVal) => {
+//   // console.log('resourceOptions', newVal)
+// }, { immediate: true })
 const curWeight = ref(props.option.recommended_weight)
 const borderColor = ref('')
 const isDefaultState = ref(true)
@@ -30,9 +30,10 @@ const textColor = computed(() => {
   return isDefaultState.value ? 'rgb(255, 255, 255)' : 'rgb(0,0,0)'
 })
 
-const handleChange = () => {
+const handleChange = (num: number) => {
   // 更新外部数组中对应项值
-
+  // console.log('handleChange', e)
+  props.option.weight = num
 }
 
 const handleClick = () => {
@@ -47,6 +48,13 @@ const handleClick = () => {
 const handleNumClick = (e: Event) => {
   e.stopPropagation()
 }
+
+watch(() => props.option, (newVal) => {
+  curWeight.value = newVal.weight
+}, {
+  immediate: true,
+  deep: true
+})
 </script>
 
 <style scoped lang="scss">
