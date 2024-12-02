@@ -44,3 +44,12 @@ export const MODEL_TYPE_LIST = [
 export const modelFusionOptionsKey = Symbol() as InjectionKey<
   Ref<ModelFusionTypeOption[]>
 >;
+
+export const RESOLUTION_RATIO_CN_MAP = {
+  "1:1": "头像图",
+  "1:2": "手机屏幕",
+  "4:3": "文章配图",
+  "3:4": "社交媒体",
+  "16:9": "电脑壁纸",
+  "9:16": "宣传海报",
+};

@@ -1,4 +1,8 @@
-import type { GetModelInfoRes, GetModuleResourceInfoRes } from "../types";
+import type {
+  GetModelInfoRes,
+  GetModuleResourceInfoRes,
+  AICreateRequest,
+} from "../types";
 const runtimeConfig = useRuntimeConfig();
 
 export const getModelInfo = () => {
@@ -24,4 +28,8 @@ export const getModuleResourceInfo = (model: number) => {
     }
   );
   return { data, status, error };
+};
+
+export const createAIByWujie = (data: AICreateRequest) => {
+  // const { data: res, status, error } = useFetch<any>(
 };

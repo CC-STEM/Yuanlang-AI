@@ -35,34 +35,6 @@
                 {{ item.model_desc }}</div>
             </div>
           </div>
-          <CreateModuleResourceSelector ref="imageTypeSelectorRef" :outerTitle="'画面类型选择'" :drawerTitle="'画面选择器'"
-            :resource-options="imageOptions" />
-          <CreateModuleResourceSelector ref="styleSelectorRef" :outerTitle="'风格类型选择'" :drawerTitle="'风格选择器'"
-            :resource-options="styleOptions" />
-          <CreateModuleResourceSelector ref="artistSelectorRef" :outerTitle="'艺术家类型选择'" :drawerTitle="'艺术家选择器'"
-            :resource-options="artistOptions" />
-          <CreateModuleResourceSelector ref="elementMagicSelectorRef" :outerTitle="'元素魔法类型选择'" :drawer-title="'元素魔法选择器'"
-            :resource-options="elementMagicOptions" />
-          <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
-            :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
-          <CreateModuleResourceSelector ref="characterSelectorRef" :outerTitle="'角色与人物类型选择'" :drawer-title="'角色与人物选择器'"
-            :resource-options="characterOptions" />
-          <!-- <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>主题标签选择</span>
-              <el-switch v-model="openConfigTag" />
-            </div>
-            <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenLabelSetDialog">标签库
-            </div>
-            <div class="w-full text-left text-white text-[14px] mb-[20px]">已选标签项</div>
-            <div class="w-full mb-[8px] flex flex-wrap">
-              <div class="seletedTagContainer">
-                <div
-                  class="text-white h-[36px] w-[80%] text-[12px] text-center leading-[36px] rounded-[90px] bg-[#23262f] pl-[5px] pr-[5px] truncate"
-                  v-for="item in selectedTags">{{ item }}</div>
-              </div>
-            </div>
-          </div> -->
-          <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
           <div class="w-full mb-[40px]">
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
               <span class="text-white">* 画面描述</span>
@@ -83,23 +55,34 @@
             <div class="w-full mb-[30px]">
               <div class="w-full text-left text-white mb-[8px]">* 画面大小</div>
               <div class="w-full flex h-[94px] mb-[20px]">
-                <div :tabindex="index" v-for="(item, index) in aspectRatios"
-                  class="ratio-item flex flex-col items-center justify-around text-white">
-                  <span>{{ item.name }}</span>
-                  <span>{{ item.size }}</span>
+                <div :tabindex="index" v-for="(item, index) in resolutionRatios"
+                  class="ratio-item flex flex-col items-center justify-around text-white"
+                  :style="{ border: selectedRatio === item ? '2px solid rgb(177, 181, 196)' : 'none' }"
+                  @click="selectRatio(item)">
+                  <span>{{ item }}</span>
+                  <span>{{ RESOLUTION_RATIO_CN_MAP[item as keyof typeof RESOLUTION_RATIO_CN_MAP] }}</span>
                 </div>
               </div>
               <div class="w-full flex h-[40px]">
                 <div :tabindex="index" v-for="(item, index) in resolutions"
-                  class="resolute-item flex items-center justify-center text-white">
-                  <span>{{ item }}</span>
+                  class="resolute-item flex items-center justify-center text-white"
+                  :style="{ border: selectedResolution === item ? '2px solid rgb(177, 181, 196)' : 'none' }"
+                  @click="selectResolution(item)">
+                  <span>{{ item.display_resolution }}</span>
                 </div>
               </div>
             </div>
-            <div class="w-full mb-[30px]">
-              <div class="w-full flex items-center justify-between text-white mb-[40px]"><span>高级设置</span>
-                <el-switch v-model="openAdvancedSetting" />
-              </div>
+          </div>
+          <div class="w-full flex justify-between items-center mb-[40px]">
+            <span class="text-white text-[14px]">作图数量</span>
+            <el-input-number v-model="createNum" :min="1" :max="10" @change=""
+              style="width: 130px;margin-right: 12px" />
+          </div>
+          <div class="w-full mb-[30px]">
+            <div class="w-full flex items-center justify-between text-white mb-[40px]"><span>高级设置</span>
+              <el-switch v-model="openAdvancedSetting" />
+            </div>
+            <template v-if="openAdvancedSetting">
               <div class="w-full flex flex-col">
                 <span class="text-white mb-[8px]">参考图</span>
                 <el-upload class="avatar-uploader mb-[30px]"
@@ -110,70 +93,37 @@
                     <Plus />
                   </el-icon>
                 </el-upload>
-                <span class="text-white mb-[8px]">风格参考</span>
-                <el-upload class="avatar-uploader mb-[30px]"
-                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
-                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                  <el-icon v-else class="avatar-uploader-icon">
-                    <Plus />
-                  </el-icon>
-                </el-upload>
-                <span class="text-white mb-[8px]">角色参考</span>
-                <el-upload class="avatar-uploader mb-[30px]"
-                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
-                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                  <el-icon v-else class="avatar-uploader-icon">
-                    <Plus />
-                  </el-icon>
-                </el-upload>
-                <span class="text-white mb-[8px]">结构参考</span>
-                <el-upload class="avatar-uploader mb-[30px]"
-                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
-                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                  <el-icon v-else class="avatar-uploader-icon">
-                    <Plus />
-                  </el-icon>
-                </el-upload>
               </div>
-            </div>
-          </div>
-          <!-- <div class="w-full mb-[40px]">
-            <div class="w-full flex items-center justify-between text-white mb-[8px]"><span>融合模型选择</span>
-              <el-switch v-model="openConfigMixModel" />
-            </div>
-            <div class="w-full text-left text-white mb-[8px] label-set ml-[20px]" @click="clickOpenMixModelSetDialog">
-              模型库
-            </div>
-            <div class="w-full text-left text-white text-[14px] mb-[20px]">已选模型项</div>
-            <div class="w-full mb-[8px] flex flex-wrap">
-              <div class="seletedTagContainer">
-                <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :name="item" :num="1" />
+              <CreateModuleResourceSelector ref="imageTypeSelectorRef" :outerTitle="'画面类型选择'" :drawerTitle="'画面选择器'"
+                :resource-options="imageOptions" />
+              <CreateModuleResourceSelector ref="styleSelectorRef" :outerTitle="'风格类型选择'" :drawerTitle="'风格选择器'"
+                :resource-options="styleOptions" />
+              <CreateModuleResourceSelector ref="artistSelectorRef" :outerTitle="'艺术家类型选择'" :drawerTitle="'艺术家选择器'"
+                :resource-options="artistOptions" />
+              <CreateModuleResourceSelector ref="elementMagicSelectorRef" :outerTitle="'元素魔法类型选择'"
+                :drawer-title="'元素魔法选择器'" :resource-options="elementMagicOptions" />
+              <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
+                :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
+              <CreateModuleResourceSelector ref="characterSelectorRef" :outerTitle="'角色与人物类型选择'"
+                :drawer-title="'角色与人物选择器'" :resource-options="characterOptions" />
+              <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
+              <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
+                <span class="text-[12px] mb-[8px] text-white">随机种子</span>
+                <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
+                <div class="flex justify-between items-center mb-[14px]">
+                  <span class="text-white text-[12px]">提示词相关性</span>
+                  <el-slider style="width: 80%" v-model="CFGScale" show-input />
+                </div>
+                <div class="flex justify-between items-center mb-[14px]">
+                  <span class="text-white text-[12px]">风格参数</span>
+                  <el-slider style="width: 80%" v-model="stylize" show-input />
+                </div>
+                <div class="flex justify-between items-center mb-[14px]">
+                  <span class="text-white text-[12px]">混沌参数</span>
+                  <el-slider style="width: 80%" v-model="chaos" show-input />
+                </div>
               </div>
-            </div>
-          </div> -->
-          <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
-            <span class="text-[12px] mb-[8px] text-white">随机种子</span>
-            <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
-            <div class="flex justify-between items-center mb-[14px]">
-              <span class="text-white text-[12px]">提示词相关性</span>
-              <el-slider style="width: 80%" v-model="CFGScale" show-input />
-            </div>
-            <div class="flex justify-between items-center mb-[14px]">
-              <span class="text-white text-[12px]">风格参数</span>
-              <el-slider style="width: 80%" v-model="stylize" show-input />
-            </div>
-            <div class="flex justify-between items-center mb-[14px]">
-              <span class="text-white text-[12px]">混沌参数</span>
-              <el-slider style="width: 80%" v-model="chaos" show-input />
-            </div>
-          </div>
-          <div class="w-full flex justify-between items-center mb-[40px]">
-            <span class="text-white text-[14px]">作图数量</span>
-            <el-input-number v-model="createNum" :min="1" :max="10" @change=""
-              style="width: 130px;margin-right: 12px" />
+            </template>
           </div>
           <div class="createWorkBtn flex items-center justify-center z-[99]"><span>立即生成</span></div>
         </div>
@@ -186,52 +136,6 @@
         </div>
       </div>
     </div>
-    <!-- <el-drawer v-model="openLabelSet" title="标签选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">标签选择器</h1>
-          <el-input v-model="tagSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-<el-segmented v-model="tagType" :options="tagTypes" size="default" class="w-full" />
-<div class="w-full mt-[20px] h-[calc(100%-92px)]">
-  <el-scrollbar>
-    <div class="w-full flex flex-wrap">
-      <el-check-tag :checked="checked" @change="onChange1" v-for="item in mockTags">{{ item }}</el-check-tag>
-    </div>
-  </el-scrollbar>
-</div>
-<template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelLabelSet">取消</el-button>
-          <el-button type="primary" @click="confirmLabelSet">确认</el-button>
-        </div>
-      </template>
-</el-drawer> -->
-    <!-- <el-drawer v-model="openMixModelSet" title="融合模型选择" direction="rtl" size="60%">
-      <template #header="{ titleId }">
-        <div class="flex">
-          <h1 :id="titleId" class="text-white text-[26px]">模型库</h1>
-          <el-input v-model="mixModelSearchInput" style="width: 240px;margin-left: 20px" size="large" placeholder="请输入"
-            :suffix-icon="Search" />
-        </div>
-      </template>
-      <el-segmented v-model="mixModelType" :options="mixModelTypes" size="default" class="w-full" />
-      <div class="w-full mt-[20px] h-[calc(100%-92px)]">
-        <el-scrollbar>
-          <div class="w-full flex flex-wrap justify-around">
-            <CreateMixModelItem class="w-[160px] h-[70px]" v-for="item in mockMixModels" :name="item" :num="1" />
-          </div>
-        </el-scrollbar>
-      </div>
-      <template #footer>
-        <div style="flex: auto">
-          <el-button @click="cancelMixModel">取消</el-button>
-          <el-button type="primary" @click="confirmMixModel">确认</el-button>
-        </div>
-      </template>
-    </el-drawer> -->
   </el-scrollbar>
 
 </template>
@@ -245,15 +149,12 @@ import type { UploadProps } from 'element-plus'
 import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption } from '../types'
 import { getModuleResourceInfo } from '../composables/wujie';
 import { Style } from '../.nuxt/components';
-import CreateFusionModelSelectorVue from '~/components/Create/CreateFusionModelSelector.vue';
 import { modelFusionOptionsKey } from '@/utils'
 
 
 const runtimeConfig = useRuntimeConfig();
 const imageUrl = ref('')
 
-const tagSearchInput = ref('')
-const mixModelSearchInput = ref('')
 const checked = ref(false)
 const onChange1 = (status: boolean) => {
   console.log('status', status)
@@ -281,10 +182,12 @@ const modelList = computed(() => {
 
 const selectedModel = ref()
 watch(modelList, (newVal, oldVal) => {
+  console.log('modelList', newVal, oldVal)
   if ((oldVal && oldVal.length === 0) && newVal.length > 0) {
     selectedModel.value = newVal[0]
   }
 }, { immediate: true })
+
 const selectModel = (item: typeof modelList.value[number]) => {
   // ElMessage.success('选择成功')
   selectedModel.value = item
@@ -350,6 +253,11 @@ watch(getModuleResourceInfoData, (newVal) => {
       return { ...item, selected: false, weight: item.recommended_weight }
     })
   }
+
+  // 推荐分辨率
+  if (newVal?.data.create_option_menu?.resolution) {
+    resolutionOptionsList.value = newVal.data.create_option_menu.resolution_new?.resolution_list || []
+  }
 }, {
   deep: true,
   immediate: true
@@ -362,10 +270,6 @@ const negativePromptStr = ref('请输入描述') // 图片中不需要包含的�
 // 4. 画面类型
 const imageTypeSelectorRef = ref<any>()
 const imageOptions = ref<ResourceOption[]>([])
-
-const resolutionList = ref<CreateOptionResolutionResponse[]>([])
-const characters = ref<CreateOptionWithDecorationResponse[]>([])
-const modelsFusion = ref<CreateOptionWithDecorationResponse[]>([])
 
 // 5. 画面风格
 const styleSelectorRef = ref<any>()
@@ -393,33 +297,20 @@ const modelFusionSelectorRef = ref<any>()
 const modelFusionOptions = ref<ModelFusionTypeOption[]>([])
 provide(modelFusionOptionsKey, modelFusionOptions)
 
-
 // 11. 推荐分辨率
+const resolutionOptionsList = ref<CreateOptionResolutionResponse[]>([])
+const resolutionRatios = computed(() => Array.from(new Set(resolutionOptionsList.value.map(item => item.size_ratio!))))
+const selectedRatio = ref<string>()
+const selectRatio = (item: string) => {
+  selectedRatio.value = item
+}
 
-const aspectRatios = ref([{
-  name: '头像图',
-  size: '1:1'
-}, {
-  name: '手机屏幕',
-  size: '1:2'
-}, {
-  name: '文章配图',
-  size: '4:3'
-}, {
-  name: '社交媒体',
-  size: '3:4'
-}, {
-  name: '电脑壁纸',
-  size: '16:9'
-}, {
-  name: '宣传海报',
-  size: '9:16'
-}])
+const resolutions = computed(() => resolutionOptionsList.value.filter(item => item.size_ratio === selectedRatio.value))
+const selectedResolution = ref<CreateOptionResolutionResponse>()
+const selectResolution = (item: CreateOptionResolutionResponse) => {
+  selectedResolution.value = item
+}
 
-const resolutions = ref(['1024*1024', '1360*1360', '2048*2048'])
-
-// const modelStyleList = ref(['收藏', '推荐', 'MJ', '二次元', '真人', '科幻', '儿童', '设计', '画风', '中国风', '风景'])
-// const curModelStyle = ref('')
 const openConfigTag = ref(false)
 const openAdvancedSetting = ref(false)
 const openLabelSet = ref(false)
@@ -611,9 +502,9 @@ const createNum = ref(1)
   // border: 2px solid #23262f;
 }
 
-.ratio-item:focus {
-  border: 2px solid rgb(177, 181, 196);
-}
+// .ratio-item:focus {
+//   border: 2px solid rgb(177, 181, 196);
+// }
 
 .resolute-item {
   flex: 1;
@@ -625,9 +516,9 @@ const createNum = ref(1)
   font-size: 12px;
 }
 
-.resolute-item:focus {
-  border: 2px solid rgb(177, 181, 196);
-}
+// .resolute-item:focus {
+//   border: 2px solid rgb(177, 181, 196);
+// }
 
 .model-theme-item {
   // flex: 1;
