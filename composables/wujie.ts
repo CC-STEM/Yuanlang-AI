@@ -2,6 +2,10 @@ import type {
   GetModelInfoRes,
   GetModuleResourceInfoRes,
   AICreateRequest,
+  AICreateResponse,
+  GetAiArtWorkHistoryResponse,
+  GetArtworkHistoryListRequest,
+  GetArtworkHistoryDetailListRes
 } from "../types";
 const runtimeConfig = useRuntimeConfig();
 
@@ -30,6 +34,35 @@ export const getModuleResourceInfo = (model: number) => {
   return { data, status, error };
 };
 
-export const createAIByWujie = (data: AICreateRequest) => {
-  // const { data: res, status, error } = useFetch<any>(
+export const createAIByWujie = async (body: AICreateRequest) => {
+  return await $fetch<AICreateResponse>(
+    `/api/wujie/createWithDefaultAI`,
+    {
+      method: "POST",
+      body: body,
+      baseURL: runtimeConfig.public.apiBase,
+    })
 };
+
+export const getArtworkHistoryKeyList = (body: GetArtworkHistoryListRequest) => {
+  const { data, status, error, refresh } = useFetch<GetAiArtWorkHistoryResponse>(
+    `/api/wujie/getDrawList`,
+    {
+      baseURL: runtimeConfig.public.apiBase,
+      body: body,
+      method: "POST",
+    }
+  )
+  return { data, status, error, refresh };
+}
+
+export const getArtworkHistoryDetailList = async (keys: string[]) => {
+  return await $fetch<GetArtworkHistoryDetailListRes>(
+    `/api/wujie/batchGetDrawTaskInfo`,
+    {
+      method: "POST",
+      body: keys,
+      baseURL: runtimeConfig.public.apiBase,
+    }
+  )
+}

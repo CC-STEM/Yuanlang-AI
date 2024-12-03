@@ -404,15 +404,15 @@ export interface ImageTypeOption extends CreateOptionWithPicResponse {
   selected: boolean;
 }
 
-export interface StyleTypeOption extends ImageTypeOption {}
+export interface StyleTypeOption extends ImageTypeOption { }
 
-export interface ArtistTypeOption extends ImageTypeOption {}
+export interface ArtistTypeOption extends ImageTypeOption { }
 
 export interface ElementMagicTypeOption extends SimpleOptionResponse {
   selected: boolean;
 }
 
-export interface StyleDecorationTypeOption extends ElementMagicTypeOption {}
+export interface StyleDecorationTypeOption extends ElementMagicTypeOption { }
 
 export interface CharacterTypeOption
   extends CreateOptionWithDecorationResponse {
@@ -730,7 +730,7 @@ export interface AICreateRequest {
    * </ol>
    */
   width?: number;
-  [property: string]: any;
+
 }
 
 /**
@@ -745,7 +745,7 @@ export interface AiArtworkModelFusionVORequest {
    * 权重
    */
   weight?: number;
-  [property: string]: any;
+
 }
 
 /**
@@ -763,7 +763,7 @@ export interface MultiDiffusionVORequest {
    * 平铺VAE(object)
    */
   tiled_vae?: TiledVaeVORequest;
-  [property: string]: any;
+
 }
 
 /**
@@ -892,7 +892,7 @@ export interface TiledDiffusionVORequest {
    * Anime6B|ScuNET GAN|ScuNET PSNR|SwinIR 4x; ]
    */
   upscaler_name: string;
-  [property: string]: any;
+
 }
 
 /**
@@ -944,7 +944,7 @@ export interface RegionPromptControlVORequest {
    * 画布y坐标，默认值：0.4
    */
   y: number;
-  [property: string]: any;
+
 }
 
 /**
@@ -994,5 +994,254 @@ export interface TiledVaeVORequest {
    * false：不加载。
    */
   vae_to_gpu: boolean;
-  [property: string]: any;
+
+}
+
+
+/**
+ * ResultAiArtworkKeysVo_response
+ */
+export interface AICreateResponse extends BaseRes {
+
+  /**
+   * 返回数据(object)
+   */
+  data?: AiArtworkKeysVoResponse;
+}
+
+/**
+ * 返回数据(object)
+ *
+ * AiArtworkKeysVo_response
+ */
+export interface AiArtworkKeysVoResponse {
+  /**
+   * 预计总消耗积分数
+   */
+  expected_integral_cost?: number;
+  /**
+   * 作画结果Key列表
+   */
+  keys?: string[];
+  /**
+   * 作画结果result列表
+   */
+  results?: CrAiArtworkCreateResultResponse[];
+
+}
+
+/**
+ * CrAiArtworkCreateResult_response
+ */
+export interface CrAiArtworkCreateResultResponse {
+  /**
+   * 批量任务id，同一次作画请求生成的不同作画拥有相同的batchTaskKey
+   */
+  batch_task_key?: string;
+  /**
+   * 预计作画时间expectedSecond
+   */
+  expected_second?: number;
+  /**
+   * 作画结果key
+   */
+  key?: string;
+
+}
+
+export interface GetAiArtWorkHistoryResponse extends BaseRes {
+  data: PageResponseAiArtworkHistoryVoResponse
+}
+
+/**
+ * 返回数据(object)
+ *
+ * PageResponseAiArtworkHistoryVo_response
+ */
+export interface PageResponseAiArtworkHistoryVoResponse {
+  /**
+   * 结果集
+   */
+  list?: AiArtworkHistoryVoResponse[];
+  /**
+   * 分页
+   */
+  page_num?: number;
+  /**
+   * 分页大小
+   */
+  page_size?: number;
+  /**
+   * 分页总数
+   */
+  total?: number;
+
+}
+
+/**
+ * AiArtworkHistoryVo_response
+ */
+export interface AiArtworkHistoryVoResponse {
+  /**
+   * 作画key
+   */
+  key?: string;
+
+}
+
+/**
+ * AiArtworkHistoryPageReq_request
+ */
+export interface GetArtworkHistoryListRequest {
+  /**
+   * 作画类型
+   * PICTURE-普通版作画、PRO_PICTURE-专业版作画、TEXT2VIDEO-文生视频、IMG2VIDEO-图生视频、
+   * VIDEO2VIDEO-视频生视频、AVATAR-化身训练、CAMERA_ADVANCED-高级版相机、CAMERA_SPEED-极速版相机
+   */
+  ai_artwork_type: string;
+  /**
+   * 分页
+   */
+  page_num: number;
+  /**
+   * 分页大小
+   * Validate[max: 100; ]
+   */
+  page_size: number;
+}
+
+
+/**
+ * ResultAiArtworksGeneratingInfoVo_response
+ */
+export interface GetArtworkHistoryDetailListRes extends BaseRes {
+  /**
+   * 返回数据(object)
+   */
+  data?: AiArtworksGeneratingInfoVoResponse;
+}
+
+/**
+ * 返回数据(object)
+ *
+ * AiArtworksGeneratingInfoVo_response
+ */
+export interface AiArtworksGeneratingInfoVoResponse {
+  /**
+   * 作画结果列表
+   */
+  list?: AiArtworkGenerateingInfoVoResponse[];
+
+}
+
+/**
+ * AiArtworkGenerateingInfoVo_response
+ */
+export interface AiArtworkGenerateingInfoVoResponse {
+  /**
+   * 作画结果图的审核结果(v1.1.9新增字段，2023年2月23号之后的作画结果会有值。)
+   * <p>
+   * 旧：{"vendor": 1, "result": "对应厂商的审核结果json"}
+   * </p>
+   * <ul>
+   * <li>1对应结果，<a
+   * href="https://help.aliyun.com/document_detail/70292.html?spm=a2c4g.70292.0.0.4ffd342b6TC42l">参考</a></li>
+   * <li>2对应结果，<a
+   * href="https://support.dun.163.com/documents/588434277524447232?docId=791822473634779136">参考</a></li>
+   * </ul>
+   * <p></p>
+   * 结果中需关注字段解释：
+   * <ul>
+   * <li>check_fail：检测是否成功，正常都会成功，安全起见——如果失败建议也拦截</li>
+   *
+   * <li>total_suggestion：总体建议，级别有——PASS(通过)->REVIEW(需要人工审核)->BLOCK(不通过)。scan_scene_d_t_o_s中的suggestion都是PASS总体才会是PASS，只要有一个是BLOCK就会是BLOCK，没有BLOCK存在REVIEW就会是REVIEW</li>
+   * <li>scan_scene_d_t_o_s：各场景检测结果列表。
+   * <ul>
+   * <li>suggestion：枚举参考外层的total_suggestion</li>
+   * <li>lable：场景下的标签，有label_desc进行描述。目前porn返回suggestion是review的话会比较性感低俗可以考虑拦截</li>
+   * <li>scene：场景，TERRORISM——暴恐涉政违禁、PORN——鉴黄</li>
+   * </ul>
+   * </li>
+   * </ul>
+   */
+  audit_info?: string;
+  /**
+   * 完成百分比
+   */
+  complete_percent?: number;
+  /**
+   * 实际完成时间戳
+   */
+  complete_time?: number;
+  /**
+   * 预计完成还需要多少秒
+   */
+  expected_seconds?: number;
+  /**
+   * 作画失败原因(object)
+   */
+  fail_message?: FailMessageVoResponse;
+  /**
+   * 消耗积分数，包括生成、加速、精绘等
+   */
+  integral_cost?: number;
+  /**
+   * 积分消耗提示词
+   * 1. 积分已扣除
+   * 2. 积分已退还
+   * 3. 积分不足, 部分扣款失败
+   * 4. 积分扣除中，请稍后查询
+   * 5. 不需要积分
+   */
+  integral_cost_message?: string;
+  /**
+   * 图片是否违规 (0：未违规，1：违规)
+   * 注：
+   * 1. 图片状态仍为生成成功，返回图片url并不做脱敏
+   * 2. 该标识与无界产品审核条件一致，若需要对审核结果自定义处理，建议使用audit_info内审核信息。
+   */
+  involve_yellow?: number;
+  /**
+   * 作品key
+   */
+  key?: string;
+  model_prompt?: string;
+  /**
+   * 结果图片信息
+   */
+  picture_url?: string;
+  /**
+   * 在此作品之前有多少任务排队
+   */
+  queue_before_num?: number;
+  /**
+   * 每前进一步减少的时间
+   */
+  reduce_time?: number;
+  /**
+   * 开始生成的时间戳（仍在排队返回0）
+   */
+  start_gen_time?: number;
+  /**
+   * 状态(0-已提交 1-排队中 2-生成中 3-生成失败 4-生成成功  -1 - 已撤销)
+   */
+  status?: number;
+
+}
+
+/**
+ * 作画失败原因(object)
+ *
+ * FailMessageVo_response
+ */
+export interface FailMessageVoResponse {
+  /**
+   * 失败码
+   */
+  fail_code?: number;
+  /**
+   * 失败原因描述
+   */
+  fail_message?: string;
+
 }

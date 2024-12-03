@@ -125,7 +125,7 @@
               </div>
             </template>
           </div>
-          <div class="createWorkBtn flex items-center justify-center z-[99]"><span>立即生成</span></div>
+          <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span>立即生成</span></div>
         </div>
         <div class="w-[50%] h-full">
           <div class="w-full h-[700px] bg-[#23262f] relative">
@@ -146,21 +146,20 @@ import { Search } from '@element-plus/icons-vue'
 import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption } from '../types'
-import { getModuleResourceInfo } from '../composables/wujie';
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse } from '../types'
+import { getModuleResourceInfo, getArtworkHistoryKeyList } from '../composables/wujie';
 import { Style } from '../.nuxt/components';
 import { modelFusionOptionsKey } from '@/utils'
+import { parse } from 'vue/compiler-sfc';
 
+// 我的作品集相关
+const artworkInfoList = ref<AiArtworkGenerateingInfoVoResponse[]>([])
+const artworksTotal = ref(0)
+const artworksPageNum = ref(1)
+const artworkPageSize = ref(25)
 
 const runtimeConfig = useRuntimeConfig();
 const imageUrl = ref('')
-
-const checked = ref(false)
-const onChange1 = (status: boolean) => {
-  console.log('status', status)
-  checked.value = status
-}
-
 
 // 1.模型大类选择
 const modelTypes = ref(MODEL_TYPE_LIST)
@@ -202,6 +201,32 @@ const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, er
     immediate: false
   }
 );
+
+// 查询所有历史作画任务ID
+const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = getArtworkHistoryKeyList({
+  page_num: 1,
+  page_size: 25,
+  ai_artwork_type: 'PICTURE'
+})
+
+// 查询所有作画任务详情
+watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) => {
+  if (newVal) {
+    const { data, code, message } = await getArtworkHistoryDetailList(newVal.map(item => item.key!))
+    console.log('getArtworkHistoryDetailList', data, code, message)
+    if ((code && parseInt(code)) !== 200) {
+      ElMessage.error('获取作画任务列表失败，错误信息：' + message)
+    } else {
+      artworkInfoList.value = data?.list || []
+    }
+  }
+}, {
+  deep: true,
+  immediate: true
+})
+
+// 区分第一张图及剩余图展示
+
 
 watch(getModuleResourceInfoData, (newVal) => {
   console.log('getModuleResourceInfoData', newVal?.data.create_option_menu?.image_type)
@@ -264,8 +289,8 @@ watch(getModuleResourceInfoData, (newVal) => {
 })
 
 // 3.正面描述Prompt 与 负面描述
-const promptStr = ref('请输入咒语')
-const negativePromptStr = ref('请输入描述') // 图片中不需要包含的内容
+const promptStr = ref('')
+const negativePromptStr = ref('') // 图片中不需要包含的内容
 
 // 4. 画面类型
 const imageTypeSelectorRef = ref<any>()
@@ -311,103 +336,15 @@ const selectResolution = (item: CreateOptionResolutionResponse) => {
   selectedResolution.value = item
 }
 
-const openConfigTag = ref(false)
+const selectedResolutionWithAndHeight = computed(() => {
+  if (selectedResolution.value) {
+    const [width, height] = selectedResolution.value.display_resolution?.split('*') || []
+    return { width: parseInt(width), height: parseInt(height) }
+  }
+  return null
+})
+
 const openAdvancedSetting = ref(false)
-const openLabelSet = ref(false)
-const openConfigMixModel = ref(false)
-const openMixModelSet = ref(false)
-
-const clickOpenLabelSetDialog = () => {
-  openLabelSet.value = true
-}
-
-const clickOpenMixModelSetDialog = () => {
-  openMixModelSet.value = true
-}
-
-const tagTypes = ['风格', '网络热词', '上衣', '下装', '外衣', '配饰', '背景', '衬衫', '连衣裙', '连帽衫', '牛仔裤', '紧身裤', '开衫', '大衣', '夹克']
-const tagType = ref(tagTypes[0])
-
-const mockTags = [
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-]
-
-
-const mixModelTypes = ['推荐',
-  '摄影',
-  '产品',
-  '插画',
-  '漫画',
-  '绘本',
-  '人物',
-  '设计',
-  '国风',
-  '室内',
-  '奇幻']
-const mixModelType = ref(mixModelTypes[0])
-const mockMixModels = [
-  '黑神话',
-  '黑悟空',
-  '自然之歌',
-  '感官刺激',
-  '万物有灵',
-  '野性斑斓']
-
-const selectedTags = [
-  '宽松的BF晚秋外套',
-  '灰色印花猫耳领贴钻石短t恤',
-  '条纹短袖t恤',
-  '条纹马球衫',
-  '黑白格子羊袖不对称设计连衣裙',
-  '宽松的BF晚秋外套',
-]
-
-const selectedMixModels = mockMixModels
-
-const cancelLabelSet = () => {
-  openLabelSet.value = false
-}
-
-const confirmLabelSet = () => {
-  openLabelSet.value = false
-}
-
-const cancelMixModel = () => {
-  openMixModelSet.value = false
-}
-
-const confirmMixModel = () => {
-  openMixModelSet.value = false
-}
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
@@ -432,6 +369,32 @@ const CFGScale = ref(0)
 const stylize = ref(0)
 const chaos = ref(0)
 const createNum = ref(1)
+
+const createAI = async () => {
+  try {
+    const createOption: AICreateRequest = {
+      model: selectedModel.value?.model_code,
+      num: createNum.value,
+      accelerate_times: 0,
+      prompt: promptStr.value,
+    }
+
+    if (selectedResolutionWithAndHeight.value) {
+      createOption.width = selectedResolutionWithAndHeight.value.width
+      createOption.height = selectedResolutionWithAndHeight.value.height
+    }
+    const { data: createAIByWujieData, code, message } = await createAIByWujie(createOption)
+    if (code && parseInt(code) == 200) {
+      ElMessage.success('任务已提交，请等待生成结果')
+    } else {
+      ElMessage.error('任务提交失败，错误信息：' + message)
+    }
+    console.log('createAIByWujieData', createAIByWujieData)
+  } catch (e: Error) {
+    console.log('createAIByWujie error', e.data)
+    ElMessage.error('任务提交失败，错误信息：' + (e.data.message ? JSON.stringify(e.data.message) : ''))
+  }
+}
 
 </script>
 
