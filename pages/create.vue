@@ -128,10 +128,19 @@
           <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span>立即生成</span></div>
         </div>
         <div class="w-[50%] h-full">
-          <div class="w-full h-[700px] bg-[#23262f] relative">
+          <div class="w-full h-[700px] bg-[#23262f] relative  rounded-[8px] mb-[10px]">
             <ClientOnly>
               <CreateLoading />
             </ClientOnly>
+          </div>
+          <div class="w-full grid grid-cols-5 grid-rows-5 gap-[10px]">
+            <img class="w-[130px] h-[130px] object-cover  rounded-[8px]" :src="item.picture_url" alt=""
+              v-for="item in artworkInfoList">
+          </div>
+          <div class="w-full flex justify-end">
+            <el-pagination v-if="getArtworkHistoryListData" size="small" background layout="total,prev, pager, next"
+              :total="getArtworkHistoryListData.data.total" class="mt-4" :current-page="artworksPageOption.page_num"
+              :page-size="artworksPageOption.page_size" @current-change="handleCurrentChange" />
           </div>
         </div>
       </div>
@@ -146,7 +155,7 @@ import { Search } from '@element-plus/icons-vue'
 import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse } from '../types'
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
 import { getModuleResourceInfo, getArtworkHistoryKeyList } from '../composables/wujie';
 import { Style } from '../.nuxt/components';
 import { modelFusionOptionsKey } from '@/utils'
@@ -155,8 +164,17 @@ import { parse } from 'vue/compiler-sfc';
 // 我的作品集相关
 const artworkInfoList = ref<AiArtworkGenerateingInfoVoResponse[]>([])
 const artworksTotal = ref(0)
+const artworksPageOption = ref({
+  page_size: 25,
+  page_num: 1,
+  ai_artwork_type: 'PICTURE'
+})
 const artworksPageNum = ref(1)
 const artworkPageSize = ref(25)
+
+const handleCurrentChange = (pageNum: number) => {
+  artworksPageOption.value.page_num = pageNum;
+}
 
 const runtimeConfig = useRuntimeConfig();
 const imageUrl = ref('')
@@ -203,11 +221,14 @@ const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, er
 );
 
 // 查询所有历史作画任务ID
-const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = getArtworkHistoryKeyList({
-  page_num: 1,
-  page_size: 25,
-  ai_artwork_type: 'PICTURE'
-})
+const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = useFetch<GetAiArtWorkHistoryResponse>(
+  `/api/wujie/getDrawList`,
+  {
+    baseURL: runtimeConfig.public.apiBase,
+    body: artworksPageOption,
+    method: "POST",
+  }
+)
 
 // 查询所有作画任务详情
 watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) => {
