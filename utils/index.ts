@@ -53,3 +53,15 @@ export const RESOLUTION_RATIO_CN_MAP = {
   "16:9": "电脑壁纸",
   "9:16": "宣传海报",
 };
+
+export const ARTWORK_SUBMITTED = 0; // 已提交
+export const ARTWORK_QUEUING = 1; // 排队中
+export const ARTWORK_CREATING = 2; // 生成中
+export const ARTWORK_CREATE_FAILED = 3; // 生成失败
+export const ARTWORK_CREATE_SUCCESS = 4; // 生成成功
+export const ARTWORK_REVERTED = -1; // 已撤回
+
+
+// export const CREATE_ARTWORK_STATUS_MAP = {
+
+// }

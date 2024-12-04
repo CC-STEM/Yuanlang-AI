@@ -129,18 +129,38 @@
         </div>
         <div class="w-[50%] h-full">
           <div class="w-full h-[700px] bg-[#23262f] relative  rounded-[8px] mb-[10px]">
-            <ClientOnly>
-              <CreateLoading />
-            </ClientOnly>
+            <template v-if="selectedArtwork">
+              <template v-if="selectedArtwork.status === ARTWORK_CREATE_SUCCESS && selectedArtwork.picture_url">
+                <img class="w-full h-full object-cover" :src="selectedArtwork.picture_url" alt="" />
+              </template>
+              <template v-else>
+                <ClientOnly>
+                  <CreateLoading :size="'large'" />
+                </ClientOnly>
+              </template>
+            </template>
           </div>
           <div class="w-full grid grid-cols-5 grid-rows-5 gap-[10px]">
-            <img class="w-[130px] h-[130px] object-cover  rounded-[8px]" :src="item.picture_url" alt=""
-              v-for="item in artworkInfoList">
+            <template v-for="item in artworkInfoList">
+              <div class="w-[130px] h-[130px] rounded-[8px] relative"
+                :style="{ border: selectedArtwork === item ? '2px solid rgb(177, 181, 196)' : 'none' }"
+                @click="selectArtwork(item)">
+                <template v-if="item.status === ARTWORK_CREATE_SUCCESS && item.picture_url">
+                  <img class="w-full h-full object-cover" :src="item.picture_url" alt="">
+                </template>
+                <template v-else>
+                  <ClientOnly>
+                    <CreateLoading :size="'small'" />
+                  </ClientOnly>
+                </template>
+              </div>
+            </template>
           </div>
           <div class="w-full flex justify-end">
-            <el-pagination v-if="getArtworkHistoryListData" size="small" background layout="total,prev, pager, next"
-              :total="getArtworkHistoryListData.data.total" class="mt-4" :current-page="artworksPageOption.page_num"
-              :page-size="artworksPageOption.page_size" @current-change="handleCurrentChange" />
+            <el-pagination v-if="getArtworkHistoryListData && getArtworkHistoryListData.data.total! > 0" size="small"
+              background layout="total,prev, pager, next" :total="getArtworkHistoryListData.data.total" class="mt-4"
+              :current-page="artworksPageOption.page_num" :page-size="artworksPageOption.page_size"
+              @current-change="handleCurrentChange" />
           </div>
         </div>
       </div>
@@ -156,21 +176,21 @@ import { Plus } from '@element-plus/icons-vue'
 
 import type { UploadProps } from 'element-plus'
 import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
-import { getModuleResourceInfo, getArtworkHistoryKeyList } from '../composables/wujie';
-import { Style } from '../.nuxt/components';
 import { modelFusionOptionsKey } from '@/utils'
-import { parse } from 'vue/compiler-sfc';
 
 // 我的作品集相关
 const artworkInfoList = ref<AiArtworkGenerateingInfoVoResponse[]>([])
-const artworksTotal = ref(0)
 const artworksPageOption = ref({
   page_size: 25,
   page_num: 1,
   ai_artwork_type: 'PICTURE'
 })
-const artworksPageNum = ref(1)
-const artworkPageSize = ref(25)
+
+const artWorksQueryBody = computed(() => ({
+  page_size: artworksPageOption.value.page_size,
+  page_num: artworksPageOption.value.page_num - 1,
+  ai_artwork_type: artworksPageOption.value.ai_artwork_type
+}))
 
 const handleCurrentChange = (pageNum: number) => {
   artworksPageOption.value.page_num = pageNum;
@@ -225,29 +245,75 @@ const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, er
   `/api/wujie/getDrawList`,
   {
     baseURL: runtimeConfig.public.apiBase,
-    body: artworksPageOption,
+    body: artWorksQueryBody,
     method: "POST",
   }
 )
 
+const fetchArtworkHistoryListByKeys = async (keys: string[]) => {
+  const { data, code, message } = await getArtworkHistoryDetailList(keys)
+  let dataList: AiArtworkGenerateingInfoVoResponse[] = []
+  console.log('fetchArtworkHistoryListByKeys', data, code, message)
+  if ((code && parseInt(code)) !== 200) {
+    ElMessage.error('获取作画任务列表失败，错误信息：' + message)
+    dataList = []
+  } else {
+    dataList = data?.list || []
+  }
+
+  return dataList
+}
+
+// 针对等待中的任务开启轮询查询处理
+const queryArtworkListInterval = ref()
+
 // 查询所有作画任务详情
 watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) => {
   if (newVal) {
-    const { data, code, message } = await getArtworkHistoryDetailList(newVal.map(item => item.key!))
-    console.log('getArtworkHistoryDetailList', data, code, message)
-    if ((code && parseInt(code)) !== 200) {
-      ElMessage.error('获取作画任务列表失败，错误信息：' + message)
-    } else {
-      artworkInfoList.value = data?.list || []
+    const list = await fetchArtworkHistoryListByKeys(newVal.map(item => item.key!))
+    // 把状态已提交，排队中，生成中的任务放在最前面
+    let waitingList = list.filter(item => [ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []
+    console.log('waitingList', waitingList)
+    artworkInfoList.value = waitingList.concat((list.filter(item => ![ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []).sort((a, b) => b.start_gen_time! - a.start_gen_time!) || [])
+    console.log('artworkInfoList', artworkInfoList.value)
+    // TODO:
+    if (artworkInfoList.value.length > 0) {
+      selectedArtworkKey.value = artworkInfoList.value[0].key!
     }
+
+    queryArtworkListInterval.value && clearInterval(queryArtworkListInterval.value)
+    // 针对等待中的任务轮询处理
+    queryArtworkListInterval.value = setInterval(async () => {
+      if (waitingList.length > 0) {
+        const list = await fetchArtworkHistoryListByKeys(waitingList.map(item => item.key!))
+        // 找到list中完成的， 并更新 artworkInfoList 中对应项的数据
+        const completedList = list.filter(item => ![ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!))
+        console.log('completedList', completedList)
+        for (let item of completedList) {
+          let curItemIndex = artworkInfoList.value.findIndex(artwork => artwork.key === item.key)
+          if (curItemIndex !== -1) {
+            artworkInfoList.value[curItemIndex] = item
+          }
+        }
+        waitingList = list.filter(item => [ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []
+        console.log('waitingList', waitingList)
+      } else {
+        clearInterval(queryArtworkListInterval.value)
+      }
+    }, 5000)
   }
 }, {
   deep: true,
   immediate: true
 })
 
-// 区分第一张图及剩余图展示
+const selectedArtworkKey = ref('')
 
+const selectArtwork = (item: AiArtworkGenerateingInfoVoResponse) => {
+  selectedArtworkKey.value = item.key!
+}
+
+const selectedArtwork = computed<AiArtworkGenerateingInfoVoResponse | null>(() => artworkInfoList.value.find(item => item.key === selectedArtworkKey.value) || null)
 
 watch(getModuleResourceInfoData, (newVal) => {
   console.log('getModuleResourceInfoData', newVal?.data.create_option_menu?.image_type)
@@ -407,6 +473,8 @@ const createAI = async () => {
     const { data: createAIByWujieData, code, message } = await createAIByWujie(createOption)
     if (code && parseInt(code) == 200) {
       ElMessage.success('任务已提交，请等待生成结果')
+      // 触发刷新 artWorkList
+      getArtworkHistoryListRefresh()
     } else {
       ElMessage.error('任务提交失败，错误信息：' + message)
     }
