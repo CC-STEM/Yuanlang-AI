@@ -85,9 +85,8 @@
             <template v-if="openAdvancedSetting">
               <div class="w-full flex flex-col">
                 <span class="text-white mb-[8px]">参考图</span>
-                <el-upload class="avatar-uploader mb-[30px]"
-                  action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
-                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                <el-upload class="avatar-uploader mb-[30px]" :show-file-list="false" :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload" :http-request="customUploadRequest">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                   <el-icon v-else class="avatar-uploader-icon">
                     <Plus />
@@ -142,11 +141,11 @@
           </div>
           <div class="w-full grid grid-cols-5 grid-rows-5 gap-[10px]">
             <template v-for="item in artworkInfoList">
-              <div class="w-[130px] h-[130px] rounded-[8px] relative"
-                :style="{ border: selectedArtwork === item ? '2px solid rgb(177, 181, 196)' : 'none' }"
-                @click="selectArtwork(item)">
+              <div class="w-[130px] h-[130px] relative rounded-[8px] overflow-hidden" :style="{
+                border: selectedArtwork === item ? '2px solid rgb(177, 181, 196)' : '0px'
+              }" @click="selectArtwork(item)">
                 <template v-if="item.status === ARTWORK_CREATE_SUCCESS && item.picture_url">
-                  <img class="w-full h-full object-cover" :src="item.picture_url" alt="">
+                  <img class="w-full h-full object-cover " :src="item.picture_url" alt="">
                 </template>
                 <template v-else>
                   <ClientOnly>
@@ -174,7 +173,7 @@ import { Search } from '@element-plus/icons-vue'
 
 import { Plus } from '@element-plus/icons-vue'
 
-import type { UploadProps } from 'element-plus'
+import type { UploadProps, UploadRequestOptions } from 'element-plus'
 import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
 import { modelFusionOptionsKey } from '@/utils'
 
@@ -433,6 +432,13 @@ const selectedResolutionWithAndHeight = computed(() => {
 
 const openAdvancedSetting = ref(false)
 
+// 上传底图相关
+const customUploadRequest = async (data: UploadRequestOptions) => {
+  console.log('customUploadRequest', data)
+  const str = await getBase64FromFile(data.file)
+  console.log('customUploadRequest str', str)
+}
+
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile
@@ -441,6 +447,7 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  console.log('rawFile', rawFile)
   if (rawFile.type !== 'image/jpeg') {
     ElMessage.error('Avatar picture must be JPG format!')
     return false
@@ -448,6 +455,7 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     ElMessage.error('Avatar picture size can not exceed 2MB!')
     return false
   }
+
   return true
 }
 
@@ -466,9 +474,11 @@ const createAI = async () => {
       prompt: promptStr.value,
     }
 
-    if (selectedResolutionWithAndHeight.value) {
-      createOption.width = selectedResolutionWithAndHeight.value.width
-      createOption.height = selectedResolutionWithAndHeight.value.height
+    if (selectedResolution.value) {
+      createOption.width = selectedResolution.value.width
+      createOption.height = selectedResolution.value.height
+      createOption.prefine_multiple = selectedResolution.value.prefine_multiples
+      createOption.super_size_multiple = selectedResolution.value.super_size_multiple
     }
     const { data: createAIByWujieData, code, message } = await createAIByWujie(createOption)
     if (code && parseInt(code) == 200) {
