@@ -61,7 +61,3 @@ export const ARTWORK_CREATE_FAILED = 3; // 生成失败
 export const ARTWORK_CREATE_SUCCESS = 4; // 生成成功
 export const ARTWORK_REVERTED = -1; // 已撤回
 
-
-// export const CREATE_ARTWORK_STATUS_MAP = {
-
-// }

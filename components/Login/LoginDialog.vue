@@ -1,5 +1,13 @@
 <template>
-  <BaseDialog ref="loginRef" :title="'登录第一时间掌握最新动态'" :width="797" :height="441">
+  <el-dialog v-model="dialogVisible" :style="{
+    width: px2vw(797), height: px2vw(441), background: 'linear-gradient(-72deg, #B5CFFF, #FFFFFF, #FFFFFF, #C2F9FF)',
+    borderRadius: '20px'
+  }">
+    <template #header="{ close, titleId, titleClass }">
+      <div class="my-header">
+        {{ '登录第一时间掌握最新动态' }}
+      </div>
+    </template>
     <div class="h-[295px] w-full flex mt-[44px]">
       <div class="w-[50%] flex flex-col items-center border-r-[1px] border-r-[#F3F3F3]">
         <span class="first-letter">登录小程序</span>
@@ -22,12 +30,12 @@
         </div>
       </div>
     </div>
-  </BaseDialog>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
 const loginRef = ref()
-
+const dialogVisible = ref(false)
 defineExpose({
   loginRef
 })
@@ -35,7 +43,16 @@ defineExpose({
 const checkedAgree = ref(false)
 </script>
 
-<style>
+<style lang="scss" scoped>
+.my-header {
+  font-family: Microsoft YaHei;
+  font-weight: bold;
+  font-size: 22px;
+  color: #000000;
+  height: 22px;
+  line-height: 22px;
+}
+
 .first-letter {
   font-family: Microsoft YaHei;
   font-weight: 400;

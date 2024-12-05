@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.9.0",
+    "crypto-js": "^4.2.0",
     "nuxt": "^3.13.2",
+    "pinia": "^2.3.0",
     "video.js": "^8.19.1",
     "vue": "latest",
     "vue-router": "latest",
@@ -19,6 +22,7 @@
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.10",
+    "@types/crypto-js": "^4.2.2",
     "autoprefixer": "^10.4.20",
     "element-plus": "^2.8.6",
     "postcss": "^8.4.47",

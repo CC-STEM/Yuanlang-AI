@@ -9,11 +9,14 @@ export default defineNuxtConfig({
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@element-plus/nuxt"],
+  modules: ["@element-plus/nuxt", "@pinia/nuxt"],
   routeRules: {
     "/create": {
       ssr: false,
     },
+    "/": {
+      redirect: '/explore'
+    }
   },
   postcss: {
     plugins: {
