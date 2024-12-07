@@ -1,4 +1,5 @@
 import type { ModelFusionTypeOption } from "@/types";
+import type { UploadRawFile } from "element-plus";
 
 export const px2vw = (px: number): string => {
   return `${(px / 1920) * 100}vw`;
@@ -61,3 +62,26 @@ export const ARTWORK_CREATE_FAILED = 3; // 生成失败
 export const ARTWORK_CREATE_SUCCESS = 4; // 生成成功
 export const ARTWORK_REVERTED = -1; // 已撤回
 
+// export const CREATE_ARTWORK_STATUS_MAP = {
+
+// }
+
+export const getBase64FromFile = (file: UploadRawFile) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    let fileResult = "";
+    reader.readAsDataURL(file);
+    // 开始转
+    reader.onload = () => {
+      fileResult = reader.result as string;
+    };
+    // 转 失败
+    reader.onerror = (error) => {
+      reject(error);
+    };
+    // 转 结束
+    reader.onloadend = () => {
+      resolve(fileResult);
+    };
+  });
+};
