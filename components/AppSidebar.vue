@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full flex-col items-center">
-    <div class="sideItem mb-[32px]" @click="clickShowOrderDialog">
+    <div class="sideItem mb-[32px]" @click="clickShowLoginDialog">
       <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt="">
       <span class="text-white text-xs">AI创作者</span>
     </div>
@@ -12,7 +12,7 @@
         <span>{{ item.name }}</span>
       </div>
     </NuxtLink>
-    <LoginDialog ref="loginDialogRef" />
+    <!-- <LoginDialog ref="loginDialogRef" /> -->
     <BuyPayDialog ref="payDialogRef" />
     <BuyReceiveDialog ref="receiveDialogRef" />
     <UserSettingDialog ref="settingDialogRef" />
@@ -27,12 +27,14 @@ import PracticeImg from '~/assets/practice.png'
 import ActivityImg from '~/assets/activity.png'
 import HomeImg from '~/assets/home.png'
 
+
 interface RouteItemInfo {
   name: string,
   url: string,
   path: string
 }
 
+const authStore = useAuthStore()
 const routeInfo: RouteItemInfo[] = [{
   name: '作品展示',
   url: WorkImg,
@@ -71,7 +73,8 @@ const clickShowSettingDialog = () => {
 }
 
 const clickShowLoginDialog = () => {
-  loginDialogRef.value.loginRef.dialogVisible = true
+  // loginDialogRef.value.loginRef.dialogVisible = true
+  authStore.setLoginDialog(true)
 }
 
 const clickShowPayDialog = () => {

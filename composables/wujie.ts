@@ -7,9 +7,9 @@ import type {
   GetArtworkHistoryListRequest,
   GetArtworkHistoryDetailListRes
 } from "../types";
-const runtimeConfig = useRuntimeConfig();
 
 export const getModelInfo = () => {
+  const runtimeConfig = useRuntimeConfig();
   const { data, status, error } = useFetch<GetModelInfoRes>(
     "/api/wujie/getModelInfo",
     {
@@ -24,6 +24,8 @@ export const getModuleResourceInfo = (model: number) => {
   if (!model) {
     return {};
   }
+  const runtimeConfig = useRuntimeConfig();
+
   const { data, status, error } = useFetch<GetModuleResourceInfoRes>(
     `/api/wujie/getResourseModule?model=${model}`,
     {
@@ -35,6 +37,8 @@ export const getModuleResourceInfo = (model: number) => {
 };
 
 export const createAIByWujie = async (body: AICreateRequest) => {
+  const runtimeConfig = useRuntimeConfig();
+
   return await $fetch<AICreateResponse>(
     `/api/wujie/createWithDefaultAI`,
     {
@@ -45,6 +49,8 @@ export const createAIByWujie = async (body: AICreateRequest) => {
 };
 
 export const getArtworkHistoryKeyList = (body: GetArtworkHistoryListRequest) => {
+  const runtimeConfig = useRuntimeConfig();
+
   const { data, status, error, refresh } = useFetch<GetAiArtWorkHistoryResponse>(
     `/api/wujie/getDrawList`,
     {
@@ -57,6 +63,7 @@ export const getArtworkHistoryKeyList = (body: GetArtworkHistoryListRequest) => 
 }
 
 export const getArtworkHistoryDetailList = async (keys: string[]) => {
+  const runtimeConfig = useRuntimeConfig();
   return await $fetch<GetArtworkHistoryDetailListRes>(
     `/api/wujie/batchGetDrawTaskInfo`,
     {

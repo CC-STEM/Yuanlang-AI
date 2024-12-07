@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import type {
+  GetSendCodeRes
+} from "../types";
 
 import { getToken, removeToken, setToken } from './helper'
 
@@ -69,3 +72,28 @@ export const useAuthStore = defineStore('auth-store', {
     },
   },
 })
+
+
+export const fetchPhoneCode = async (phone: string) => {
+  const runtimeConfig = useRuntimeConfig();
+
+  return await $fetch<GetSendCodeRes>(
+    `/api/auth/sendPhoneCode`,
+    {
+      method: "POST",
+      body: { phone },
+      baseURL: runtimeConfig.public.apiBase,
+    })
+}
+
+export const loginByPhoneCode = async (phone: string, code: string) => {
+  const runtimeConfig = useRuntimeConfig();
+
+  return await $fetch<any>(
+    `/api/auth/loginByPhoneCode`,
+    {
+      method: "POST",
+      body: { phone, code },
+      baseURL: runtimeConfig.public.apiBase,
+    })
+}

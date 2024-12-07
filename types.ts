@@ -1245,3 +1245,7 @@ export interface FailMessageVoResponse {
   fail_message?: string;
 
 }
+
+export interface GetSendCodeRes extends BaseRes {
+  data: string
+}

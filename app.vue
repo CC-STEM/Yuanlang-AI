@@ -12,18 +12,14 @@ import { AppFooter } from './.nuxt/components';
     </div>
     <AppFooter />
   </div>
-  <LoginDialog ref="loginDialogRef" />
+  <LoginDialog :visible="authStore.loginDialog" ref="loginDialogRef" />
 </template>
 <script setup lang="ts">
 const loginDialogRef = ref()
 const authStore = useAuthStore()
-// watch(() => authStore.isLogin, (newVal) => {
-//   if (newVal) {
-//     loginDialogRef.value.loginRef.dialogVisible = false
-//   } else {
-//     loginDialogRef.value.loginRef.dialogVisible = true
-//   }
-// }, { immediate: true })
+watch(() => authStore.loginDialog, (newVal) => {
+  console.log('loginDialog', newVal)
+}, { immediate: true })
 </script>
 <style lang="scss" scoped>
 .contain {
