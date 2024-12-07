@@ -74,7 +74,11 @@ const clickShowSettingDialog = () => {
 
 const clickShowLoginDialog = () => {
   // loginDialogRef.value.loginRef.dialogVisible = true
-  authStore.setLoginDialog(true)
+  if (!authStore.isLogin) {
+    authStore.setLoginDialog(true)
+  } else {
+    orderDialogRef.value.userOrderRef.dialogVisible = true
+  }
 }
 
 const clickShowPayDialog = () => {

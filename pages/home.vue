@@ -1,4 +1,3 @@
-import { ImgCard, UserAssets } from '../.nuxt/components';
 <template>
   <div class="w-full h-full pl-[44px] pt-[51px]">
     <el-scrollbar>

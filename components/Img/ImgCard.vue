@@ -1,4 +1,3 @@
-import { ImgUser } from '../../.nuxt/components';
 <template>
   <div class="relative rounded-lg">
     <img class="w-full h-full rounded-[20px]" :src="props.url" alt="">

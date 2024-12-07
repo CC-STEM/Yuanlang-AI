@@ -1,9 +1,7 @@
-import { defineStore } from 'pinia'
-import type {
-  GetSendCodeRes
-} from "../types";
+import { defineStore } from "pinia";
+import type { GetSendCodeRes } from "../types";
 
-import { getToken, removeToken, setToken } from './helper'
+import { getToken, removeToken, setToken } from "./helper";
 
 interface AuthState {
   token?: string;
@@ -11,7 +9,7 @@ interface AuthState {
   userInfo: any;
 }
 
-export const useAuthStore = defineStore('auth-store', {
+export const useAuthStore = defineStore("auth-store", {
   state: (): AuthState => ({
     token: getToken(),
     loginDialog: false,
@@ -19,7 +17,7 @@ export const useAuthStore = defineStore('auth-store', {
   }),
 
   getters: {
-    isLogin: (state: AuthState) => !!state.token,
+    isLogin: (state: AuthState) => !!(state.token || getToken()),
   },
 
   actions: {
@@ -44,56 +42,51 @@ export const useAuthStore = defineStore('auth-store', {
     // },
 
     setToken(token: string) {
-      this.token = token
-      setToken(token)
+      this.token = token;
+      setToken(token);
     },
 
     removeToken() {
-      this.token = undefined
-      removeToken()
+      this.token = undefined;
+      removeToken();
     },
 
     setLoginDialog(bool: boolean) {
-      this.loginDialog = bool
+      this.loginDialog = bool;
     },
 
     logOut() {
-      this.token = undefined
-      removeToken()
-      this.userInfo = {}
-      ElMessage.success('登出账户成功！')
+      this.token = undefined;
+      removeToken();
+      this.userInfo = {};
+      ElMessage.success("登出账户成功！");
     },
 
     updatePasswordSuccess() {
-      this.token = undefined
-      removeToken()
-      this.userInfo = {}
-      this.loginDialog = true
+      this.token = undefined;
+      removeToken();
+      this.userInfo = {};
+      this.loginDialog = true;
     },
   },
-})
-
+});
 
 export const fetchPhoneCode = async (phone: string) => {
   const runtimeConfig = useRuntimeConfig();
 
-  return await $fetch<GetSendCodeRes>(
-    `/api/auth/sendPhoneCode`,
-    {
-      method: "POST",
-      body: { phone },
-      baseURL: runtimeConfig.public.apiBase,
-    })
-}
+  return await $fetch<GetSendCodeRes>(`/api/auth/sendPhoneCode`, {
+    method: "POST",
+    body: { phone },
+    baseURL: runtimeConfig.public.apiBase,
+  });
+};
 
 export const loginByPhoneCode = async (phone: string, code: string) => {
   const runtimeConfig = useRuntimeConfig();
 
-  return await $fetch<any>(
-    `/api/auth/loginByPhoneCode`,
-    {
-      method: "POST",
-      body: { phone, code },
-      baseURL: runtimeConfig.public.apiBase,
-    })
-}
+  return await $fetch<any>(`/api/auth/loginByPhoneCode`, {
+    method: "POST",
+    body: { phone, code },
+    baseURL: runtimeConfig.public.apiBase,
+  });
+};

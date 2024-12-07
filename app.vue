@@ -17,9 +17,6 @@ import { AppFooter } from './.nuxt/components';
 <script setup lang="ts">
 const loginDialogRef = ref()
 const authStore = useAuthStore()
-watch(() => authStore.loginDialog, (newVal) => {
-  console.log('loginDialog', newVal)
-}, { immediate: true })
 </script>
 <style lang="scss" scoped>
 .contain {
