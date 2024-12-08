@@ -404,15 +404,15 @@ export interface ImageTypeOption extends CreateOptionWithPicResponse {
   selected: boolean;
 }
 
-export interface StyleTypeOption extends ImageTypeOption { }
+export interface StyleTypeOption extends ImageTypeOption {}
 
-export interface ArtistTypeOption extends ImageTypeOption { }
+export interface ArtistTypeOption extends ImageTypeOption {}
 
 export interface ElementMagicTypeOption extends SimpleOptionResponse {
   selected: boolean;
 }
 
-export interface StyleDecorationTypeOption extends ElementMagicTypeOption { }
+export interface StyleDecorationTypeOption extends ElementMagicTypeOption {}
 
 export interface CharacterTypeOption
   extends CreateOptionWithDecorationResponse {
@@ -435,7 +435,7 @@ export type ResourceOption =
 /**
  * AiArtworkCreateVo_request
  */
-export interface AICreateRequest {
+export interface DefaultAICreateRequest {
   /**
    * 加速前进的步数。
    * 默认0，每加1就是往队列前面多插1位，一次对应2积分（批量作画的积分消耗则还要算上对应作画数量）。
@@ -730,7 +730,6 @@ export interface AICreateRequest {
    * </ol>
    */
   width?: number;
-
 }
 
 /**
@@ -745,7 +744,6 @@ export interface AiArtworkModelFusionVORequest {
    * 权重
    */
   weight?: number;
-
 }
 
 /**
@@ -763,7 +761,6 @@ export interface MultiDiffusionVORequest {
    * 平铺VAE(object)
    */
   tiled_vae?: TiledVaeVORequest;
-
 }
 
 /**
@@ -892,7 +889,6 @@ export interface TiledDiffusionVORequest {
    * Anime6B|ScuNET GAN|ScuNET PSNR|SwinIR 4x; ]
    */
   upscaler_name: string;
-
 }
 
 /**
@@ -944,7 +940,6 @@ export interface RegionPromptControlVORequest {
    * 画布y坐标，默认值：0.4
    */
   y: number;
-
 }
 
 /**
@@ -994,15 +989,12 @@ export interface TiledVaeVORequest {
    * false：不加载。
    */
   vae_to_gpu: boolean;
-
 }
-
 
 /**
  * ResultAiArtworkKeysVo_response
  */
 export interface AICreateResponse extends BaseRes {
-
   /**
    * 返回数据(object)
    */
@@ -1027,7 +1019,6 @@ export interface AiArtworkKeysVoResponse {
    * 作画结果result列表
    */
   results?: CrAiArtworkCreateResultResponse[];
-
 }
 
 /**
@@ -1046,11 +1037,10 @@ export interface CrAiArtworkCreateResultResponse {
    * 作画结果key
    */
   key?: string;
-
 }
 
 export interface GetAiArtWorkHistoryResponse extends BaseRes {
-  data: PageResponseAiArtworkHistoryVoResponse
+  data: PageResponseAiArtworkHistoryVoResponse;
 }
 
 /**
@@ -1075,7 +1065,6 @@ export interface PageResponseAiArtworkHistoryVoResponse {
    * 分页总数
    */
   total?: number;
-
 }
 
 /**
@@ -1086,7 +1075,6 @@ export interface AiArtworkHistoryVoResponse {
    * 作画key
    */
   key?: string;
-
 }
 
 /**
@@ -1110,7 +1098,6 @@ export interface GetArtworkHistoryListRequest {
   page_size: number;
 }
 
-
 /**
  * ResultAiArtworksGeneratingInfoVo_response
  */
@@ -1131,7 +1118,6 @@ export interface AiArtworksGeneratingInfoVoResponse {
    * 作画结果列表
    */
   list?: AiArtworkGenerateingInfoVoResponse[];
-
 }
 
 /**
@@ -1226,7 +1212,6 @@ export interface AiArtworkGenerateingInfoVoResponse {
    * 状态(0-已提交 1-排队中 2-生成中 3-生成失败 4-生成成功  -1 - 已撤销)
    */
   status?: number;
-
 }
 
 /**
@@ -1243,9 +1228,223 @@ export interface FailMessageVoResponse {
    * 失败原因描述
    */
   fail_message?: string;
-
 }
 
 export interface GetSendCodeRes extends BaseRes {
-  data: string
+  data: string;
+}
+
+/**
+ * AiMjCreateRequest_request
+ */
+export interface MJAICreateRequest {
+  /**
+   * 提示词相关性（CFG scale），取值范围[1-30]，默认值7。
+   * 表示AI对描述参数的倾向程度，数值越大会越专注于提示词的内容，生成更加符合描述的图像。
+   */
+  cfg?: number;
+  /**
+   * 创意度/二次元强度，默认50，取值范围为[0-100]。
+   * 创意度越低，生成的图片越接近参考图。
+   * 注：
+   * 1. 使用底图（即`init_image_url`有值）时才会生效。
+   * 2. 对应模型中的参数为去噪强度（denoising strength）。
+   */
+  creativity_degree?: number;
+  /**
+   * 是否完全控制负向描述词，可选值：true、false，默认：false。
+   * true：仅客户上定义的负面描述词会生效。
+   * false：使用官方模型定义的负向描述。
+   */
+  fully_custom_uc_prompt?: boolean;
+  /**
+   * 结果图高度。限制参考width。
+   */
+  height: number;
+  /**
+   * 底图高度。
+   * 建议和输入底图的高度保持一致，不一致时平台按此值计算。
+   */
+  init_height?: number;
+  /**
+   * 图生图底图URL。
+   * 注：
+   * 1. 图片大小要限制在2M以内，强烈建议提前压缩，图片大小不影响出图效果。
+   * 2. 若使用七牛云地址，支持psd、jpeg、png、gif、webp、tiff、bmp、avif、heif格式的图片。
+   * 3.
+   * 若为其他地址，仅支持jpg、png、webp、jpeg格式。外部链接的可用性和延迟需要客户自己保障，否则失败率会上升。如果是临时链接，建议有效期大于1个小时，以避免极端情况。
+   * 4. 如果传了底图，但是prompt没传，会自动获取图片的tag填充为prompt来进行图生图。
+   */
+  init_image_url?: string;
+  /**
+   * 底图宽度。
+   * 建议和输入底图的宽度保持一致，不一致时平台按此值计算。
+   */
+  init_width?: number;
+  /**
+   * midjourney模型专用参数，需使用mj模型专用model code。(object)
+   */
+  mj_param: MjParamRequest;
+  /**
+   * MJ模型code，可使用code值：301、302、303、304、305
+   */
+  model: number;
+  /**
+   * 回调url
+   * 回调重试规则：
+   * 1. 支持5级重试时间: 5, 10, 30, 60, 120 (单位：秒)，也就是分别会在5s、10s、30s...时进行回调重试
+   * 2. 当回调通知方返回"success"时，我们会认为您已经成功处理回调，并终止重试
+   * 回调报文：
+   * ```
+   * {
+   * "artwork_url": "https://cdn.wujiebantu.com/ai/530FFE6722D2A2B4A9504166221AAB40-01.jpg",
+   * "audit_info": {
+   * "check_fail": false,
+   * "hit": false,
+   * "data_id": "245959",
+   * "total_suggestion": "PASS",
+   * "scan_scene_d_t_o_s": [{
+   * "rate": 0.9944,
+   * "suggestion": "pass",
+   * "label": "politics",
+   * "label_desc": "涉政",
+   * "scene": "TERRORISM"
+   * },
+   * {
+   * "rate": 1,
+   * "suggestion": "pass",
+   * "label": "terrorism",
+   * "label_desc": "暴恐",
+   * "scene": "TERRORISM"
+   * },
+   * {
+   * "rate": 0.9993,
+   * "suggestion": "pass",
+   * "label": "porn",
+   * "label_desc": "色情",
+   * "scene": "PORN"
+   * },
+   * {
+   * "rate": 1,
+   * "suggestion": "pass",
+   * "label": "prohibition",
+   * "label_desc": "违禁",
+   * "scene": "TERRORISM"
+   * },
+   * {
+   * "rate": 0.9986,
+   * "suggestion": "pass",
+   * "label": "sexy",
+   * "label_desc": "性感",
+   * "scene": "PORN"
+   * }
+   * ],
+   * "url": "https://cdn.wujiebantu.com/ai/810F1750EFF2EC416ED6682DFFCFBF2C-01.jpg-v800"
+   * },
+   * "batch_task_key": "14DBBD0743C8715D92183756E3FB398C",
+   * "code": 0,
+   * "complete_time": 1681109462,
+   * "integral_cost": 2,
+   * "integral_cost_message": "积分已扣除",
+   * "involve_yellow": 0,
+   * "key": "EF8DF2DCF18D0D69F7F836A100C857AF",
+   * "success": true
+   * }
+   * ```
+   * 包含字段注释：
+   * success - 作画是否成功
+   * code - 作画是否成功code，0=成功 1=失败
+   * key - 对应作画任务的key
+   * artwork_url - 作画生成结果图url
+   * complete_time - 作画完成时间
+   * integral_cost - 积分花费
+   * integral_cost_message - 积分花费说明
+   */
+  notify_url?: string;
+  /**
+   * 批量生成的数量，默认4张，上限100张。
+   * 注：使用Midjourney模型创建的数量必须为4的倍数。
+   */
+  num: number;
+  /**
+   * 作画描述，1000字符以内。
+   * 可选平台资源接口预设的prompt来查看效果。
+   * 注：
+   * 1.若未传底图（即`init_image_url`为空）时，作画描述不能为空。
+   * 2.若传了底图，且作画描述为空，会自动获取图片的tag填充为prompt来进行图生图。
+   * Validate[max: 1500; ]
+   */
+  prompt?: string;
+  /**
+   * 随机种子，生成图片的seed，默认随机生成。
+   * 通过随机种子确定扩散的初始状态，进而控制生成的样本的多样性。
+   * 相同的种子值可以保持图像的一致性，若设置相同的种子编号、模型，可以重新生成类似的图像。
+   * 注：目前不支持字母，传字母会导致作画超时或失败。
+   */
+  seed?: string;
+  /**
+   * 作画负面描述，1000字符以内，可以补充不需要在图片里看到的内容。
+   * 注：
+   * 1. 无界AI的模型，基本都会预设一些默认的负面描述。
+   * 2. 直接填内容即可，不需要再次否定。
+   * Validate[max: 1000; ]
+   */
+  uc_prompt?: string;
+  /**
+   * 结果图宽度。
+   * MJ仅支持配置的尺寸，不支持自定义尺寸。
+   *
+   * 可通过`获取作画模型的预设资源(ai/default_resource)`接口查询，获取返回列表中的分辨率信息（`resolution_new`-`resolution`_`list`-width`）。
+   */
+  width: number;
+}
+
+/**
+ * midjourney模型专用参数，需使用mj模型专用model code。(object)
+ *
+ * MjParam_request
+ */
+export interface MjParamRequest {
+  /**
+   * 风格差异化，取值范围：0～100，默认值0。
+   */
+  chaos?: number;
+  /**
+   * 角色风格参考图片（只能用于V6 和 NIJI 6模型）
+   */
+  cref_urls?: string[];
+  /**
+   * 角色风格参考权重，取值范围：0～100 ，默认值0，只在cref参数下生效。
+   */
+  cw?: number;
+  /**
+   * 精细度，默认值 "1"
+   * v6 v5.2 niji5 - ".25",".5","1"
+   * v6.1 - ".5","1","2"
+   */
+  quality?: string;
+  /**
+   * 风格参考种子(>0) 注：和风格参考图片参数二选一
+   */
+  sref_random?: number;
+  /**
+   * 风格参考图片（只能用于V6 和 NIJI 6模型）注：和风格参考种子二选一
+   */
+  sref_urls?: string[];
+  /**
+   * 风格艺术化，取值范围：0～1000，默认值100。
+   */
+  stylize?: number;
+  /**
+   * 风格参考权重，取值范围：0～1000 ，默认值100。
+   */
+  sw?: number;
+  /**
+   * 无缝贴图，可选值：true、false，默认值false。
+   */
+  tile?: boolean;
+  /**
+   * 使用 Beta 升级器 (默认值 false)
+   */
+  upbeta?: boolean;
 }

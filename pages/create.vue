@@ -75,53 +75,128 @@
           </div>
           <div class="w-full flex justify-between items-center mb-[40px]">
             <span class="text-white text-[14px]">作图数量</span>
-            <el-input-number v-model="createNum" :min="1" :max="10" @change=""
-              style="width: 130px;margin-right: 12px" />
+            <el-input-number
+              v-if="selectedModelType.value === MODEL_TYPE_VALUE_MAP.GENERAL_MODEL_TYPE || selectedModelType.value === MODEL_TYPE_VALUE_MAP.COMIC_MODEL_TYPE"
+              v-model="createNum" :min="1" :max="10" @change="" style="width: 130px;margin-right: 12px" />
+            <el-input-number v-if="selectedModelType.value === MODEL_TYPE_VALUE_MAP.MJ_MODEL_TYPE" v-model="createNum"
+              :min="4" :max="4" :step="4" @change="" style="width: 130px;margin-right: 12px" />
           </div>
           <div class="w-full mb-[30px]">
             <div class="w-full flex items-center justify-between text-white mb-[40px]"><span>高级设置</span>
               <el-switch v-model="openAdvancedSetting" />
             </div>
             <template v-if="openAdvancedSetting">
-              <div class="w-full flex flex-col">
-                <span class="text-white mb-[8px]">参考图</span>
-                <el-upload class="avatar-uploader mb-[30px]" :show-file-list="false" :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload" :http-request="customUploadRequest">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                  <el-icon v-else class="avatar-uploader-icon">
-                    <Plus />
-                  </el-icon>
-                </el-upload>
-              </div>
-              <CreateModuleResourceSelector ref="imageTypeSelectorRef" :outerTitle="'画面类型选择'" :drawerTitle="'画面选择器'"
-                :resource-options="imageOptions" />
-              <CreateModuleResourceSelector ref="styleSelectorRef" :outerTitle="'风格类型选择'" :drawerTitle="'风格选择器'"
-                :resource-options="styleOptions" />
-              <CreateModuleResourceSelector ref="artistSelectorRef" :outerTitle="'艺术家类型选择'" :drawerTitle="'艺术家选择器'"
-                :resource-options="artistOptions" />
-              <CreateModuleResourceSelector ref="elementMagicSelectorRef" :outerTitle="'元素魔法类型选择'"
-                :drawer-title="'元素魔法选择器'" :resource-options="elementMagicOptions" />
-              <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
-                :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
-              <CreateModuleResourceSelector ref="characterSelectorRef" :outerTitle="'角色与人物类型选择'"
-                :drawer-title="'角色与人物选择器'" :resource-options="characterOptions" />
-              <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
-              <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
-                <span class="text-[12px] mb-[8px] text-white">随机种子</span>
-                <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
-                <div class="flex justify-between items-center mb-[14px]">
-                  <span class="text-white text-[12px]">提示词相关性</span>
-                  <el-slider style="width: 80%" v-model="CFGScale" show-input />
+              <template
+                v-if="selectedModelType.value === MODEL_TYPE_VALUE_MAP.COMIC_MODEL_TYPE || selectedModelType.value === MODEL_TYPE_VALUE_MAP.GENERAL_MODEL_TYPE">
+                <div class="w-full flex flex-col">
+                  <span class="text-white mb-[8px]">参考图</span>
+                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]" :show-file-list="false"
+                    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <el-icon v-else class="avatar-uploader-icon">
+                      <Plus />
+                    </el-icon>
+                  </el-upload>
                 </div>
-                <div class="flex justify-between items-center mb-[14px]">
-                  <span class="text-white text-[12px]">风格参数</span>
-                  <el-slider style="width: 80%" v-model="stylize" show-input />
+                <CreateModuleResourceSelector ref="imageTypeSelectorRef" :outerTitle="'画面类型选择'" :drawerTitle="'画面选择器'"
+                  :resource-options="imageOptions" />
+                <CreateModuleResourceSelector ref="styleSelectorRef" :outerTitle="'风格类型选择'" :drawerTitle="'风格选择器'"
+                  :resource-options="styleOptions" />
+                <CreateModuleResourceSelector ref="artistSelectorRef" :outerTitle="'艺术家类型选择'" :drawerTitle="'艺术家选择器'"
+                  :resource-options="artistOptions" />
+                <CreateModuleResourceSelector ref="elementMagicSelectorRef" :outerTitle="'元素魔法类型选择'"
+                  :drawer-title="'元素魔法选择器'" :resource-options="elementMagicOptions" />
+                <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
+                  :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
+                <CreateModuleResourceSelector ref="characterSelectorRef" :outerTitle="'角色与人物类型选择'"
+                  :drawer-title="'角色与人物选择器'" :resource-options="characterOptions" />
+                <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
+                <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
+                  <span class="text-[12px] mb-[8px] text-white">随机种子</span>
+                  <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">提示词相关性</span>
+                    <el-slider style="width: 80%" v-model="CFGScale" show-input />
+                  </div>
+                  <!-- <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">风格参数</span>
+                    <el-slider style="width: 80%" v-model="stylize" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">混沌参数</span>
+                    <el-slider style="width: 80%" v-model="chaos" show-input />
+                  </div> -->
                 </div>
-                <div class="flex justify-between items-center mb-[14px]">
-                  <span class="text-white text-[12px]">混沌参数</span>
-                  <el-slider style="width: 80%" v-model="chaos" show-input />
+              </template>
+              <template v-if="selectedModelType.value === MODEL_TYPE_VALUE_MAP.MJ_MODEL_TYPE">
+                <div class="w-full flex flex-col">
+                  <span class="text-white mb-[8px]">风格参考图</span>
+                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]"
+                    v-model:file-list="styleRefImageUrls" :on-success="handleAddStyleReImgSuccess"
+                    :before-upload="beforeAvatarUpload" :on-remove="handleStyleRefImgRemove" list-type="picture-card">
+                    <el-icon class="avatar-uploader-icon">
+                      <Plus />
+                    </el-icon>
+                  </el-upload>
                 </div>
-              </div>
+                <div class="w-full flex flex-col">
+                  <span class="text-white mb-[8px]">角色参考图</span>
+                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]"
+                    v-model:file-list="characterRefImageUrls" :on-success="handleAddCharacterReImgSuccess"
+                    :before-upload="beforeAvatarUpload" :on-remove="handleCharacterRefImgRemove"
+                    list-type="picture-card">
+                    <el-icon class="avatar-uploader-icon">
+                      <Plus />
+                    </el-icon>
+                  </el-upload>
+                </div>
+                <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
+                  <!-- <span class="text-[12px] mb-[8px] text-white">随机种子</span>
+                  <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input> -->
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">提示词相关性</span>
+                    <el-slider style="width: 80%" v-model="CFGScale" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">风格参考权重</span>
+                    <el-slider style="width: 80%" v-model="stylizeWeight" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">角色参考权重</span>
+                    <el-slider style="width: 80%" v-model="characterWeight" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">风格差异化</span>
+                    <el-slider style="width: 80%" v-model="chaos" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">风格艺术化</span>
+                    <el-slider style="width: 80%" v-model="stylize" show-input />
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">QUALITY</span>
+                    <el-radio-group v-model="quality">
+                      <el-radio-button label="0.5" value="0.5" />
+                      <el-radio-button label="1" value="1" />
+                      <el-radio-button label="2" value="2" />
+                    </el-radio-group>
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">UPBETA</span>
+                    <el-radio-group v-model="upbeta">
+                      <el-radio-button label="是" :value="true" />
+                      <el-radio-button label="否" :value="false" />
+                    </el-radio-group>
+                  </div>
+                  <div class="flex justify-between items-center mb-[14px]">
+                    <span class="text-white text-[12px]">TILE</span>
+                    <el-radio-group v-model="tile">
+                      <el-radio-button label="是" :value="true" />
+                      <el-radio-button label="否" :value="false" />
+                    </el-radio-group>
+                  </div>
+                </div>
+              </template>
             </template>
           </div>
           <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span>立即生成</span></div>
@@ -173,8 +248,8 @@ import { Search } from '@element-plus/icons-vue'
 
 import { Plus } from '@element-plus/icons-vue'
 
-import type { UploadProps, UploadRequestOptions } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, AICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
+import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
 import { modelFusionOptionsKey } from '@/utils'
 
 // 我的作品集相关
@@ -196,7 +271,6 @@ const handleCurrentChange = (pageNum: number) => {
 }
 
 const runtimeConfig = useRuntimeConfig();
-const imageUrl = ref('')
 
 // 1.模型大类选择
 const modelTypes = ref(MODEL_TYPE_LIST)
@@ -432,7 +506,22 @@ const selectedResolutionWithAndHeight = computed(() => {
 
 const openAdvancedSetting = ref(false)
 
+// 高级参数
+const uniqueCreateNum = ref('1')  // 随机种子编号
+const CFGScale = ref(7) // 1 - 30
+const stylize = ref(100) // 0 - 1000
+const stylizeWeight = ref(100) // 0 - 1000
+const characterWeight = ref(0) // 0 - 100
+const chaos = ref(0) // 0 - 100
+const quality = ref('1') // 0.5 1 2
+const upbeta = ref(false)
+const tile = ref(false)
 // 上传底图相关
+
+// 通用及漫画模型底图
+const UPLOAD_URL = `${runtimeConfig.public.apiBase
+  }/api/upload/file`;
+const imageUrl = ref('')
 const customUploadRequest = async (data: UploadRequestOptions) => {
   console.log('customUploadRequest', data)
   const str = await getBase64FromFile(data.file)
@@ -443,55 +532,161 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile
 ) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  console.log('handleAvatarSuccess', response, uploadFile)
+  imageUrl.value = response.data
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   console.log('rawFile', rawFile)
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
+  if (rawFile.size / 1024 / 1024 > 10) {
+    ElMessage.error('picture size can not exceed 10MB!')
     return false
   }
 
   return true
 }
 
-const uniqueCreateNum = ref(0)
-const CFGScale = ref(0)
-const stylize = ref(0)
-const chaos = ref(0)
+// mj 模型风格参考图，角色参考图
+const styleRefImageUrls = ref<UploadUserFile[]>([])
+const characterRefImageUrls = ref<UploadUserFile[]>([])
+
+const handleAddStyleReImgSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  console.log('handleAddStyleReImgSuccess', response, uploadFile)
+  styleRefImageUrls.value.push({
+    name: uploadFile.name,
+    url: response.data
+  })
+  // imageUrl.value = response.data
+}
+
+const handleStyleRefImgRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
+}
+
+const handleAddCharacterReImgSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile
+) => {
+  // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  console.log('handleAddStyleReImgSuccess', response, uploadFile)
+  styleRefImageUrls.value.push({
+    name: uploadFile.name,
+    url: response.data
+  })
+  // imageUrl.value = response.data
+}
+
+const handleCharacterRefImgRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
+}
+
 const createNum = ref(1)
 
-const createAI = async () => {
-  try {
-    const createOption: AICreateRequest = {
-      model: selectedModel.value?.model_code,
-      num: createNum.value,
-      accelerate_times: 0,
-      prompt: promptStr.value,
-    }
+const generateDefaultCreateOption = () => {
+  const createOption: DefaultAICreateRequest = {
+    model: selectedModel.value?.model_code,
+    num: createNum.value,
+    accelerate_times: 0,
+    prompt: promptStr.value,
+  }
 
-    if (selectedResolution.value) {
-      createOption.width = selectedResolution.value.width
-      createOption.height = selectedResolution.value.height
-      createOption.prefine_multiple = selectedResolution.value.prefine_multiples
-      createOption.super_size_multiple = selectedResolution.value.super_size_multiple
+  if (imageUrl.value) {
+    createOption.init_image_url = imageUrl.value
+    createOption.creativity_degree = 50
+    createOption.create_source = 1
+  }
+  if (selectedResolution.value) {
+    createOption.width = selectedResolution.value.width
+    createOption.height = selectedResolution.value.height
+    createOption.prefine_multiple = selectedResolution.value.prefine_multiples
+    createOption.super_size_multiple = selectedResolution.value.super_size_multiple
+  }
+  return createOption
+}
+
+const generateStyleModelOption = () => {
+
+}
+
+const generateMJModelOption = () => {
+  if (!selectedResolutionWithAndHeight.value) {
+    ElMessage.error('请选择分辨率')
+    return null
+  }
+
+  const createOption: MJAICreateRequest = {
+    model: selectedModel.value?.model_code,
+    num: createNum.value,
+    prompt: promptStr.value,
+    width: selectedResolutionWithAndHeight.value.width,
+    height: selectedResolutionWithAndHeight.value.height,
+    mj_param: {
+      chaos: chaos.value,
+      stylize: stylize.value,
+      // sw: stylizeWeight.value,
+      // cw: characterWeight.value,
+      quality: quality.value,
+      upbeta: upbeta.value,
+      tile: tile.value,
+      // sref_urls: styleRefImageUrls.value.map(item => item.url!),
+      // cref_urls: characterRefImageUrls.value.map(item => item.url!),
     }
-    const { data: createAIByWujieData, code, message } = await createAIByWujie(createOption)
-    if (code && parseInt(code) == 200) {
-      ElMessage.success('任务已提交，请等待生成结果')
-      // 触发刷新 artWorkList
-      getArtworkHistoryListRefresh()
-    } else {
-      ElMessage.error('任务提交失败，错误信息：' + message)
+  }
+  return createOption
+}
+
+const createWithDefaultAI = async () => {
+  try {
+    let createOption = generateDefaultCreateOption()
+    if (createOption) {
+      const { data: createAIByWujieData, code, message } = await createAIByWujie(createOption)
+      if (code && parseInt(code) == 200) {
+        ElMessage.success('任务已提交，请等待生成结果')
+        // 触发刷新 artWorkList
+        getArtworkHistoryListRefresh()
+      } else {
+        ElMessage.error('任务提交失败，错误信息：' + message)
+      }
+      console.log('createAIByWujieData', createAIByWujieData)
     }
-    console.log('createAIByWujieData', createAIByWujieData)
   } catch (e: Error) {
     console.log('createAIByWujie error', e.data)
     ElMessage.error('任务提交失败，错误信息：' + (e.data.message ? JSON.stringify(e.data.message) : ''))
+  }
+}
+
+const createWithMJAI = async () => {
+  try {
+    let createOption = generateMJModelOption()
+    if (createOption) {
+      const { data: createAIByWujieData, code, message } = await createAIByMJ(createOption)
+      if (code && parseInt(code) == 200) {
+        ElMessage.success('任务已提交，请等待生成结果')
+        // 触发刷新 artWorkList
+        getArtworkHistoryListRefresh()
+      } else {
+        ElMessage.error('任务提交失败，错误信息：' + message)
+      }
+      console.log('createAIByWujieData', createAIByWujieData)
+    }
+  } catch (e: Error) {
+    console.log('createAIByWujie error', e.data)
+    ElMessage.error('任务提交失败，错误信息：' + (e.data.message ? JSON.stringify(e.data.message) : ''))
+  }
+}
+
+const createAI = async () => {
+  if (selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.COMIC_MODEL_TYPE || selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.GENERAL_MODEL_TYPE) {
+    await createWithDefaultAI()
+  }
+
+  if (selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.MJ_MODEL_TYPE) {
+    await createWithMJAI()
   }
 }
 
@@ -738,5 +933,9 @@ const createAI = async () => {
 
 :deep(.el-input__wrapper) {
   border-radius: 9px;
+}
+
+:deep(.el-upload--picture-card) {
+  background: none;
 }
 </style>

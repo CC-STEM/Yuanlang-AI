@@ -1,11 +1,12 @@
 import type {
   GetModelInfoRes,
   GetModuleResourceInfoRes,
-  AICreateRequest,
+  DefaultAICreateRequest,
   AICreateResponse,
   GetAiArtWorkHistoryResponse,
   GetArtworkHistoryListRequest,
-  GetArtworkHistoryDetailListRes
+  GetArtworkHistoryDetailListRes,
+  MJAICreateRequest,
 } from "../types";
 
 export const getModelInfo = () => {
@@ -36,31 +37,39 @@ export const getModuleResourceInfo = (model: number) => {
   return { data, status, error };
 };
 
-export const createAIByWujie = async (body: AICreateRequest) => {
+export const createAIByWujie = async (body: DefaultAICreateRequest) => {
   const runtimeConfig = useRuntimeConfig();
 
-  return await $fetch<AICreateResponse>(
-    `/api/wujie/createWithDefaultAI`,
-    {
-      method: "POST",
-      body: body,
-      baseURL: runtimeConfig.public.apiBase,
-    })
+  return await $fetch<AICreateResponse>(`/api/wujie/createWithDefaultAI`, {
+    method: "POST",
+    body: body,
+    baseURL: runtimeConfig.public.apiBase,
+  });
 };
 
-export const getArtworkHistoryKeyList = (body: GetArtworkHistoryListRequest) => {
+export const createAIByMJ = async (body: MJAICreateRequest) => {
   const runtimeConfig = useRuntimeConfig();
 
-  const { data, status, error, refresh } = useFetch<GetAiArtWorkHistoryResponse>(
-    `/api/wujie/getDrawList`,
-    {
+  return await $fetch<AICreateResponse>(`/api/wujie/createWithMJ`, {
+    method: "POST",
+    body: body,
+    baseURL: runtimeConfig.public.apiBase,
+  });
+};
+
+export const getArtworkHistoryKeyList = (
+  body: GetArtworkHistoryListRequest
+) => {
+  const runtimeConfig = useRuntimeConfig();
+
+  const { data, status, error, refresh } =
+    useFetch<GetAiArtWorkHistoryResponse>(`/api/wujie/getDrawList`, {
       baseURL: runtimeConfig.public.apiBase,
       body: body,
       method: "POST",
-    }
-  )
+    });
   return { data, status, error, refresh };
-}
+};
 
 export const getArtworkHistoryDetailList = async (keys: string[]) => {
   const runtimeConfig = useRuntimeConfig();
@@ -71,5 +80,5 @@ export const getArtworkHistoryDetailList = async (keys: string[]) => {
       body: keys,
       baseURL: runtimeConfig.public.apiBase,
     }
-  )
-}
+  );
+};
