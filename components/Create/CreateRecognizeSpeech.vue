@@ -1,5 +1,5 @@
 <template>
-  <el-button @click="toggleSpeechRecognition">{{ isSpeaking ? '开始' : '停止' }}录音</el-button>
+  <el-button @click="toggleSpeechRecognition">{{ isSpeaking ? '停止' : '开始' }}录音</el-button>
 </template>
 
 <script lang="ts" setup>
@@ -12,11 +12,16 @@ let finalResult = ''; // 保存最终结果的变量
 let interimResult = ''; // 保存中间结果的变量
 const toggleSpeechRecognition = () => {
   if (!recognition) {
-    recognition = new SpeechRecognition();
+    recognition = new webkitSpeechRecognition();
+    // recognition.grammars = speechRecognitionList;
+    console.log('recognition:', recognition)
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'zh-CN';
+    recognition.maxAlternatives = 1;
+
     recognition.onresult = event => {
+      console.log('regonize result:', event)
       interimResult = ''; // 清空中间结果
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
@@ -36,6 +41,13 @@ const toggleSpeechRecognition = () => {
   }
   isSpeaking.value = !isSpeaking.value;
 };
+
+watch(prompt, (newVal) => {
+  console.log('newSpeechRecognition', newVal);
+}, {
+  deep: true,
+  immediate: true
+})
 </script>
 
 <style></style>

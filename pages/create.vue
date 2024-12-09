@@ -38,6 +38,9 @@
           <div class="w-full mb-[40px]">
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
               <span class="text-white">* 画面描述</span>
+              <ClientOnly>
+                <CreateRecognizeSpeech />
+              </ClientOnly>
               <span
                 class="relative bg-[#23262f] text-xs font-semibold py-1 px-3 rounded-full text-white cursor-pointer">标签生成器</span>
             </div>
@@ -290,7 +293,7 @@ console.log(modelTypeList, status, error)
 // 根据当前模型类型计算模型列表
 const modelList = computed(() => {
   if (modelTypeList.value?.data) {
-    return modelTypeList.value.data.filter(item => item.type === selectedModelType.value.value) || []
+    return modelTypeList.value.data.filter(item => (item.type === selectedModelType.value.value)).filter(item => item.model_code !== 301 && item.model_code !== 302) || [] // 301,302老mj模型不稳定
   }
   return []
 })
@@ -578,11 +581,13 @@ const handleAddCharacterReImgSuccess: UploadProps['onSuccess'] = (
   uploadFile
 ) => {
   // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+  console.log('characterRefImageUrls', characterRefImageUrls.value)
+
   console.log('handleAddStyleReImgSuccess', response, uploadFile)
-  styleRefImageUrls.value.push({
-    name: uploadFile.name,
-    url: response.data
-  })
+  // characterRefImageUrls.value.push({
+  //   name: uploadFile.name,
+  //   url: response.data
+  // })
   // imageUrl.value = response.data
 }
 
@@ -633,13 +638,13 @@ const generateMJModelOption = () => {
     mj_param: {
       chaos: chaos.value,
       stylize: stylize.value,
-      // sw: stylizeWeight.value,
-      // cw: characterWeight.value,
+      sw: stylizeWeight.value,
+      cw: characterWeight.value,
       quality: quality.value,
       upbeta: upbeta.value,
       tile: tile.value,
-      // sref_urls: styleRefImageUrls.value.map(item => item.url!),
-      // cref_urls: characterRefImageUrls.value.map(item => item.url!),
+      sref_urls: styleRefImageUrls.value.map(item => (item.response as any).data!),
+      cref_urls: characterRefImageUrls.value.map(item => (item.response as any).data!),
     }
   }
   return createOption
