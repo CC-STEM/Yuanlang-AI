@@ -222,6 +222,11 @@
                 <template v-if="item.status === ARTWORK_CREATE_SUCCESS && item.picture_url">
                   <img class="w-full h-full object-cover " :src="item.picture_url" alt="">
                 </template>
+                <template v-else-if="item.status === ARTWORK_CREATE_FAILED">
+                  <div class="w-full h-full flex flex-col justify-center items-center text-white bg-[#23262f]">
+                    生成失败
+                  </div>
+                </template>
                 <template v-else>
                   <ClientOnly>
                     <CreateLoading :size="'small'" />

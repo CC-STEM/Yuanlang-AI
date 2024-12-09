@@ -28,7 +28,6 @@ export function createLocalStorage(options?: {
   }
 
   function get(key: string) {
-    console.log("window", window);
     if (!window) {
       return null;
     }
