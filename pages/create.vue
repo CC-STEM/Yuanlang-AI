@@ -39,7 +39,14 @@
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
               <span class="text-white">* 画面描述</span>
               <ClientOnly>
-                <CreateRecognizeSpeech />
+                <!-- <CreateRecognizeSpeech /> -->
+                <div class="flex items-center" @click="handleClickRecord">
+                  <el-icon style="color: white;font-size: 20px;">
+                    <Microphone v-if="isStartRecord" />
+                    <Mute v-else />
+                  </el-icon>
+                  <span class="text-white ml-[20px]">{{ audioPlayText }}</span>
+                </div>
               </ClientOnly>
               <span
                 class="relative bg-[#23262f] text-xs font-semibold py-1 px-3 rounded-full text-white cursor-pointer">标签生成器</span>
@@ -253,12 +260,44 @@
 
 <script lang="ts" setup>
 import { Search } from '@element-plus/icons-vue'
+import { invokeSaveAsDialog } from 'recordrtc'
 
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Microphone, Mute } from '@element-plus/icons-vue'
 
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
 import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
 import { modelFusionOptionsKey } from '@/utils'
+
+// 录音相关
+const audioRecorder = useAudioRecorder({
+  onData: (blob: any) => {
+    console.log('onData', blob)
+    // invokeSaveAsDialog(blob); // 测试录音Demo
+    // 转base64
+    const a = new FileReader()
+    a.readAsDataURL(blob)
+    a.onload = function (e) {
+      const base64 = e.target?.result
+      // console.log('base64', (base64 as string).split('data:audio/wav;base64,')[1]) // data:audio/wav;base64,
+      const findBase64StartIndex = (base64 as string).indexOf(',') + 1
+      const finalBase64 = (base64 as string).slice(findBase64StartIndex)
+      console.log('finalBase64', finalBase64)
+
+      // 上传base64
+    }
+  }
+})
+
+const isStartRecord = ref(false)
+const audioPlayText = computed(() => isStartRecord.value ? '停止' : '语音输入')
+const handleClickRecord = () => {
+  if (!isStartRecord.value) {
+    audioRecorder.start()
+  } else {
+    audioRecorder.stop()
+  }
+  isStartRecord.value = !isStartRecord.value
+}
 
 // 我的作品集相关
 const artworkInfoList = ref<AiArtworkGenerateingInfoVoResponse[]>([])
