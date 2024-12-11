@@ -1,5 +1,5 @@
 import { RecordRTCPromisesHandler, StereoAudioRecorder, invokeSaveAsDialog } from 'recordrtc'
-
+import type { CreateRecRes, GetRecTaskDetailRes } from '../types'
 export interface RecoderOptions {
   onData?: (blob: Blob) => void
 }
@@ -79,4 +79,27 @@ export function useAudioRecorder(options?: RecoderOptions) {
     duration,
     stream,
   }
+}
+
+
+export const createRecTask = async (base64: string) => {
+  const runtimeConfig = useRuntimeConfig();
+  return await $fetch<CreateRecRes>(`/api/asr/createRecTask`, {
+    method: 'POST',
+    body: {
+      data: base64
+    },
+    baseURL: runtimeConfig.public.apiBase,
+  })
+}
+
+export const getRecTaskStatus = async (taskId: number) => {
+  const runtimeConfig = useRuntimeConfig();
+  return await $fetch<GetRecTaskDetailRes>(`/api/asr/getRecTaskStatus`, {
+    method: 'POST',
+    body: {
+      TaskId: taskId
+    },
+    baseURL: runtimeConfig.public.apiBase,
+  })
 }

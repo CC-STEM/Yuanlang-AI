@@ -46,6 +46,9 @@
                     <Mute v-else />
                   </el-icon>
                   <span class="text-white ml-[20px]">{{ audioPlayText }}</span>
+                  <span class="ml-[20px] text-white">{{ asrStatusText }}</span>
+                  <!-- <Icon name="uil:github" style="color: white" /> -->
+                  <Icon name="" style="color: white" />
                 </div>
               </ClientOnly>
               <span
@@ -209,7 +212,10 @@
               </template>
             </template>
           </div>
-          <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span>立即生成</span></div>
+          <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span
+              class="mr-[18px]">立即生成</span>
+          </div>
+
         </div>
         <div class="w-[50%] h-full">
           <div class="w-full h-[700px] bg-[#23262f] relative  rounded-[8px] mb-[10px]">
@@ -271,32 +277,69 @@ import { modelFusionOptionsKey } from '@/utils'
 // 录音相关
 const audioRecorder = useAudioRecorder({
   onData: (blob: any) => {
+    // 重置 isAsrStart 状态
+    isAsrStart.value = false
     console.log('onData', blob)
     // invokeSaveAsDialog(blob); // 测试录音Demo
     // 转base64
     const a = new FileReader()
     a.readAsDataURL(blob)
-    a.onload = function (e) {
+    a.onload = async function (e) {
       const base64 = e.target?.result
       // console.log('base64', (base64 as string).split('data:audio/wav;base64,')[1]) // data:audio/wav;base64,
       const findBase64StartIndex = (base64 as string).indexOf(',') + 1
       const finalBase64 = (base64 as string).slice(findBase64StartIndex)
       console.log('finalBase64', finalBase64)
 
+      isAsrStart.value = true
       // 上传base64
+      const { data, code, message } = await createRecTask(finalBase64)
+      console.log('createRecTask', data, code, message)
+      if (data.Data?.TaskId) {
+        let status = 0
+        let finalData = null
+        // 轮训任务状态
+        while (status === 0 || status === 1) {
+          const { data: taskData, code, message } = await getRecTaskStatus(data.Data.TaskId)
+          console.log('getRecTaskStatus', data, code, message)
+          status = taskData.Data.Status
+          finalData = taskData
+          await sleep(2000)
+        }
+
+        // 区分解析录音任务失败及成功
+        if (status === 2) {
+          console.log('处理完成', finalData?.Data.Result)
+          promptStr.value = finalData?.Data.Result || ''
+        }
+
+        if (status === 3) {
+          ElMessage.error('录音解析失败，请重新录制')
+        }
+        isAsrStart.value = false
+      }
     }
   }
 })
 
+// 语音识别流程： 未开始录音、录音中、录音完成、录音解析中，录音解析完成（成功/失败）
 const isStartRecord = ref(false)
+const isAsrStart = ref(false)
 const audioPlayText = computed(() => isStartRecord.value ? '停止' : '语音输入')
+const asrStatusText = computed(() => {
+  return isAsrStart.value ? '语音识别中，请稍等' : ''
+})
 const handleClickRecord = () => {
-  if (!isStartRecord.value) {
-    audioRecorder.start()
+  if (!isAsrStart.value) {
+    if (!isStartRecord.value) {
+      audioRecorder.start()
+    } else {
+      audioRecorder.stop()
+    }
+    isStartRecord.value = !isStartRecord.value
   } else {
-    audioRecorder.stop()
+    ElMessage.error('正在语音识别中，请等待完成后再开始录音')
   }
-  isStartRecord.value = !isStartRecord.value
 }
 
 // 我的作品集相关

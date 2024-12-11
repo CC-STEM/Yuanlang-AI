@@ -85,3 +85,8 @@ export const getBase64FromFile = (file: UploadRawFile) => {
     };
   });
 };
+
+
+export const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}

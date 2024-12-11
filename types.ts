@@ -404,15 +404,15 @@ export interface ImageTypeOption extends CreateOptionWithPicResponse {
   selected: boolean;
 }
 
-export interface StyleTypeOption extends ImageTypeOption {}
+export interface StyleTypeOption extends ImageTypeOption { }
 
-export interface ArtistTypeOption extends ImageTypeOption {}
+export interface ArtistTypeOption extends ImageTypeOption { }
 
 export interface ElementMagicTypeOption extends SimpleOptionResponse {
   selected: boolean;
 }
 
-export interface StyleDecorationTypeOption extends ElementMagicTypeOption {}
+export interface StyleDecorationTypeOption extends ElementMagicTypeOption { }
 
 export interface CharacterTypeOption
   extends CreateOptionWithDecorationResponse {
@@ -1447,4 +1447,49 @@ export interface MjParamRequest {
    * 使用 Beta 升级器 (默认值 false)
    */
   upbeta?: boolean;
+}
+
+export interface CreateRecRes extends BaseRes {
+  data: {
+    Data: {
+      TaskId: number;
+    },
+    RequestId: string;
+  }
+}
+
+export interface RecTaskSentenceWords {
+  Word: string,
+  OffsetStartMs: number,
+  OffsetEndMs: number
+}
+
+export interface RecTaskSentenceDetail {
+  FinalSentence: string,
+  SliceSentence: string,
+  WrittenText: string,
+  StartMs: number, // 单句开始时间（毫秒）
+  EndMs: number, // 单句结束时间（毫秒）
+  SpeechSpeed: number, // 字数每秒
+  WordsNum: number, // 词数
+  Words: RecTaskSentenceWords[],
+  SpeakerId: number,
+  EmotionalEnergy: number, // 情绪能量值，取值为音量分贝值/10。取值范围：[1,10]
+  SilenceTime: number, // 本句与上一句之间的静音时长
+  EmotionType: string[] // 情绪类型
+}
+
+export interface GetRecTaskDetailRes extends BaseRes {
+  data: {
+    RequestId: string,
+    Data: {
+      TaskId: number,
+      Status: number, // 0：任务等待，1：任务执行中，2：任务成功，3：任务失败
+      StatusStr: string, // waiting：任务等待，doing：任务执行中，success：任务成功，failed：任务失败
+      AudioDuration: number, // 音频时长，单位：秒
+      Result: string, // 识别结果
+      ResultDetail: RecTaskSentenceDetail[],
+      ErrorMsg: string
+    }
+  }
 }
