@@ -41,14 +41,19 @@
               <ClientOnly>
                 <!-- <CreateRecognizeSpeech /> -->
                 <div class="flex items-center" @click="handleClickRecord">
-                  <el-icon style="color: white;font-size: 20px;">
-                    <Microphone v-if="isStartRecord" />
-                    <Mute v-else />
+                  <template v-if="isStartRecord">
+                    <el-icon style="color: white;font-size: 20px;">
+                      <Microphone />
+                    </el-icon>
+                    <Icon name="svg-spinners:bars-scale" style="color: white;font-size: 20px;" />
+                  </template>
+                  <el-icon v-else style="color: white;font-size: 20px;">
+                    <Mute />
                   </el-icon>
-                  <span class="text-white ml-[20px]">{{ audioPlayText }}</span>
-                  <span class="ml-[20px] text-white">{{ asrStatusText }}</span>
+                  <!-- <span class="text-white ml-[20px]">{{ audioPlayText }}</span> -->
+                  <span class="ml-[20px] mr-[20px] text-white">{{ asrStatusText }}</span>
                   <!-- <Icon name="uil:github" style="color: white" /> -->
-                  <Icon name="" style="color: white" />
+                  <Icon name="svg-spinners:blocks-shuffle-3" style="color: white" v-if="isAsrStart" />
                 </div>
               </ClientOnly>
               <span

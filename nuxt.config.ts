@@ -9,14 +9,14 @@ export default defineNuxtConfig({
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@element-plus/nuxt", "@pinia/nuxt", '@vueuse/nuxt', "@nuxt/icon"],
+  modules: ["@element-plus/nuxt", "@pinia/nuxt", "@vueuse/nuxt", "@nuxt/icon"],
   routeRules: {
     "/create": {
       ssr: false,
     },
     "/": {
-      redirect: '/explore'
-    }
+      redirect: "/explore",
+    },
   },
   postcss: {
     plugins: {
@@ -73,7 +73,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/api": {
-        target: "http://localhost:19520/api",
+        target: "http://localhost:9520/api",
         changeOrigin: true,
         prependPath: true,
 
