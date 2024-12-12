@@ -10,90 +10,80 @@ import type {
 } from "../types";
 
 type UseFetchOptions = {
-  key?: string
-  method?: string
-  query?: any
-  params?: any
-  body?: RequestInit['body'] | Record<string, any>
-  headers?: Record<string, string> | [key: string, value: string][] | Headers
-  baseURL?: string
-  server?: boolean
-  lazy?: boolean
-  immediate?: boolean
-  deep?: boolean
-  dedupe?: 'cancel' | 'defer'
-  pick?: string[]
-}
+  key?: string;
+  method?: string;
+  query?: any;
+  params?: any;
+  body?: RequestInit["body"] | Record<string, any>;
+  headers?: Record<string, string> | [key: string, value: string][] | Headers;
+  baseURL?: string;
+  server?: boolean;
+  lazy?: boolean;
+  immediate?: boolean;
+  deep?: boolean;
+  dedupe?: "cancel" | "defer";
+  pick?: string[];
+};
 
 export const commonUseFetch = <T>(apiUrl: string, options: UseFetchOptions) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore();
   const { immediate = true, query, ...fetchOptions } = options;
   const runtimeConfig = useRuntimeConfig();
 
-  const computedQuery = computed(() => {
-    if (!query) return undefined;
-
-    const resolvedQuery: Record<string, any> = {};
-    for (const key in query) {
-      const value = query[key];
-      resolvedQuery[key] = isRef(value) ? value.value : unref(value);
-    }
-    return resolvedQuery;
-  });
-
   const defaultOptions = {
     baseURL: runtimeConfig.public.apiBase,
-    query: computedQuery,
+    query,
     // 可以在这里添加通用的请求头等配置
     onResponseError: async (context: any) => {
       const { response } = context;
       switch (response.status) {
         case 401:
           // 处理未授权
-          authStore.setLoginDialog(true)
+          authStore.setLoginDialog(true);
           break;
         case 403:
           // 处理禁止访问
-          ElMessage.error('没有权限访问');
+          ElMessage.error("没有权限访问");
           break;
         case 500:
           // 处理服务器错误
-          ElMessage.error('服务器错误，请稍后重试');
+          ElMessage.error("服务器错误，请稍后重试");
           break;
         default:
           // 处理其他错误
-          ElMessage.error(response.statusText || '请求失败');
+          ElMessage.error(response.statusText || "请求失败");
       }
     },
     onRequest({ options }: any) {
       // 设置请求头
-      options.headers = options.headers || {}
+      options.headers = options.headers || {};
       options.headers = {
         ...options.headers,
-        Authorization: `Bearer ${authStore.token}`
-      } as Headers
-    }
+        Authorization: `Bearer ${authStore.token}`,
+      } as Headers;
+    },
   };
 
-  console.log('fetchOptions', fetchOptions)
+  console.log("fetchOptions", fetchOptions);
 
   // 如果不需要立即执行，使用 lazy 选项
   const finalOptions: UseFetchOptions = {
     ...defaultOptions,
     ...fetchOptions,
-    lazy: !immediate
+    lazy: !immediate,
+    immediate,
   };
-
-  return useFetch<T>(
-    apiUrl,
-    finalOptions as any,
-  );;
-}
+  console.log("finalOptions", finalOptions);
+  return useFetch<T>(apiUrl, finalOptions as any);
+};
 
 export const getModelInfo = () => {
-  const { data, status, error } = commonUseFetch<GetModelInfoRes>("/api/wujie/getModelInfo", {
-    pick: ["data"]
-  })
+  const { data, status, error } = commonUseFetch<GetModelInfoRes>(
+    "/api/wujie/getModelInfo",
+    {
+      pick: ["data"],
+    }
+  );
   return { data, status, error };
 };
 

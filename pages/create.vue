@@ -407,12 +407,6 @@ const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, er
       model: computed(() => selectedModel.value?.model_code)
     }
   }
-  // () => `/api/wujie/getResourseModule?model=${selectedModel.value?.model_code}`,
-  // {
-  //   baseURL: runtimeConfig.public.apiBase,
-  //   pick: ["data"],
-  //   immediate: false
-  // }
 );
 
 // 查询所有历史作画任务ID
