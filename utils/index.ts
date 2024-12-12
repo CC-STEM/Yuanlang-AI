@@ -90,3 +90,12 @@ export const getBase64FromFile = (file: UploadRawFile) => {
 export const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+export const handleApiError = (error: any) => {
+  console.log('error', error)
+  if (error.response.status === 401) {
+    // 唤起登录框
+    const authStore = useAuthStore()
+    authStore.setLoginDialog(true)
+  }
+}

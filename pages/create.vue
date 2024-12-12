@@ -309,7 +309,7 @@ const audioRecorder = useAudioRecorder({
           console.log('getRecTaskStatus', data, code, message)
           status = taskData.Data.Status
           finalData = taskData
-          await sleep(2000)
+          await sleep(1000)
         }
 
         // 区分解析录音任务失败及成功
@@ -399,20 +399,26 @@ const selectModel = (item: typeof modelList.value[number]) => {
 }
 
 // 根据模型主题拉取资源选项
-const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, error: getModuleResourceInfoError } = useLazyFetch<GetModuleResourceInfoRes>(
-  () => `/api/wujie/getResourseModule?model=${selectedModel.value?.model_code}`,
+const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, error: getModuleResourceInfoError } = commonUseFetch<GetModuleResourceInfoRes>(
+  `/api/wujie/getResourseModule`,
   {
-    baseURL: runtimeConfig.public.apiBase,
-    pick: ["data"],
-    immediate: false
+    immediate: false,
+    query: {
+      model: computed(() => selectedModel.value?.model_code)
+    }
   }
+  // () => `/api/wujie/getResourseModule?model=${selectedModel.value?.model_code}`,
+  // {
+  //   baseURL: runtimeConfig.public.apiBase,
+  //   pick: ["data"],
+  //   immediate: false
+  // }
 );
 
 // 查询所有历史作画任务ID
-const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = useFetch<GetAiArtWorkHistoryResponse>(
+const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = commonUseFetch<GetAiArtWorkHistoryResponse>(
   `/api/wujie/getDrawList`,
   {
-    baseURL: runtimeConfig.public.apiBase,
     body: artWorksQueryBody,
     method: "POST",
   }
