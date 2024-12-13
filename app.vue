@@ -17,6 +17,10 @@ import { AppFooter } from './.nuxt/components';
 <script setup lang="ts">
 const loginDialogRef = ref()
 const authStore = useAuthStore()
+
+onBeforeMount(() => {
+  authStore.initializeToken()
+})
 </script>
 <style lang="scss" scoped>
 .contain {

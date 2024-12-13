@@ -11,7 +11,7 @@ interface AuthState {
 
 export const useAuthStore = defineStore("auth-store", {
   state: (): AuthState => ({
-    token: getToken(),
+    token: '',
     loginDialog: false,
     userInfo: {},
   }),
@@ -21,6 +21,12 @@ export const useAuthStore = defineStore("auth-store", {
   },
 
   actions: {
+    initializeToken() {
+      if (import.meta.client) {
+        this.token = getToken(); // 仅在客户端获取 token
+        console.log('this.token', this.token)
+      }
+    },
     async getUserInfo(): Promise<any> {
       // try {
       //   const res = await fetchGetInfo()

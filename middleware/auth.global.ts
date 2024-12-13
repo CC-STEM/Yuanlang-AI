@@ -13,7 +13,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   // console.log(authStore);
   if (!authStore.isLogin) {
     authStore.setLoginDialog(true);
-    return abortNavigation();
+    if (to.path !== from.path) {
+      return abortNavigation();
+    }
+    return
   } else {
     return;
   }

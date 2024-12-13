@@ -1493,3 +1493,127 @@ export interface GetRecTaskDetailRes extends BaseRes {
     }
   }
 }
+
+export interface DrawTaskItem {
+  /**
+   * 作画key
+   */
+  key?: string;
+}
+
+export interface GetBatchDrawTaskKeysRes extends BaseRes {
+  data: {
+    list: DrawTaskItem[]
+    total: number;
+  }
+}
+
+export interface DrawTaskDetailItem {
+  userId: number;
+  /**
+   * 作画结果图的审核结果(v1.1.9新增字段，2023年2月23号之后的作画结果会有值。)
+   * <p>
+   * 旧：{"vendor": 1, "result": "对应厂商的审核结果json"}
+   * </p>
+   * <ul>
+   * <li>1对应结果，<a
+   * href="https://help.aliyun.com/document_detail/70292.html?spm=a2c4g.70292.0.0.4ffd342b6TC42l">参考</a></li>
+   * <li>2对应结果，<a
+   * href="https://support.dun.163.com/documents/588434277524447232?docId=791822473634779136">参考</a></li>
+   * </ul>
+   * <p></p>
+   * 结果中需关注字段解释：
+   * <ul>
+   * <li>check_fail：检测是否成功，正常都会成功，安全起见——如果失败建议也拦截</li>
+   *
+   * <li>total_suggestion：总体建议，级别有——PASS(通过)->REVIEW(需要人工审核)->BLOCK(不通过)。scan_scene_d_t_o_s中的suggestion都是PASS总体才会是PASS，只要有一个是BLOCK就会是BLOCK，没有BLOCK存在REVIEW就会是REVIEW</li>
+   * <li>scan_scene_d_t_o_s：各场景检测结果列表。
+   * <ul>
+   * <li>suggestion：枚举参考外层的total_suggestion</li>
+   * <li>lable：场景下的标签，有label_desc进行描述。目前porn返回suggestion是review的话会比较性感低俗可以考虑拦截</li>
+   * <li>scene：场景，TERRORISM——暴恐涉政违禁、PORN——鉴黄</li>
+   * </ul>
+   * </li>
+   * </ul>
+   */
+  audit_info?: string;
+  /**
+   * 完成百分比
+   */
+  complete_percent?: number;
+  /**
+   * 实际完成时间戳
+   */
+  complete_time?: number;
+  /**
+   * 预计完成还需要多少秒
+   */
+  expected_seconds?: number;
+  /**
+   * 作画失败原因
+   */
+  fail_message?: string;
+
+  /**
+ * 作画失败码
+ */
+  fail_code?: number;
+
+  /**
+   * 消耗积分数，包括生成、加速、精绘等
+   */
+  integral_cost?: number;
+  /**
+   * 积分消耗提示词
+   * 1. 积分已扣除
+   * 2. 积分已退还
+   * 3. 积分不足, 部分扣款失败
+   * 4. 积分扣除中，请稍后查询
+   * 5. 不需要积分
+   */
+  integral_cost_message?: string;
+  /**
+   * 图片是否违规 (0：未违规，1：违规)
+   * 注：
+   * 1. 图片状态仍为生成成功，返回图片url并不做脱敏
+   * 2. 该标识与无界产品审核条件一致，若需要对审核结果自定义处理，建议使用audit_info内审核信息。
+   */
+  involve_yellow?: number;
+  /**
+   * 作品key
+   */
+  key?: string;
+  model_prompt?: string;
+  // 计算最终的url
+  picture_url?: string;
+  /**
+   * 结果图片信息(无界)
+   */
+  wujie_picture_url?: string;
+  /**
+   * 结果图片信息(腾讯云cos)
+   */
+  qcloud_cos_url?: string;
+  /**
+   * 在此作品之前有多少任务排队
+   */
+  queue_before_num?: number;
+  /**
+   * 每前进一步减少的时间
+   */
+  reduce_time?: number;
+  /**
+   * 开始生成的时间戳（仍在排队返回0）
+   */
+  start_gen_time?: number;
+  /**
+   * 状态(0-已提交 1-排队中 2-生成中 3-生成失败 4-生成成功  -1 - 已撤销)
+   */
+  status?: number;
+}
+
+export interface GetBatchDrawTaskDetailsRes extends BaseRes {
+  data: {
+    list: DrawTaskDetailItem[]
+  }
+}

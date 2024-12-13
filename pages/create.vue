@@ -259,7 +259,7 @@
           <div class="w-full flex justify-end">
             <el-pagination v-if="getArtworkHistoryListData && getArtworkHistoryListData.data.total! > 0" size="small"
               background layout="total,prev, pager, next" :total="getArtworkHistoryListData.data.total" class="mt-4"
-              :current-page="artworksPageOption.page_num" :page-size="artworksPageOption.page_size"
+              :current-page="artworksPageOption.page" :page-size="artworksPageOption.size"
               @current-change="handleCurrentChange" />
           </div>
         </div>
@@ -276,7 +276,7 @@ import { invokeSaveAsDialog } from 'recordrtc'
 import { Plus, Microphone, Mute } from '@element-plus/icons-vue'
 
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse } from '../types'
+import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
 import { modelFusionOptionsKey } from '@/utils'
 
 // 录音相关
@@ -348,21 +348,20 @@ const handleClickRecord = () => {
 }
 
 // 我的作品集相关
-const artworkInfoList = ref<AiArtworkGenerateingInfoVoResponse[]>([])
+const artworkInfoList = ref<DrawTaskDetailItem[]>([])
 const artworksPageOption = ref({
-  page_size: 25,
-  page_num: 1,
-  ai_artwork_type: 'PICTURE'
+  size: 4,
+  page: 1,
 })
 
-const artWorksQueryBody = computed(() => ({
-  page_size: artworksPageOption.value.page_size,
-  page_num: artworksPageOption.value.page_num - 1,
-  ai_artwork_type: artworksPageOption.value.ai_artwork_type
-}))
+// const artWorksQueryBody = computed(() => ({
+//   page: artworksPageOption.value.page_size,
+//   size: artworksPageOption.value.page_num,
+//   // ai_artwork_type: artworksPageOption.value.ai_artwork_type
+// }))
 
 const handleCurrentChange = (pageNum: number) => {
-  artworksPageOption.value.page_num = pageNum;
+  artworksPageOption.value.page = pageNum;
 }
 
 const runtimeConfig = useRuntimeConfig();
@@ -410,17 +409,17 @@ const { data: getModuleResourceInfoData, status: getModuleResourceInfoStatus, er
 );
 
 // 查询所有历史作画任务ID
-const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = commonUseFetch<GetAiArtWorkHistoryResponse>(
-  `/api/wujie/getDrawList`,
+const { data: getArtworkHistoryListData, status: getArtworkHistoryListStatus, error: getArtworkHistoryListError, refresh: getArtworkHistoryListRefresh } = commonUseFetch<GetBatchDrawTaskKeysRes>(
+  `/api/wujie/batchGetDrawTaskInfoByUser`,
   {
-    body: artWorksQueryBody,
+    body: artworksPageOption,
     method: "POST",
   }
 )
 
 const fetchArtworkHistoryListByKeys = async (keys: string[]) => {
-  const { data, code, message } = await getArtworkHistoryDetailList(keys)
-  let dataList: AiArtworkGenerateingInfoVoResponse[] = []
+  const { data, code, message } = await batchGetDrawTasksDetailByKeys(keys)
+  let dataList: DrawTaskDetailItem[] = []
   console.log('fetchArtworkHistoryListByKeys', data, code, message)
   if ((code && parseInt(code)) !== 200) {
     ElMessage.error('获取作画任务列表失败，错误信息：' + message)
@@ -442,7 +441,10 @@ watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) =
     // 把状态已提交，排队中，生成中的任务放在最前面
     let waitingList = list.filter(item => [ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []
     console.log('waitingList', waitingList)
-    artworkInfoList.value = waitingList.concat((list.filter(item => ![ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []).sort((a, b) => b.start_gen_time! - a.start_gen_time!) || [])
+    artworkInfoList.value = waitingList.concat((list.filter(item => ![ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []).sort((a, b) => b.start_gen_time! - a.start_gen_time!) || []).map(item => ({
+      ...item,
+      picture_url: item.qcloud_cos_url || item.wujie_picture_url
+    }))
     console.log('artworkInfoList', artworkInfoList.value)
     // TODO:
     if (artworkInfoList.value.length > 0) {
@@ -460,7 +462,7 @@ watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) =
         for (let item of completedList) {
           let curItemIndex = artworkInfoList.value.findIndex(artwork => artwork.key === item.key)
           if (curItemIndex !== -1) {
-            artworkInfoList.value[curItemIndex] = item
+            artworkInfoList.value[curItemIndex] = { ...item, picture_url: item.qcloud_cos_url || item.wujie_picture_url }
           }
         }
         waitingList = list.filter(item => [ARTWORK_SUBMITTED, ARTWORK_QUEUING, ARTWORK_CREATING].includes(item.status!)) || []
@@ -477,11 +479,11 @@ watch(() => getArtworkHistoryListData.value?.data.list, async (newVal, oldVal) =
 
 const selectedArtworkKey = ref('')
 
-const selectArtwork = (item: AiArtworkGenerateingInfoVoResponse) => {
+const selectArtwork = (item: DrawTaskDetailItem) => {
   selectedArtworkKey.value = item.key!
 }
 
-const selectedArtwork = computed<AiArtworkGenerateingInfoVoResponse | null>(() => artworkInfoList.value.find(item => item.key === selectedArtworkKey.value) || null)
+const selectedArtwork = computed<DrawTaskDetailItem | null>(() => artworkInfoList.value.find(item => item.key === selectedArtworkKey.value) || null)
 
 watch(getModuleResourceInfoData, (newVal) => {
   console.log('getModuleResourceInfoData', newVal?.data.create_option_menu?.image_type)

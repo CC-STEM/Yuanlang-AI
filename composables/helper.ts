@@ -1,7 +1,7 @@
 const LOCAL_NAME = "SECRET_TOKEN";
 
 export function getToken() {
-  console.log("getToken 调用");
+  console.log("getToken 调用", window);
   console.log("token", ss.get(LOCAL_NAME));
   return ss.get(LOCAL_NAME);
 }
