@@ -27,7 +27,7 @@ import PracticeImg from '~/assets/practice.png'
 import ActivityImg from '~/assets/activity.png'
 import HomeImg from '~/assets/home.png'
 
-
+const route = useRoute()
 interface RouteItemInfo {
   name: string,
   url: string,
@@ -93,6 +93,10 @@ const clickShowOrderDialog = () => {
   orderDialogRef.value.userOrderRef.dialogVisible = true
 }
 
+onMounted(() => {
+  const path = route.path
+  curSelectedRouteItem.value = routeInfo.find(item => item.path === path) || null
+})
 </script>
 
 <style scoped lang="scss">

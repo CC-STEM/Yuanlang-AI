@@ -14,9 +14,9 @@ export default defineNuxtConfig({
     "/create": {
       ssr: false,
     },
-    "/": {
-      redirect: "/explore",
-    },
+    // "/": {
+    //   redirect: "/explore",
+    // },
   },
   postcss: {
     plugins: {
