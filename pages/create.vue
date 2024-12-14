@@ -350,7 +350,7 @@ const handleClickRecord = () => {
 // 我的作品集相关
 const artworkInfoList = ref<DrawTaskDetailItem[]>([])
 const artworksPageOption = ref({
-  size: 4,
+  size: 25,
   page: 1,
 })
 
