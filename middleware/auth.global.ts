@@ -1,4 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
+
+
   console.log("++++++");
   const authStore = useAuthStore();
   console.log("++++++");
@@ -11,6 +13,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (to.path === "/explore") {
     return;
   }
+
+  // 在服务器端跳过鉴权
+  if (process.server) return
 
   console.log("----------");
   console.log(authStore.isLogin);

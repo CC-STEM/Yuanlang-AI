@@ -95,7 +95,8 @@ const clickShowOrderDialog = () => {
 
 onMounted(() => {
   const path = route.path
-  curSelectedRouteItem.value = routeInfo.find(item => item.path === path) || null
+  console.log('route path', path)
+  curSelectedRouteItem.value = routeInfo.find(item => path.startsWith(item.path)) || null
 })
 </script>
 
