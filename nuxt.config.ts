@@ -71,15 +71,15 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    devProxy: {
-      "/api": {
-        target: "http://localhost:9520/api",
-        changeOrigin: true,
-        prependPath: true,
+    // devProxy: {
+    //   "/api": {
+    //     target: "https://yuanlang-test.jkcspace.com/api",
+    //     changeOrigin: true,
+    //     prependPath: true,
 
-        //nitro 没有重写路径
-      },
-    },
+    //     //nitro 没有重写路径
+    //   },
+    // },
     logLevel: "info",
   },
   runtimeConfig: {
