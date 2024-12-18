@@ -61,7 +61,7 @@
             </div>
             <div class="w-full mb-[40px]">
               <el-input :maxlength="1000" :autosize="{ minRows: 4 }" :show-word-limit="true" v-model="promptStr"
-                style="width: 100%" :rows="4" type="textarea" resize="none" placeholder="请输入咒语" />
+                style="width: 100%;color: white" :rows="4" type="textarea" resize="none" placeholder="请输入咒语" />
             </div>
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
               <span class="text-white">负面描述 (描述不需要在图片里看到的内容)</span>
@@ -177,11 +177,11 @@
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
                     <span class="text-white text-[12px]">风格参考权重</span>
-                    <el-slider style="width: 80%" v-model="stylizeWeight" show-input />
+                    <el-slider style="width: 80%" v-model="stylizeWeight" show-input :max="1000" :min="0" />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
                     <span class="text-white text-[12px]">角色参考权重</span>
-                    <el-slider style="width: 80%" v-model="characterWeight" show-input />
+                    <el-slider style="width: 80%" v-model="characterWeight" show-input :max="100" :min="0" />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
                     <span class="text-white text-[12px]">风格差异化</span>
@@ -226,7 +226,7 @@
           <div class="w-full h-[700px] bg-[#23262f] relative  rounded-[8px] mb-[10px]">
             <template v-if="selectedArtwork">
               <template v-if="selectedArtwork.status === ARTWORK_CREATE_SUCCESS && selectedArtwork.picture_url">
-                <img class="w-full h-full object-cover" :src="selectedArtwork.picture_url" alt="" />
+                <img class="w-full h-full object-contain" :src="selectedArtwork.picture_url" alt="" />
               </template>
               <template v-else>
                 <ClientOnly>
@@ -237,11 +237,11 @@
           </div>
           <div class="w-full grid grid-cols-5 grid-rows-5 gap-[10px]">
             <template v-for="item in artworkInfoList">
-              <div class="w-[130px] h-[130px] relative rounded-[8px] overflow-hidden" :style="{
+              <div class="w-[130px] h-[130px] relative rounded-[8px] overflow-hidden bg-[#23262f]" :style="{
                 border: selectedArtwork === item ? '2px solid rgb(177, 181, 196)' : '0px'
               }" @click="selectArtwork(item)">
                 <template v-if="item.status === ARTWORK_CREATE_SUCCESS && item.picture_url">
-                  <img class="w-full h-full object-cover " :src="item.picture_url" alt="">
+                  <img class="w-full h-full object-contain" :src="item.picture_url" alt="">
                 </template>
                 <template v-else-if="item.status === ARTWORK_CREATE_FAILED">
                   <div class="w-full h-full flex flex-col justify-center items-center text-white bg-[#23262f]">
@@ -608,7 +608,7 @@ const uniqueCreateNum = ref('1')  // 随机种子编号
 const CFGScale = ref(7) // 1 - 30
 const stylize = ref(100) // 0 - 1000
 const stylizeWeight = ref(100) // 0 - 1000
-const characterWeight = ref(0) // 0 - 100
+const characterWeight = ref(100) // 0 - 100
 const chaos = ref(0) // 0 - 100
 const quality = ref('1') // 0.5 1 2
 const upbeta = ref(false)
@@ -836,7 +836,8 @@ const createAI = async () => {
 
 :deep(.el-textarea__inner) {
   background: none;
-  box-shadow: 0 0 0 1px rgb(35, 38, 47) inset
+  box-shadow: 0 0 0 1px rgb(35, 38, 47) inset;
+  color: white;
 }
 
 :deep(.el-textarea__inner:focus) {
