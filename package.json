@@ -15,6 +15,7 @@
     "@pinia/nuxt": "^0.9.0",
     "@vueuse/core": "^12.0.0",
     "@vueuse/nuxt": "^12.0.0",
+    "archiver": "^7.0.1",
     "crypto-js": "^4.2.0",
     "nuxt": "^3.13.2",
     "pinia": "^2.3.0",
@@ -27,6 +28,7 @@
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.10",
+    "@types/archiver": "^6.0.3",
     "@types/crypto-js": "^4.2.2",
     "@types/recordrtc": "^5.6.14",
     "autoprefixer": "^10.4.20",

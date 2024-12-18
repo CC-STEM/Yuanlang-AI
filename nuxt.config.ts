@@ -1,3 +1,6 @@
+import fs from 'fs';
+import archiver from 'archiver';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
@@ -87,4 +90,29 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "",
     },
   },
+  hooks: {
+    close: async () => {
+      console.log('产物构建完成后压缩');
+
+      const output = fs.createWriteStream('.output.zip');
+      const archive = archiver('zip', {
+        zlib: { level: 9 } // 设置压缩级别
+      });
+
+      output.on('close', function () {
+        console.log(`压缩完成，总共 ${archive.pointer()} 字节`);
+      });
+
+      archive.on('error', function (err: any) {
+        throw err;
+      });
+
+      archive.pipe(output);
+
+      // 将 .output 目录中的文件添加到压缩包
+      archive.directory('.output/', false);
+
+      await archive.finalize();
+    }
+  }
 });
