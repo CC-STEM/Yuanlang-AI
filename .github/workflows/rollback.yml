@@ -1,0 +1,43 @@
+name: Rollback
+on:
+  workflow_dispatch:
+    inputs:
+      # 这里的version指的是我们要部署的哪个发布版本的制品
+      # 这里输入的信息会作为github.event.inputs.version供此Workflow下的job读取
+      version:
+        description: "choose a version to deploy"
+        required: true
+jobs:
+  Rollback:
+    runs-on: ubuntu-latest
+    steps:
+      # 输出我们输入的version值
+      - name: Echo Version
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          echo "Version: $VERSION"
+      # 获取对应发布版本的制品
+      - name: Download Artifact
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          version: "tags/${{ github.event.inputs.version }}"
+          # 指定存放制品的压缩包
+          file: "assets.zip"
+          # 这里需要CD Workflow中准备工作里的Github Personal Access Token
+          token: ${{ secrets.GITHUB_TOKEN }}
+      # 下载压缩包后解压
+      - name: Unzip
+        run: |
+          unzip assets.zip
+          ls -a ./.output
+      # 把制品放到部署机器上
+      - name: Upload to Deploy Server
+        uses: easingthemes/ssh-deploy@v2.0.7
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_TOKEN }}
+          ARGS: "-avzr --delete"
+          SOURCE: ".output/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{secrets.REMOTE_USER}}
+          TARGET: "/jkc/test/Yuanlang-AI/.output"
