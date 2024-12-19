@@ -9,7 +9,8 @@
     "generate:prod": "nuxt generate --dotenv .env.production",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nuxt/icon": "^1.10.1",
@@ -37,6 +38,7 @@
     "child_process": "^1.0.2",
     "cross-env": "^7.0.3",
     "element-plus": "^2.8.6",
+    "husky": "^9.1.7",
     "inquirer": "^12.2.0",
     "postcss": "^8.4.47",
     "postcss-px-to-viewport-8-plugin": "^1.2.5",
