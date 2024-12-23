@@ -13,7 +13,7 @@
           <div class="w-full mb-[20px]">
             <div class="h-[24px] text-left text-white">* 模型选择</div>
             <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
-              <div :tabindex="index"
+              <div :tabindex="index" v-bind:key="index"
                 :style="{ border: selectedModelType.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
                 class="model-item flex flex-col items-center text-[12px] justify-around"
                 v-for="(item, index) in modelTypes" @click="selectModelType(item)">
@@ -28,8 +28,9 @@
                 <el-radio-button v-for="item in modelStyleList" :label="item" :value="item" />
               </el-radio-group>
             </div> -->
-            <div class="w-full flex flex-wrap">
-              <div @click="selectModel(item)" class="model-theme-item flex justify-center items-center text-white"
+            <div class="w-full flex flex-wrap" v-loading="getModelInfoStatus === 'pending'">
+              <div @click="selectModel(item)" v-bind:key="index"
+                class="model-theme-item flex justify-center items-center text-white"
                 :style="{ border: selectedModel === item ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
                 :tabindex="index" v-for="(item, index) in modelList">
                 {{ item.model_desc }}</div>
@@ -147,6 +148,32 @@
                 </div>
               </template>
               <template v-if="selectedModelType.value === MODEL_TYPE_VALUE_MAP.MJ_MODEL_TYPE">
+                <CreateModuleResourceSelector ref="styleDecorationSelectorRef" :outerTitle="'风格修饰类型选择'"
+                  :drawer-title="'风格修饰选择器'" :resource-options="styleDecorationOptions" />
+                <div class="w-full text-left text-white mb-[8px]">视角选择</div>
+                <div class="w-full flex flex-wrap mb-[8px]">
+                  <div @click="selectView(item)" v-bind:key="index"
+                    class="model-theme-item flex justify-center items-center text-white"
+                    :style="{ border: selectedView?.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
+                    :tabindex="index" v-for="(item, index) in MJ_VIEW_LIST_OPTIONS">
+                    {{ item.label }}</div>
+                </div>
+                <div class="w-full text-left text-white mb-[8px]">人物镜头选择</div>
+                <div class="w-full flex flex-wrap mb-[8px]">
+                  <div @click="selectShot(item)" v-bind:key="index"
+                    class="model-theme-item flex justify-center items-center text-white"
+                    :style="{ border: selectedShot?.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
+                    :tabindex="index" v-for="(item, index) in MJ_SHOT_LIST_OPTIONS">
+                    {{ item.label }}</div>
+                </div>
+                <div class="w-full text-left text-white mb-[8px]">灯光选择</div>
+                <div class="w-full flex flex-wrap mb-[8px]">
+                  <div @click="selectLight(item)" v-bind:key="index"
+                    class="model-theme-item flex justify-center items-center text-white"
+                    :style="{ border: selectedLight?.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
+                    :tabindex="index" v-for="(item, index) in MJ_LIGHT_LIST_OPTIONS">
+                    {{ item.label }}</div>
+                </div>
                 <div class="w-full flex flex-col">
                   <span class="text-white mb-[8px]">风格参考图</span>
                   <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]"
@@ -217,8 +244,8 @@
               </template>
             </template>
           </div>
-          <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"><span
-              class="mr-[18px]">立即生成</span>
+          <div class="createWorkBtn flex items-center justify-center z-[99]" @click="createAI"
+            v-loading="createAILoading"><span class="mr-[18px]">立即生成</span>
           </div>
 
         </div>
@@ -227,6 +254,9 @@
             <template v-if="selectedArtwork">
               <template v-if="selectedArtwork.status === ARTWORK_CREATE_SUCCESS && selectedArtwork.picture_url">
                 <img class="w-full h-full object-contain" :src="selectedArtwork.picture_url" alt="" />
+                <el-icon style="position: absolute" class="top-[10px] right-[10px] ">
+                  <FullScreen class="text-white" @click="handlePreviewImg" />
+                </el-icon>
               </template>
               <template v-else>
                 <ClientOnly>
@@ -236,7 +266,7 @@
             </template>
           </div>
           <div class="w-full grid grid-cols-5 grid-rows-5 gap-[10px]">
-            <template v-for="item in artworkInfoList">
+            <template v-for="(item, index) in artworkInfoList">
               <div class="w-[130px] h-[130px] relative rounded-[8px] overflow-hidden bg-[#23262f]" :style="{
                 border: selectedArtwork === item ? '2px solid rgb(177, 181, 196)' : '0px'
               }" @click="selectArtwork(item)">
@@ -264,20 +294,30 @@
           </div>
         </div>
       </div>
+      <div class="w-[80px] flex flex-col pt-[20px] items-center">
+        <el-icon style="font-size: 24px" @click="handleShowImgPrompt">
+          <ChatLineRound style="color: white" />
+        </el-icon>
+      </div>
     </div>
+    <el-dialog style="width: 80%" v-model="previewImgDialogVisible">
+      <img class="w-full object-contain" :src="selectedArtwork?.picture_url" alt="Preview Image" />
+    </el-dialog>
+    <el-dialog v-model="showImgPromptDialog" title="画面描述词" width="30%">
+      <span>{{ selectedArtwork?.input_model_prompt || selectedArtwork?.model_prompt }}</span>
+    </el-dialog>
   </el-scrollbar>
-
 </template>
 
 <script lang="ts" setup>
 import { Search } from '@element-plus/icons-vue'
 import { invokeSaveAsDialog } from 'recordrtc'
 
-import { Plus, Microphone, Mute } from '@element-plus/icons-vue'
+import { FullScreen, ChatLineRound } from '@element-plus/icons-vue'
 
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
-import type { GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
-import { modelFusionOptionsKey } from '@/utils'
+import type { SelectOption, GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
+import { modelFusionOptionsKey, MJ_VIEW_LIST_OPTIONS, MJ_SHOT_LIST_OPTIONS, MJ_LIGHT_LIST_OPTIONS } from '@/utils'
 
 // 录音相关
 const audioRecorder = useAudioRecorder({
@@ -374,11 +414,12 @@ const selectModelType = (item: typeof MODEL_TYPE_LIST[number]) => {
 }
 
 // 2.模型主题选择
-const { data: modelTypeList, status, error } = getModelInfo()
-console.log(modelTypeList, status, error)
+const { data: modelTypeList, status: getModelInfoStatus, error } = getModelInfo()
+console.log(modelTypeList, getModelInfoStatus, error)
 // 根据当前模型类型计算模型列表
 const modelList = computed(() => {
   if (modelTypeList.value?.data) {
+    console.log('computedmodellist', modelTypeList.value.data.filter(item => (item.type === selectedModelType.value.value)).filter(item => item.model_code !== 301 && item.model_code !== 302) || [])
     return modelTypeList.value.data.filter(item => (item.type === selectedModelType.value.value)).filter(item => item.model_code !== 301 && item.model_code !== 302) || [] // 301,302老mj模型不稳定
   }
   return []
@@ -625,6 +666,27 @@ const customUploadRequest = async (data: UploadRequestOptions) => {
   console.log('customUploadRequest str', str)
 }
 
+// 视角
+const selectedView = ref<SelectOption>()
+const selectView = (item: SelectOption) => {
+  selectedView.value = item
+}
+
+// 人物镜头
+const selectedShot = ref<SelectOption>()
+const selectShot = (item: SelectOption) => {
+  selectedShot.value = item
+}
+
+// 灯光
+const selectedLight = ref<SelectOption>()
+const selectLight = (item: SelectOption) => {
+  console.log('selectedLight', item)
+  selectedLight.value = item
+}
+
+// 场景
+
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile
@@ -712,6 +774,20 @@ const generateStyleModelOption = () => {
 
 }
 
+const calcPromptWithOptions = () => {
+  let rawPrompt = promptStr.value
+  if (selectedView.value) {
+    rawPrompt = `${selectedView.value.value}, ${rawPrompt}`
+  }
+  if (selectedShot.value) {
+    rawPrompt = `${selectedShot.value.value}, ${rawPrompt}`
+  }
+  if (selectedLight.value) {
+    rawPrompt = `${selectedLight.value.value}, ${rawPrompt}`
+  }
+  return rawPrompt
+}
+
 const generateMJModelOption = () => {
   if (!selectedResolutionWithAndHeight.value) {
     ElMessage.error('请选择分辨率')
@@ -721,9 +797,10 @@ const generateMJModelOption = () => {
   const createOption: MJAICreateRequest = {
     model: selectedModel.value?.model_code,
     num: createNum.value,
-    prompt: promptStr.value,
+    prompt: calcPromptWithOptions(),
     width: selectedResolutionWithAndHeight.value.width,
     height: selectedResolutionWithAndHeight.value.height,
+    style_decoration: styleDecorationSelectorRef.value?.selectedResourceTypes.map(item => item.key) || [],
     mj_param: {
       chaos: chaos.value,
       stylize: stylize.value,
@@ -779,7 +856,10 @@ const createWithMJAI = async () => {
   }
 }
 
+const createAILoading = ref(false)
+
 const createAI = async () => {
+  createAILoading.value = true
   if (selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.COMIC_MODEL_TYPE || selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.GENERAL_MODEL_TYPE) {
     await createWithDefaultAI()
   }
@@ -787,8 +867,24 @@ const createAI = async () => {
   if (selectedModelType.value.value === MODEL_TYPE_VALUE_MAP.MJ_MODEL_TYPE) {
     await createWithMJAI()
   }
+  createAILoading.value = false
 }
 
+const previewImgDialogVisible = ref(false)
+
+const handlePreviewImg = () => {
+  console.log('Preview Image')
+  previewImgDialogVisible.value = true
+}
+
+const showImgPromptDialog = ref(false)
+const handleShowImgPrompt = () => {
+  showImgPromptDialog.value = true
+}
+
+watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) => {
+  console.log('styleDecorationOptions', newVal)
+})
 </script>
 
 <style scoped lang="scss">

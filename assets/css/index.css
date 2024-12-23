@@ -7,4 +7,5 @@ html, body, #__nuxt {
 
 :root {
     --el-color-primary: #FFD925!important;
+    --el-mask-color: none!important;
 }

@@ -9,26 +9,37 @@ import { computed } from 'vue';
         {{ '登录第一时间掌握最新动态' }}
       </div>
     </template>
-    <div class="h-[295px] w-full flex mt-[44px]">
+    <div class="h-[315px] w-full flex mt-[44px]">
       <div class="w-[50%] flex flex-col items-center border-r-[1px] border-r-[#F3F3F3]">
         <span class="first-letter">登录小程序</span>
         <img src="~/assets/code.png" class="w-[153px] h-[153px] mt-[25px]" />
         <span class="second-letter">请使用微信扫一扫登录CC小程序</span>
-        <div class="w-[334px] h-[19px] rounded-[10px] third-letter">
+        <div class="w-[334px] h-[2px] rounded-[10px] third-letter">
         </div>
       </div>
       <div class="w-[50%] flex flex-col items-center">
-        <span class="mt-[17px] code">验证码登录</span>
-        <el-input class="mt-[20px] input" placeholder="请输入手机号" v-model="phone"></el-input>
-        <div class="mt-[15px] relative">
-          <el-input class="input" placeholder="请输入验证码" v-model="code"></el-input>
-          <span class="codeInfo" v-if="!showCountDown" @click="handleClickSendCode">发送验证码</span>
-          <span class="codeInfo" v-else>{{ initCountDownNum }}</span>
-        </div>
-        <el-button class="mt-[46px] login" @click="handleClickLogin">登录</el-button>
-        <div class="flex items-center">
-          <el-checkbox v-model="checkedAgree" label="" size="large" />
-          <span class="agree">我已阅读并同意服务协议与隐私政策</span>
+        <span class="mt-[17px] code">{{ topLoginTitleText }}</span>
+        <template v-if="isPhoneLogin">
+
+          <el-input class="mt-[20px] input" placeholder="请输入手机号" v-model="phone"></el-input>
+          <div class="mt-[15px] relative">
+            <el-input class="input" placeholder="请输入验证码" v-model="code"></el-input>
+            <span class="codeInfo" v-if="!showCountDown" @click="handleClickSendCode">发送验证码</span>
+            <span class="codeInfo" v-else>{{ initCountDownNum }}</span>
+          </div>
+        </template>
+        <template v-else>
+
+          <el-input class="mt-[20px] input" placeholder="请输入您的用户名" v-model="username"></el-input>
+          <el-input class="mt-[20px] input" placeholder="请输入您的密码" v-model="password"></el-input>
+        </template>
+        <el-button class="mt-[46px] login" @click="handleClickLogin" v-loading="loginLoading">登录</el-button>
+        <div class="flex items-center flex-col">
+          <div class="flex items-center">
+            <el-checkbox v-model="checkedAgree" label="" size="large" />
+            <span class="agree">我已阅读并同意服务协议与隐私政策</span>
+          </div>
+          <span class="text-[#0054FF]" @click="clickChangeLoginEntry">{{ footerLoginEntryText }}</span>
         </div>
       </div>
     </div>
@@ -40,15 +51,25 @@ interface Props {
   visible: boolean;
 }
 
+const loginLoading = ref(false)
 const authStore = useAuthStore()
 const props = defineProps<Props>()
 const phone = ref('')
 const code = ref('')
+const username = ref('')
+const password = ref('')
 const loginRef = ref()
 const dialogVisible = ref(false)
 const showCountDown = ref(false)
 const countDownInterval = ref()
+const isPhoneLogin = ref(true)
+const footerLoginEntryText = computed(() => isPhoneLogin.value ? '用户名密码登录' : '手机验证码登录')
+const topLoginTitleText = computed(() => isPhoneLogin.value ? '手机验证码登录' : '用户名密码登录')
 let initCountDownNum = ref(60)
+
+const clickChangeLoginEntry = () => {
+  isPhoneLogin.value = !isPhoneLogin.value
+}
 
 const customClose = () => {
   authStore.setLoginDialog(false)
@@ -82,8 +103,10 @@ const handleClickSendCode = async () => {
 }
 
 const handleClickLogin = async () => {
+  loginLoading.value = true
   try {
     const { data, code: resCode, message } = await loginByPhoneCode(phone.value, code.value)
+    loginLoading.value = false
     console.log('loginByPhoneCode data', data, resCode, message)
     if (resCode && parseInt(resCode) == 200) {
       ElMessage.success('登录成功')
@@ -98,6 +121,7 @@ const handleClickLogin = async () => {
     console.log('handleClickLogin error', e)
     ElMessage.error('登录失败，错误信息：' + (e.data.message ? JSON.stringify(e.data.message) : ''))
   }
+  loginLoading.value = false
 }
 
 defineExpose({
