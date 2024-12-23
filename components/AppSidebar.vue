@@ -1,10 +1,18 @@
 <template>
   <div class="flex w-full flex-col items-center">
-    <div class="sideItem mb-[32px]" @click="clickShowLoginDialog">
-      <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt="">
+    <div class="sideItem mb-[32px]" @click="() => { }">
+      <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt=""
+        @click="handleClickHeadIcon">
       <span class="text-white text-xs">AI创作者</span>
+      <div v-show="showUserConfigPanel"
+        class="w-[107px] h-[187px] bg-[#3413FF] rounded-[10px] flex flex-col absolute left-[114px] top-[0px] z-[999] justify-around">
+        <div class="text-center config-panel-item">订单</div>
+        <div class="text-center config-panel-item">资产</div>
+        <div class="text-center config-panel-item">设置</div>
+        <div class="text-center config-panel-item" @click="handleLogout">退出</div>
+      </div>
     </div>
-    <NuxtLink :to="item.path" @click="handleClick(item)" v-for="(item, index) in routeInfo">
+    <NuxtLink :to="item.path" @click="handleClick(item)" v-bind:key="index" v-for="(item, index) in routeInfo">
       <div :class="'sideItem ' + (curSelectedRouteItem?.name === item.name ? 'curClick' : '')">
         <div class="relative outerDiv">
           <img class="w-[24px] h-[24px]" :src="item.url" alt="">
@@ -27,13 +35,14 @@ import PracticeImg from '~/assets/practice.png'
 import ActivityImg from '~/assets/activity.png'
 import HomeImg from '~/assets/home.png'
 
-const route = useRoute()
 interface RouteItemInfo {
   name: string,
   url: string,
   path: string
 }
-
+const route = useRoute()
+const router = useRouter()
+const showUserConfigPanel = ref(false)
 const authStore = useAuthStore()
 const routeInfo: RouteItemInfo[] = [{
   name: '作品展示',
@@ -59,6 +68,14 @@ const routeInfo: RouteItemInfo[] = [{
 
 const curSelectedRouteItem = ref<RouteItemInfo | null>(null)
 const handleClick = (item: RouteItemInfo) => {
+  // 判断当前是否点击除explore 外菜单
+  if (item.path !== '/explore') {
+    if (!authStore.isLogin) {
+      authStore.setLoginDialog(true)
+      return
+    }
+  }
+
   curSelectedRouteItem.value = item
   console.log('curSelectedRouteItem', curSelectedRouteItem)
 }
@@ -93,11 +110,35 @@ const clickShowOrderDialog = () => {
   orderDialogRef.value.userOrderRef.dialogVisible = true
 }
 
-onMounted(() => {
-  const path = route.path
-  console.log('route path', path)
-  curSelectedRouteItem.value = routeInfo.find(item => path.startsWith(item.path)) || null
-})
+const handleClickHeadIcon = () => {
+  // 判断当前是否未登录
+  if (!authStore.isLogin) {
+    authStore.setLoginDialog(true)
+    return
+  }
+  showUserConfigPanel.value = !showUserConfigPanel.value
+}
+
+const handleLogout = () => {
+  authStore.logOut()
+  // 判断当前是否在explore页，不是则跳转到explore页
+  if (route.path !== '/explore') {
+    router.push('/explore')
+  }
+  showUserConfigPanel.value = false
+}
+
+// onMounted(() => {
+//   const path = route.path
+//   console.log('route path', path)
+//   curSelectedRouteItem.value = routeInfo.find(item => path.startsWith(item.path)) || null
+// })
+
+watch(() => route.path, (newVal: string) => {
+  if (newVal) {
+    curSelectedRouteItem.value = routeInfo.find(item => newVal.startsWith(item.path)) || null
+  }
+}, { immediate: true })
 </script>
 
 <style scoped lang="scss">
@@ -115,6 +156,13 @@ onMounted(() => {
   color: #FFFFFF;
   cursor: pointer;
   position: relative;
+
+  .config-panel-item {
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    font-size: 14px;
+    color: #FFFFFF;
+  }
 }
 
 .curClick {

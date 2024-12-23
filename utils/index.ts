@@ -99,3 +99,116 @@ export const handleApiError = (error: any) => {
     authStore.setLoginDialog(true)
   }
 }
+
+export const MJ_VIEW_LIST_OPTIONS = [
+  {
+    "value": "Wide view",
+    "label": "宽视角"
+  },
+  {
+    "value": "Aerial view",
+    "label": "鸟瞰视角"
+  },
+  {
+    "value": "Top view",
+    "label": "顶视角"
+  },
+  {
+    "value": "Upview",
+    "label": "仰视角"
+  },
+  {
+    "value": "Front view",
+    "label": "正面视角"
+  },
+  {
+    "value": "Headshot",
+    "label": "头部特写"
+  },
+  {
+    "value": "Ultrawideshot",
+    "label": "超广角视角"
+  },
+  {
+    "value": "Medium Shot(MS)",
+    "label": "中景"
+  },
+  {
+    "value": "Long Shot(LS)",
+    "label": "远景"
+  },
+  {
+    "value": "depth offield(dof)",
+    "label": "景深"
+  }
+]
+
+export const MJ_SHOT_LIST_OPTIONS = [
+  {
+    "value": "Face Shot (VCU)",
+    "label": "脸部特写"
+  },
+  {
+    "value": "Big Close-Up(BCU)",
+    "label": "大特写"
+  },
+  {
+    "value": "Close-Up(CU)",
+    "label": "特写"
+  },
+  {
+    "value": "Waist Shot(WS)",
+    "label": "腰部以上"
+  },
+  {
+    "value": "KneeShot(KS)",
+    "label": "膝盖以上"
+  },
+  {
+    "value": "Full Length Shot(FLS)",
+    "label": "全身照"
+  },
+  {
+    "value": "Extra Long Shot(ELS)",
+    "label": "极远景"
+  }
+]
+
+export const MJ_LIGHT_LIST_OPTIONS = [
+  {
+    "value": "Cold light",
+    "label": "冷光"
+  },
+  {
+    "value": "Warm light",
+    "label": "暖光"
+  },
+  {
+    "value": "hard lighting",
+    "label": "硬光"
+  },
+  {
+    "value": "Dramatic light",
+    "label": "戏剧性光线"
+  },
+  {
+    "value": "reflection light",
+    "label": "反射光"
+  },
+  {
+    "value": "Misty foggy",
+    "label": "薄雾"
+  },
+  {
+    "value": "Natural light",
+    "label": "自然光"
+  },
+  {
+    "value": "Sun light",
+    "label": "阳光"
+  },
+  {
+    "value": "moody",
+    "label": "情绪化"
+  }
+]

@@ -1397,6 +1397,7 @@ export interface MJAICreateRequest {
    * 可通过`获取作画模型的预设资源(ai/default_resource)`接口查询，获取返回列表中的分辨率信息（`resolution_new`-`resolution`_`list`-width`）。
    */
   width: number;
+  style_decoration: string[];
 }
 
 /**
@@ -1584,6 +1585,7 @@ export interface DrawTaskDetailItem {
    */
   key?: string;
   model_prompt?: string;
+  input_model_prompt?: string;
   // 计算最终的url
   picture_url?: string;
   /**
@@ -1616,4 +1618,10 @@ export interface GetBatchDrawTaskDetailsRes extends BaseRes {
   data: {
     list: DrawTaskDetailItem[]
   }
+}
+
+
+export interface SelectOption {
+  label: string,
+  value: string
 }
