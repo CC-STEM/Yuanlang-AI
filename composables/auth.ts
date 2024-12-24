@@ -96,3 +96,13 @@ export const loginByPhoneCode = async (phone: string, code: string) => {
     baseURL: runtimeConfig.public.apiBase,
   });
 };
+
+export const loginByUserName = async (username: string, password: string) => {
+  const runtimeConfig = useRuntimeConfig();
+
+  return await $fetch<any>(`/api/auth/login`, {
+    method: "POST",
+    body: { username, password },
+    baseURL: runtimeConfig.public.apiBase,
+  });
+}
