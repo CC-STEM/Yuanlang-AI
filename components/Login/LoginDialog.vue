@@ -105,7 +105,7 @@ const handleClickSendCode = async () => {
 const handleClickLogin = async () => {
   loginLoading.value = true
   try {
-    const { data, code: resCode, message } = await loginByPhoneCode(phone.value, code.value)
+    const { data, code: resCode, message } = isPhoneLogin.value ? (await loginByPhoneCode(phone.value, code.value)) : (await loginByUserName(username.value, password.value))
     loginLoading.value = false
     console.log('loginByPhoneCode data', data, resCode, message)
     if (resCode && parseInt(resCode) == 200) {
