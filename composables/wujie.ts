@@ -219,7 +219,7 @@ export const getDrawTaskKeys = async (page: number, size: number) => {
 export const getGlobalDrawTasks = async (page: number, size: number) => {
   const runtimeConfig = useRuntimeConfig();
   return await commoneFetch<GetGlobalDrawTaskDetailsRes>(
-    `/api/wujie/batchGetDrawTaskInfoByUser`,
+    `/api/wujie/batchGetGlobalFinishedDrawInfo`,
     {
       method: "POST",
       body: {
