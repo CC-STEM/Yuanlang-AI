@@ -81,6 +81,19 @@ export default defineNuxtConfig({
       '@better-scroll/scroll-bar'],
 
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        external: [
+          '@better-scroll/core',
+          '@better-scroll/mouse-wheel',
+          '@better-scroll/observe-dom',
+          '@better-scroll/pull-up',
+          '@better-scroll/scroll-bar'
+        ]
+      }
+    }
+  },
   nitro: {
     // devProxy: {
     //   "/api": {
