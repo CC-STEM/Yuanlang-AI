@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@element-plus/nuxt", "@pinia/nuxt", "@vueuse/nuxt", "@nuxt/icon", '@better-scroll/core', '@better-scroll/mouse-wheel', '@better-scroll/observe-dom', '@better-scroll/pull-up', '@better-scroll/scroll-bar'],
+  modules: ["@element-plus/nuxt", "@pinia/nuxt", "@vueuse/nuxt", "@nuxt/icon"],
   routeRules: {
     "/create": {
       ssr: false,
@@ -72,6 +72,14 @@ export default defineNuxtConfig({
         //   landscapeWidth: 1338,
       },
     },
+  },
+  build: {
+    transpile: ['@better-scroll/core',
+      '@better-scroll/mouse-wheel',
+      '@better-scroll/observe-dom',
+      '@better-scroll/pull-up',
+      '@better-scroll/scroll-bar'],
+
   },
   nitro: {
     // devProxy: {
