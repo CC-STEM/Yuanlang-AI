@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.3...v0.1.4) (2024-12-27)
+
+
+### Features
+
+* 支持瀑布流 ([5203e85](https://github.com/CC-STEM/Yuanlang-AI/commit/5203e85a1019b37cf8fe2431cd97173af2b8f663))
+
 ### 0.1.3 (2024-12-24)
 
 
