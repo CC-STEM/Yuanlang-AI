@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import BScroll from '@better-scroll/core'
-import ScrollBar from '@better-scroll/scroll-bar'
-import ObserveDOM from '@better-scroll/observe-dom'
-import MouseWheel from '@better-scroll/mouse-wheel'
-import Pullup from '@better-scroll/pull-up'
+import BScroll from 'better-scroll'
+// import ScrollBar from '@better-scroll/scroll-bar'
+// import ObserveDOM from '@better-scroll/observe-dom'
+// import MouseWheel from '@better-scroll/mouse-wheel'
+// import Pullup from '@better-scroll/pull-up'
 import type { BScrollConstructor } from '@better-scroll/core/dist/types/BScroll'
 import { onMounted, ref } from 'vue'
 
@@ -13,10 +13,10 @@ const emits = defineEmits({
 })
 
 // 鼠标插件
-BScroll.use(MouseWheel)
-BScroll.use(ObserveDOM)
-BScroll.use(ScrollBar)
-BScroll.use(Pullup)
+// BScroll.use(MouseWheel)
+// BScroll.use(ObserveDOM)
+// BScroll.use(ScrollBar)
+// BScroll.use(Pullup)
 
 // 滚动
 const scrollEl = ref(null)
