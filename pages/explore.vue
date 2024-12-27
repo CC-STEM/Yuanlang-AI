@@ -50,6 +50,15 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  script: [
+    {
+      type: "text/javascript",
+      src: 'https://unpkg.com/better-scroll@latest/dist/better-scroll.min.js'
+    }
+  ]
+})
+
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
 import Img1 from '~/assets/img1.jpeg'

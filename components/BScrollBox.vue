@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BScroll from 'better-scroll'
+// import BScroll from 'better-scroll'
 // import ScrollBar from '@better-scroll/scroll-bar'
 // import ObserveDOM from '@better-scroll/observe-dom'
 // import MouseWheel from '@better-scroll/mouse-wheel'
@@ -30,7 +30,7 @@ function initBs() {
   if (!scrollEl.value)
     return
 
-  bs.value = new BScroll(scrollEl.value, {
+  bs.value = BetterScroll.createBScroll(scrollEl.value, {
     probeType: 3,
     click: true,
     pullUpLoad: true,
