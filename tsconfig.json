@@ -3,6 +3,7 @@
 	"extends": "./.nuxt/tsconfig.json",
 	"compilerOptions": {
 		// ...
-		"types": ["element-plus/global"]
+		"types": ["element-plus/global"],
+		"moduleResolution": "node"
 	}
 }

@@ -11,11 +11,11 @@
             </div>
           </div>
           <div class="w-full mb-[20px]">
-            <div class="h-[24px] text-left text-white">* 模型选择</div>
+            <div class="h-[24px] text-left text-white mb-[8px]">* 模型选择</div>
             <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
               <div :tabindex="index" v-bind:key="index"
                 :style="{ border: selectedModelType.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
-                class="model-item flex flex-col items-center text-[12px] justify-around"
+                class="model-item flex flex-col items-center text-[16px] justify-around"
                 v-for="(item, index) in modelTypes" @click="selectModelType(item)">
                 <span class="text-white ">{{ item.name }}</span>
               </div>
@@ -131,10 +131,10 @@
                   :drawer-title="'角色与人物选择器'" :resource-options="characterOptions" />
                 <CreateFusionModelSelector ref="fusionModelSelectorRef" :resource-options="modelFusionOptions" />
                 <div class="w-full mb-[40px] flex flex-col randomBox p-[12px]">
-                  <span class="text-[12px] mb-[8px] text-white">随机种子</span>
+                  <span class="text-[16px] mb-[8px] text-white">随机种子</span>
                   <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">提示词相关性</span>
+                    <span class="text-white text-[16px]">提示词相关性</span>
                     <el-slider style="width: 80%" v-model="CFGScale" show-input />
                   </div>
                   <!-- <div class="flex justify-between items-center mb-[14px]">
@@ -176,9 +176,9 @@
                 </div>
                 <div class="w-full flex flex-col">
                   <span class="text-white mb-[8px]">风格参考图</span>
-                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]"
-                    v-model:file-list="styleRefImageUrls" :on-success="handleAddStyleReImgSuccess"
-                    :before-upload="beforeAvatarUpload" :on-remove="handleStyleRefImgRemove" list-type="picture-card">
+                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]" :file-list="styleRefImageUrls"
+                    :on-success="handleAddStyleReImgSuccess" :before-upload="beforeAvatarUpload"
+                    :on-remove="handleStyleRefImgRemove" list-type="picture-card">
                     <el-icon class="avatar-uploader-icon">
                       <Plus />
                     </el-icon>
@@ -186,10 +186,9 @@
                 </div>
                 <div class="w-full flex flex-col">
                   <span class="text-white mb-[8px]">角色参考图</span>
-                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]"
-                    v-model:file-list="characterRefImageUrls" :on-success="handleAddCharacterReImgSuccess"
-                    :before-upload="beforeAvatarUpload" :on-remove="handleCharacterRefImgRemove"
-                    list-type="picture-card">
+                  <el-upload :action="UPLOAD_URL" class="avatar-uploader mb-[30px]" :file-list="characterRefImageUrls"
+                    :on-success="handleAddCharacterReImgSuccess" :before-upload="beforeAvatarUpload"
+                    :on-remove="handleCharacterRefImgRemove" list-type="picture-card">
                     <el-icon class="avatar-uploader-icon">
                       <Plus />
                     </el-icon>
@@ -199,27 +198,27 @@
                   <!-- <span class="text-[12px] mb-[8px] text-white">随机种子</span>
                   <el-input style="margin-bottom: 10px;" v-model="uniqueCreateNum" placeholder="请输入随机种子"></el-input> -->
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">提示词相关性</span>
+                    <span class="text-white text-[16px]">提示词相关性</span>
                     <el-slider style="width: 80%" v-model="CFGScale" show-input />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">风格参考权重</span>
+                    <span class="text-white text-[16px]">风格参考权重</span>
                     <el-slider style="width: 80%" v-model="stylizeWeight" show-input :max="1000" :min="0" />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">角色参考权重</span>
+                    <span class="text-white text-[16px]">角色参考权重</span>
                     <el-slider style="width: 80%" v-model="characterWeight" show-input :max="100" :min="0" />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">风格差异化</span>
+                    <span class="text-white text-[16px]">风格差异化</span>
                     <el-slider style="width: 80%" v-model="chaos" show-input />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">风格艺术化</span>
+                    <span class="text-white text-[16px]">风格艺术化</span>
                     <el-slider style="width: 80%" v-model="stylize" show-input />
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">QUALITY</span>
+                    <span class="text-white text-[16px]">QUALITY</span>
                     <el-radio-group v-model="quality">
                       <el-radio-button label="0.5" value="0.5" />
                       <el-radio-button label="1" value="1" />
@@ -227,14 +226,14 @@
                     </el-radio-group>
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">UPBETA</span>
+                    <span class="text-white text-[16px]">UPBETA</span>
                     <el-radio-group v-model="upbeta">
                       <el-radio-button label="是" :value="true" />
                       <el-radio-button label="否" :value="false" />
                     </el-radio-group>
                   </div>
                   <div class="flex justify-between items-center mb-[14px]">
-                    <span class="text-white text-[12px]">TILE</span>
+                    <span class="text-white text-[16px]">TILE</span>
                     <el-radio-group v-model="tile">
                       <el-radio-button label="是" :value="true" />
                       <el-radio-button label="否" :value="false" />
@@ -716,10 +715,10 @@ const handleAddStyleReImgSuccess: UploadProps['onSuccess'] = (
 ) => {
   // imageUrl.value = URL.createObjectURL(uploadFile.raw!)
   console.log('handleAddStyleReImgSuccess', response, uploadFile)
-  styleRefImageUrls.value.push({
-    name: uploadFile.name,
-    url: response.data
-  })
+  // styleRefImageUrls.value.push({
+  //   name: uploadFile.name,
+  //   url: response.data
+  // })
   // imageUrl.value = response.data
 }
 
@@ -951,7 +950,7 @@ watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) =>
   margin-left: 4px;
   margin-right: 4px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 16px;
   // border: 2px solid #23262f;
 }
 
@@ -966,7 +965,7 @@ watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) =>
   margin-left: 4px;
   margin-right: 4px;
   border-radius: 90px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 // .resolute-item:focus {
@@ -980,7 +979,7 @@ watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) =>
   background: #23262f;
   margin: 3px;
   border-radius: 90px;
-  font-size: 12px;
+  font-size: 16px;
   text-wrap: wrap;
   text-align: center
 }

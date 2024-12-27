@@ -1620,6 +1620,13 @@ export interface GetBatchDrawTaskDetailsRes extends BaseRes {
   }
 }
 
+export interface GetGlobalDrawTaskDetailsRes extends BaseRes {
+  data: {
+    list: DrawTaskDetailItem[]
+    total: number;
+  }
+}
+
 
 export interface SelectOption {
   label: string,
