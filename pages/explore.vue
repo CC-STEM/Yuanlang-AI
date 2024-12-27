@@ -3,12 +3,14 @@
     <div class="h-[78px] w-full flex items-center">
       <div class="w-[calc(100%-139px)]">
         <div class="h-[30px] w-full mt-[9px] mb-[9px] flex">
-          <div @click="handleClickOption1(item)" :class="'tag ' + (curSelectedFilterOption1 === item ? 'selected' : '')"
-            v-for="item in mockFilterOptions1">{{ item }}</div>
+          <div v-bind:key="index" @click="handleClickOption1(item)"
+            :class="'tag ' + (curSelectedFilterOption1 === item ? 'selected' : '')"
+            v-for="(item, index) in mockFilterOptions1">{{ item }}</div>
         </div>
         <div class="h-[30px] w-full mt-[9px] mb-[9px] flex">
-          <div @click="handleClickOption2(item)" :class="'tag ' + (curSelectedFilterOption2 === item ? 'selected' : '')"
-            v-for="item in mockFilterOptions2">{{ item }}</div>
+          <div v-bind:key="index" @click="handleClickOption2(item)"
+            :class="'tag ' + (curSelectedFilterOption2 === item ? 'selected' : '')"
+            v-for="(item, index) in mockFilterOptions2">{{ item }}</div>
         </div>
       </div>
       <div class="w-[1px] h-[58px] bg-[#2B4187] mr-[30px]"></div>
@@ -26,8 +28,8 @@
     </div>
     <div class="h-[calc(100%-78px)] w-full">
       <ClientOnly>
-        <el-scrollbar>
-          <Waterfall :gutter="10" :rowKey="'id'" ref="waterfall" :list="mockImgList" :background-color="'none'"
+        <BScrollBox ref="bs" @pullingUp="pullingUp">
+          <Waterfall :gutter="10" :rowKey="'id'" ref="waterfall" :list="globalDrawList" :background-color="'none'"
             :align="'left'" :load-props="loadProps">
             <template #default="{ item, url, index }">
               <div
@@ -41,7 +43,7 @@
               </div>
             </template>
           </Waterfall>
-        </el-scrollbar>
+        </BScrollBox>
       </ClientOnly>
     </div>
   </div>
@@ -80,6 +82,36 @@ const mockFilterOptions2 = [
 
 const curSelectedFilterOption1 = ref('全部')
 const curSelectedFilterOption2 = ref('全部')
+
+const bs = ref<any>(null)
+const pageOptions = ref({
+  page: 1,
+  size: 20
+})
+
+const globalDrawList = ref<{
+  src: string;
+  name: string;
+}[]>([])
+
+onMounted(() => {
+  fetchGlobalDrawList()
+})
+
+const fetchGlobalDrawList = async () => {
+  const res = await getGlobalDrawTasks(pageOptions.value.page, pageOptions.value.size)
+  globalDrawList.value.push(...(res.data.list.map(item => ({
+    src: item.qcloud_cos_url || item.wujie_picture_url || '',
+    name: item.key!
+  }))))
+}
+
+async function pullingUp() {
+  pageOptions.value.page += 1
+  await fetchGlobalDrawList()
+  if (bs.value)
+    bs.value.finishPullUp()
+}
 
 const handleClickOption1 = (option: string) => {
   curSelectedFilterOption1.value = option
@@ -183,6 +215,8 @@ const loadProps = {
   //   // return curRatio
   // },
 }
+
+
 </script>
 
 <style lang="scss" scoped>

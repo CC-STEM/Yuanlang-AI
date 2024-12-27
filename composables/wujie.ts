@@ -8,7 +8,8 @@ import type {
   GetArtworkHistoryDetailListRes,
   MJAICreateRequest,
   GetBatchDrawTaskKeysRes,
-  GetBatchDrawTaskDetailsRes
+  GetBatchDrawTaskDetailsRes,
+  GetGlobalDrawTaskDetailsRes
 } from "../types";
 
 type UseFetchOptions = {
@@ -215,6 +216,21 @@ export const getDrawTaskKeys = async (page: number, size: number) => {
   );
 }
 
+export const getGlobalDrawTasks = async (page: number, size: number) => {
+  const runtimeConfig = useRuntimeConfig();
+  return await commoneFetch<GetGlobalDrawTaskDetailsRes>(
+    `/api/wujie/batchGetDrawTaskInfoByUser`,
+    {
+      method: "POST",
+      body: {
+        page,
+        size
+      },
+      baseURL: runtimeConfig.public.apiBase,
+    }
+  );
+}
+
 export const batchGetDrawTasksDetailByKeys = async (keys: string[]) => {
   const runtimeConfig = useRuntimeConfig();
   return await commoneFetch<GetBatchDrawTaskDetailsRes>(
@@ -226,3 +242,4 @@ export const batchGetDrawTasksDetailByKeys = async (keys: string[]) => {
     }
   );
 }
+
