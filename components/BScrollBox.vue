@@ -30,28 +30,30 @@ function initBs() {
   if (!scrollEl.value)
     return
 
-  bs.value = BetterScroll.createBScroll(scrollEl.value, {
-    probeType: 3,
-    click: true,
-    pullUpLoad: true,
-    observeDOM: true, // 开启 observe-dom 插件
-    mouseWheel: {
-      speed: 20,
-      invert: false,
-      easeTime: 300,
-    },
-    scrollY: true,
-    scrollbar: true,
-  })
+  if (window.BetterScroll) {
+    bs.value = window.BetterScroll.createBScroll(scrollEl.value, {
+      probeType: 3,
+      click: true,
+      pullUpLoad: true,
+      observeDOM: true, // 开启 observe-dom 插件
+      mouseWheel: {
+        speed: 20,
+        invert: false,
+        easeTime: 300,
+      },
+      scrollY: true,
+      scrollbar: true,
+    })
 
-  bs.value.on('scroll', (data: any) => {
-    emits('scroll', data)
-  })
+    bs.value.on('scroll', (data: any) => {
+      emits('scroll', data)
+    })
 
-  bs.value.on('pullingUp', () => {
-    emits('pullingUp')
-    loading.value = true
-  })
+    bs.value.on('pullingUp', () => {
+      emits('pullingUp')
+      loading.value = true
+    })
+  }
 }
 
 function finishPullUp() {

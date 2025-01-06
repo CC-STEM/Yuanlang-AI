@@ -1,19 +1,19 @@
 import { defineStore } from "pinia";
-import type { GetSendCodeRes } from "../types";
+import type { GetSendCodeRes, User } from "../types";
 
 import { getToken, removeToken, setToken } from "./helper";
 
 interface AuthState {
   token?: string;
   loginDialog: boolean;
-  userInfo: any;
+  userInfo: User;
 }
 
 export const useAuthStore = defineStore("auth-store", {
   state: (): AuthState => ({
     token: '',
     loginDialog: false,
-    userInfo: {},
+    userInfo: {} as User,
   }),
 
   getters: {
@@ -28,19 +28,19 @@ export const useAuthStore = defineStore("auth-store", {
       }
     },
     async getUserInfo(): Promise<any> {
-      // try {
-      //   const res = await fetchGetInfo()
-      //   if (!res)
-      //     return Promise.resolve(res)
-      //   const { data } = res
-      //   const { userInfo, userBalance } = data
-      //   this.userInfo = { ...userInfo }
-      //   this.userBalance = { ...userBalance }
-      //   return Promise.resolve(data)
-      // }
-      // catch (error) {
-      //   return Promise.reject(error)
-      // }
+      try {
+        const res = await getUserInfo()
+        if (!res)
+          return Promise.resolve(res)
+        const { data } = res
+        const { userInfo } = data
+        this.userInfo = { ...userInfo }
+        // this.userBalance = { ...userBalance }
+        return Promise.resolve(data)
+      }
+      catch (error) {
+        return Promise.reject(error)
+      }
     },
 
     // updateUserBanance(userBalance: UserBalance) {

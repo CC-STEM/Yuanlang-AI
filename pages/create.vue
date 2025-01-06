@@ -309,7 +309,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Search } from '@element-plus/icons-vue'
+import { Search, Microphone, Mute } from '@element-plus/icons-vue'
 import { invokeSaveAsDialog } from 'recordrtc'
 
 import { FullScreen, ChatLineRound } from '@element-plus/icons-vue'

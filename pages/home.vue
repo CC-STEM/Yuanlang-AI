@@ -2,9 +2,9 @@
   <div class="w-full h-full pl-[44px] pt-[51px]">
     <el-scrollbar>
       <div class="w-full flex pb-[19px] border-b-solid border-b-[1px] border-b-[#262F4E]">
-        <img class="w-[100px] h-[100px] rounded-[50%]" src="~/assets/head.jpeg" alt="">
+        <img class="w-[100px] h-[100px] rounded-[50%]" :src="userAvatar" alt="头像">
         <div class="flex flex-col h-[100px] justify-around ml-[28px]">
-          <span class="username">AI创作者</span>
+          <span class="username">{{ userInfo.name || userInfo.username }}</span>
           <div class="flex items-center info">
             <span>关注 {{ 98 }}</span>
             <span class="gutter ml-[33px]"></span>
@@ -14,7 +14,7 @@
             <span class="gutter ml-[33px]"></span>
             <span class="ml-[33px]">被围观 {{ 500.8 }}万</span>
           </div>
-          <span class="detail">个人介绍内容个人介绍内容</span>
+          <span class="detail">{{ userInfo.sign }}</span>
         </div>
       </div>
       <div class="w-full h-[calc(100%-119px)] flex">
@@ -44,7 +44,12 @@
 
 <script lang="ts" setup>
 import DemoImg from '~/assets/img1.jpeg'
+import DefaultAvatar from '~/assets/cclogo.png'
+
 import { useCounterStore } from '../composables/counter';
+const authStore = useAuthStore()
+const userInfo = computed(() => authStore.userInfo)
+const userAvatar = computed(() => userInfo.value.avatar || DefaultAvatar)
 
 const isMyWork = ref(true)
 const clickMyWork = () => {

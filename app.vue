@@ -20,6 +20,9 @@ const authStore = useAuthStore()
 
 onBeforeMount(() => {
   authStore.initializeToken()
+  if (authStore.token) {
+    authStore.getUserInfo()
+  }
 })
 </script>
 <style lang="scss" scoped>
