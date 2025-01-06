@@ -1632,3 +1632,20 @@ export interface SelectOption {
   label: string,
   value: string
 }
+
+export interface User {
+  id?: number,
+  username?: string,
+  name?: string,
+  avatar?: string,
+  role?: string,
+  email?: string,
+  sign?: string,
+  phone?: string
+}
+
+export interface GetUserRes extends BaseRes {
+  data: {
+    userInfo: User
+  }
+}

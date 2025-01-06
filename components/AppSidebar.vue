@@ -1,14 +1,13 @@
 <template>
   <div class="flex w-full flex-col items-center">
     <div class="sideItem mb-[32px]" @click="() => { }">
-      <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" src="~/assets/head.jpeg" alt=""
-        @click="handleClickHeadIcon">
-      <span class="text-white text-xs">AI创作者</span>
+      <img class="w-[60px] h-[60px] rounded-[10px] mb-[10px]" :src="userAvatar" alt="" @click="handleClickHeadIcon">
+      <span class="text-white text-xs">{{ userInfo.name || userInfo.username }}</span>
       <div v-show="showUserConfigPanel"
         class="w-[107px] h-[187px] bg-[#3413FF] rounded-[10px] flex flex-col absolute left-[114px] top-[0px] z-[999] justify-around">
         <div class="text-center config-panel-item">订单</div>
         <div class="text-center config-panel-item">资产</div>
-        <div class="text-center config-panel-item">设置</div>
+        <div class="text-center config-panel-item" @click="clickShowSettingDialog">设置</div>
         <div class="text-center config-panel-item" @click="handleLogout">退出</div>
       </div>
     </div>
@@ -34,6 +33,7 @@ import CreateImg from '~/assets/create.png'
 import PracticeImg from '~/assets/practice.png'
 import ActivityImg from '~/assets/activity.png'
 import HomeImg from '~/assets/home.png'
+import DefaultAvatar from '~/assets/cclogo.png'
 
 interface RouteItemInfo {
   name: string,
@@ -44,6 +44,8 @@ const route = useRoute()
 const router = useRouter()
 const showUserConfigPanel = ref(false)
 const authStore = useAuthStore()
+const userInfo = computed(() => authStore.userInfo)
+const userAvatar = computed(() => userInfo.value.avatar || DefaultAvatar)
 const routeInfo: RouteItemInfo[] = [{
   name: '作品展示',
   url: WorkImg,

@@ -112,6 +112,7 @@ const handleClickLogin = async () => {
       ElMessage.success('登录成功')
       authStore.setLoginDialog(false)
       authStore.setToken(data)
+      authStore.getUserInfo()
       // 刷新页面
       location.reload()
     } else {
