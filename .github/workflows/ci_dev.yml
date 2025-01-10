@@ -1,5 +1,5 @@
 name: CI_DEV
-# Event设置为main分支的pull request事件，
+# Event设置为dev分支的pull request事件，
 # 这里的main分支相当于master分支，github项目新建是把main设置为默认分支，我懒得改了所以就保持这样吧
 on:
   pull_request:
