@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.8-dev...v0.1.9) (2025-01-10)
+
+
+### Bug Fixes
+
+* fix ([aed216b](https://github.com/CC-STEM/Yuanlang-AI/commit/aed216b0394af5b88a90c10d82cbdb0472312c91))
+
 ### [0.1.8](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.7...v0.1.8) (2025-01-06)
 
 ### [0.1.7](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.6...v0.1.7) (2024-12-27)
