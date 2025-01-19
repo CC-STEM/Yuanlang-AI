@@ -212,3 +212,7 @@ export const MJ_LIGHT_LIST_OPTIONS = [
     "label": "情绪化"
   }
 ]
+
+export const parsePxNumer = (px: string) => {
+  return Number(px.replace('px', ''))
+}

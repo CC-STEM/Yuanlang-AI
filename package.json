@@ -25,6 +25,7 @@
     "recordrtc": "^5.6.2",
     "video.js": "^8.19.1",
     "vue": "latest",
+    "vue-drag-resize": "^1.5.4",
     "vue-router": "latest",
     "vue-waterfall-plugin-next": "^2.6.0"
   },
