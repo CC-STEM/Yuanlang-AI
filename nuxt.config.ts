@@ -1,5 +1,5 @@
-import fs from 'fs';
-import archiver from 'archiver';
+import fs from "fs";
+import archiver from "archiver";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -12,11 +12,20 @@ export default defineNuxtConfig({
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@element-plus/nuxt", "@pinia/nuxt", "@vueuse/nuxt", "@nuxt/icon"],
+  modules: [
+    "@element-plus/nuxt",
+    "@pinia/nuxt",
+    "@vueuse/nuxt",
+    "@nuxt/icon",
+    // "vue-drag-resize",
+  ],
   routeRules: {
     "/create": {
       ssr: false,
     },
+    "/realCreate": {
+      ssr: false
+    }
     // "/": {
     //   redirect: "/explore",
     // },
@@ -92,27 +101,27 @@ export default defineNuxtConfig({
   },
   hooks: {
     close: async () => {
-      console.log('产物构建完成后压缩');
+      console.log("产物构建完成后压缩");
 
-      const output = fs.createWriteStream('.output.zip');
-      const archive = archiver('zip', {
-        zlib: { level: 9 } // 设置压缩级别
+      const output = fs.createWriteStream(".output.zip");
+      const archive = archiver("zip", {
+        zlib: { level: 9 }, // 设置压缩级别
       });
 
-      output.on('close', function () {
+      output.on("close", function () {
         console.log(`压缩完成，总共 ${archive.pointer()} 字节`);
       });
 
-      archive.on('error', function (err: any) {
+      archive.on("error", function (err: any) {
         throw err;
       });
 
       archive.pipe(output);
 
       // 将 .output 目录中的文件添加到压缩包
-      archive.directory('.output/', false);
+      archive.directory(".output/", false);
 
       await archive.finalize();
-    }
-  }
+    },
+  },
 });
