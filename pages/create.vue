@@ -294,9 +294,12 @@
         </div>
       </div>
       <div class="w-[80px] flex flex-col pt-[20px] items-center">
-        <el-icon style="font-size: 24px" @click="handleShowImgPrompt">
+        <el-icon style="font-size: 32px" @click="handleShowImgPrompt">
           <ChatLineRound style="color: white" />
         </el-icon>
+        <Icon name="material-symbols:ink-pen-outline" width="24" height="24"
+          style="color: white;font-size: 32px;margin-top:10px;cursor: pointer;" @click="handleClickRealCreate" />
+
       </div>
     </div>
     <el-dialog style="width: 80%" v-model="previewImgDialogVisible">
@@ -317,6 +320,8 @@ import { FullScreen, ChatLineRound } from '@element-plus/icons-vue'
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
 import type { SelectOption, GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
 import { modelFusionOptionsKey, MJ_VIEW_LIST_OPTIONS, MJ_SHOT_LIST_OPTIONS, MJ_LIGHT_LIST_OPTIONS } from '@/utils'
+
+const router = useRouter()
 
 // 录音相关
 const audioRecorder = useAudioRecorder({
@@ -879,6 +884,10 @@ const handlePreviewImg = () => {
 const showImgPromptDialog = ref(false)
 const handleShowImgPrompt = () => {
   showImgPromptDialog.value = true
+}
+
+const handleClickRealCreate = () => {
+  router.push('/realCreate')
 }
 
 watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) => {
