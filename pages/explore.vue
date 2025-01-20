@@ -62,19 +62,6 @@ useHead({
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
 import Img1 from '~/assets/img1.jpeg'
-import Img2 from '~/assets/img2.jpeg'
-import Img3 from '~/assets/img3.jpeg'
-import Img4 from '~/assets/img4.jpeg'
-import Img5 from '~/assets/img5.jpeg'
-import Img6 from '~/assets/img6.jpeg'
-import Img7 from '~/assets/img7.jpeg'
-import Img8 from '~/assets/img8.jpeg'
-import Img9 from '~/assets/img9.jpeg'
-import Img10 from '~/assets/img10.jpeg'
-import Img11 from '~/assets/img11.jpeg'
-import Img12 from '~/assets/img12.jpeg'
-import Img13 from '~/assets/img13.jpeg'
-import Img14 from '~/assets/img14.jpeg'
 import ImgError from '~/assets/error.png'
 import ImgLoading from '~/assets/loading.png'
 
@@ -139,69 +126,6 @@ const handleClickImgCard = () => {
     authStore.setLoginDialog(true)
   }
 }
-
-const mockImgList = [{
-  id: 13,
-  src: Img13,
-  name: 'fjdk fkdsjfksal fdsakjfjs'
-}, {
-  id: 1,
-  src: Img1,
-  name: 'fjdk fkdsjfksal fdsakjfjs'
-}
-  , {
-  id: 2,
-  src: Img2,
-  name: 'fskfj'
-},
-{
-  id: 3,
-  src: Img3,
-  name: 'fsjdkajfksjfsdjfkljsdklfjsafjklsjljs'
-},
-{
-  id: 11,
-  src: Img11,
-  name: 'fsjdkajfksjfsdjfkljsdklfjsafjklsjljs'
-},
-{
-  id: 4,
-  src: Img4
-},
-{
-  id: 5,
-  src: Img5
-},
-{
-  id: 12,
-  src: Img12,
-},
-{
-  id: 6,
-  src: Img6
-},
-{
-  id: 7,
-  src: Img7
-},
-{
-  id: 8,
-  src: Img8
-},
-{
-  id: 14,
-  src: Img14,
-  name: 'fjdk fkdsjfksal fdsakjfjs'
-},
-{
-  id: 9,
-  src: Img9
-},
-{
-  id: 10,
-  src: Img10
-}
-]
 
 const loadProps = {
   loading: ImgLoading,
