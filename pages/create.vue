@@ -320,6 +320,7 @@ import { FullScreen, ChatLineRound } from '@element-plus/icons-vue'
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
 import type { SelectOption, GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
 import { modelFusionOptionsKey, MJ_VIEW_LIST_OPTIONS, MJ_SHOT_LIST_OPTIONS, MJ_LIGHT_LIST_OPTIONS } from '@/utils'
+import { pa } from 'element-plus/es/locale'
 
 const router = useRouter()
 
@@ -887,7 +888,12 @@ const handleShowImgPrompt = () => {
 }
 
 const handleClickRealCreate = () => {
-  router.push('/realCreate')
+  router.push({
+    path: '/realCreate',
+    query: {
+      src: encodeURIComponent(selectedArtwork.value?.picture_url!)
+    }
+  })
 }
 
 watch(() => styleDecorationSelectorRef.value?.selectedResourceTypes, (newVal) => {
