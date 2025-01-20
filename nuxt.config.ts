@@ -17,7 +17,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "@nuxt/icon",
-    // "vue-drag-resize",
   ],
   routeRules: {
     "/create": {
@@ -124,4 +123,18 @@ export default defineNuxtConfig({
       await archive.finalize();
     },
   },
+  build: {
+    transpile: [
+      'vue3-drag-resize'
+    ]
+  },
+  vite: {
+    build: {
+      rollupOptions: {
+        external: [
+          'vu3-drag-resize'
+        ]
+      }
+    }
+  }
 });
