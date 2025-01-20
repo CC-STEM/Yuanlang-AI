@@ -888,6 +888,10 @@ const handleShowImgPrompt = () => {
 }
 
 const handleClickRealCreate = () => {
+  if (!selectedArtwork.value?.picture_url) {
+    ElMessage.error("请先选择一张图片")
+    return
+  }
   router.push({
     path: '/realCreate',
     query: {
