@@ -1649,3 +1649,49 @@ export interface GetUserRes extends BaseRes {
     userInfo: User
   }
 }
+
+export interface CreateGoodsOrderReq {
+  channel: string;
+  receiverName: string;
+  receiverAddress: string;
+  receiverPhone: string;
+  goodsId: number;
+  goodsCoverImg: string;
+  goodsCount: number;
+}
+
+export interface CreateGoodsOrderRes extends BaseRes {
+  data: {
+    orderNo: string;
+    url_qrcode: string;
+    isRedirect: boolean;
+    platform: string;
+    total: number;
+  }
+}
+
+export interface QueryGoodsOrderRes extends BaseRes {
+  data: {
+    id: number,
+    createdAt: string,
+    updatedAt?: string,
+    deletedAt?: string,
+    orderNo: string,
+    payPlatform: string,
+    channel: string,
+    userId: number,
+    total: string,
+    payStatus: number,
+    paidAt?: string,
+    status: number,
+    receiverName: string,
+    receiverPhone: string,
+    receiverAddress: string,
+    expressTrackingNo?: string,
+    isDeleted: boolean,
+    shippingTime?: string,
+    completeTime?: string,
+    applyAfterSaleTime?: string,
+    closeTime?: string
+  }
+}
