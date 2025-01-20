@@ -4,17 +4,21 @@
       <div class="w-[800px] h-[600px]">
         <img id="toCreateImg" src="" alt="" class="object-contain w-full h-full">
       </div>
-      <div class="w-full flex justify-between mt-[26px]">
+      <div class="w-full flex justify-around mt-[26px]">
         <div class="cancel-btn" @click="clickCancel">取消</div>
-        <div class="save-btn" @click="clickSave">保存</div>
+        <div class="save-btn" @click="clickSave">下一步，填写收货地址</div>
       </div>
     </div>
   </BaseDialog>
 </template>
 
 <script lang="ts" setup>
+interface Props {
+  handleConfirm: () => void
+  handleCancel: () => void
+}
 
-
+const props = defineProps<Props>()
 const realWorkRef = ref()
 const runtimeConfig = useRuntimeConfig();
 const imageUrl = ref('')
@@ -24,25 +28,23 @@ const UPLOAD_URL = `${runtimeConfig.public.apiBase
   }/api/upload/file`;
 
 const clickCancel = () => {
-  if (realWorkRef.value) {
-    realWorkRef.value.dialogVisible = false
-  }
+  (props.handleCancel)()
 }
 
 const clickSave = async () => {
-
-  ElMessage.success('保存成功')
-  // 刷新user
-  if (realWorkRef.value) {
-    realWorkRef.value.dialogVisible = false
-  }
+  (props.handleConfirm)()
+  // ElMessage.success('保存成功')
+  // // 刷新user
+  // if (realWorkRef.value) {
+  //   realWorkRef.value.dialogVisible = false
+  // }
 }
 defineExpose({ realWorkRef })
 </script>
 
 <style lang="scss" scoped>
 .cancel-btn {
-  width: 150px;
+  width: 350px;
   height: 50px;
   background: #F4F4F4;
   border-radius: 25px;
@@ -54,10 +56,11 @@ defineExpose({ realWorkRef })
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .save-btn {
-  width: 150px;
+  width: 350px;
   height: 50px;
   background: #034AFF;
   border-radius: 25px;
@@ -69,5 +72,6 @@ defineExpose({ realWorkRef })
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 </style>
