@@ -16,6 +16,7 @@
           height: '100%',
           objectFit: 'cover',
         }" :src="curBaseImgSrc" alt="" id="base-img">
+
         <VueDragResize :isActive="false" :w="200" :h="200" @resizing="onResize" @dragging="onDrag" id="drag-box">
           <img :style="{
             width: '100%',
@@ -25,6 +26,7 @@
             id="drag-img">
 
         </VueDragResize>
+
       </div>
       <div class="w-full h-[50px] mt-[20px] flex justify-around">
         <div @click="clickToReturn"
@@ -97,7 +99,7 @@ cursor: pointer" @click="handleReceiveConfirm">
 </template>
 
 <script lang="ts" setup>
-import VueDragResize from 'vue-drag-resize/src/components/vue-drag-resize.vue'
+import VueDragResize from 'vue3-drag-resize'
 
 const router = useRouter()
 const route = useRoute()
