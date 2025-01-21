@@ -41,6 +41,8 @@ jobs:
       # 打包生成制品，且把制品压缩到assets.zip压缩包里
       - name: Building
         run: |
+          rm -rf .nuxt/
+          rm -rf .output/
           pnpm run generate:test
           zip -r assets ./.output/**
       # 基于当前commit进行版本发布(Create a release)，tag_name是v前缀加上package.json的version值

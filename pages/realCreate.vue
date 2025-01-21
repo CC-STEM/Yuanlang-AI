@@ -97,7 +97,7 @@ cursor: pointer" @click="handleReceiveConfirm">
 </template>
 
 <script lang="ts" setup>
-import VueDragResize from 'vue-drag-resize/src/components/vue-drag-resize.vue'
+// import VueDragResize from 'vue-drag-resize/src/components/vue-drag-resize.vue'
 
 const router = useRouter()
 const route = useRoute()
