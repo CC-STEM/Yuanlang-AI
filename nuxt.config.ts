@@ -133,7 +133,7 @@ export default defineNuxtConfig({
   //   build: {
   //     rollupOptions: {
   //       external: [
-  //         '@vueuse/integrations/useQRCode'
+  //         'qrcode'
   //       ]
   //     }
   //   }
