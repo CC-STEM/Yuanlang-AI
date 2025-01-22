@@ -129,13 +129,13 @@ export default defineNuxtConfig({
   //     '@vueuse/integrations/useQRCode'
   //   ]
   // },
-  // vite: {
-  //   build: {
-  //     rollupOptions: {
-  //       external: [
-  //         '@vueuse/integrations/useQRCode'
-  //       ]
-  //     }
-  //   }
-  // },
+  vite: {
+    build: {
+      rollupOptions: {
+        external: [
+          'qrcode'
+        ]
+      }
+    }
+  },
 });
