@@ -6,7 +6,7 @@
 		"build": "nuxt build",
 		"dev": "nuxt dev",
 		"generate:test": "nuxt generate --dotenv .env.test",
-		"generate:prod": "nuxt generate --dotenv .env.test",
+		"generate:prod": "nuxt generate --dotenv .env.production",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
 		"release": "standard-version",

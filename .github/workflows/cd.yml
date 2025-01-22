@@ -28,8 +28,10 @@ jobs:
         run: npm i -g pnpm
       # 安装依赖。命中缓存则跳过此步
       - name: Installing Dependencies
-        if: steps.cache-dependencies.outputs.cache-hit != 'true'
-        run: pnpm install
+      # if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          rm -rf node_modules/
+          pnpm install
       # 从package.json里获取version属性的值
       # 在CD Workflow中会给每个生成的制品打上标签，而标签取值于version值
       - name: Read Version
@@ -44,7 +46,7 @@ jobs:
         run: |
           rm -rf .nuxt/
           rm -rf .output/
-          pnpm run generate:prod
+          pnpm run generate:test
           zip -r assets ./.output/**
       # 基于当前commit进行版本发布(Create a release)，tag_name是v前缀加上package.json的version值
       - name: Create GitHub Release
