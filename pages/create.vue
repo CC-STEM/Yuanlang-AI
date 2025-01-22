@@ -6,7 +6,7 @@
           <div class="h-[50px] w-full flex justify-between items-center text-white mb-[40px]">
             <span class="create-title">绘画创作</span>
             <div class="flex">
-              <span tabindex="1" class="title-btn mr-[20px]">1000 积分</span>
+              <span tabindex="1" class="title-btn mr-[20px]">积分余额 {{ accountBalance.balance }} </span>
               <span tabindex="2" class="title-btn">我的创作</span>
             </div>
           </div>
@@ -272,7 +272,7 @@
                 <template v-if="item.status === ARTWORK_CREATE_SUCCESS && item.picture_url">
                   <img class="w-full h-full object-contain" :src="item.picture_url" alt="">
                 </template>
-                <template v-else-if="item.status === ARTWORK_CREATE_FAILED">
+                <template v-else-if="item.status === ARTWORK_CREATE_FAILED || item.status === ARTWORK_REVERTED">
                   <div class="w-full h-full flex flex-col justify-center items-center text-white bg-[#23262f]">
                     生成失败
                   </div>
@@ -323,7 +323,8 @@ import { modelFusionOptionsKey, MJ_VIEW_LIST_OPTIONS, MJ_SHOT_LIST_OPTIONS, MJ_L
 import { pa } from 'element-plus/es/locale'
 
 const router = useRouter()
-
+const authStore = useAuthStore()
+const accountBalance = computed(() => authStore.accountBalance)
 // 录音相关
 const audioRecorder = useAudioRecorder({
   onData: (blob: any) => {
