@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { GetSendCodeRes, User } from "../types";
+import type { GetSendCodeRes, User, AccountBalance } from "../types";
 
 import { getToken, removeToken, setToken } from "./helper";
 
@@ -7,6 +7,7 @@ interface AuthState {
   token?: string;
   loginDialog: boolean;
   userInfo: User;
+  accountBalance: AccountBalance;
 }
 
 export const useAuthStore = defineStore("auth-store", {
@@ -14,6 +15,7 @@ export const useAuthStore = defineStore("auth-store", {
     token: '',
     loginDialog: false,
     userInfo: {} as User,
+    accountBalance: {} as AccountBalance
   }),
 
   getters: {
@@ -33,8 +35,9 @@ export const useAuthStore = defineStore("auth-store", {
         if (!res)
           return Promise.resolve(res)
         const { data } = res
-        const { userInfo } = data
+        const { userInfo, accountBalance } = data
         this.userInfo = { ...userInfo }
+        this.accountBalance = { ...accountBalance }
         // this.userBalance = { ...userBalance }
         return Promise.resolve(data)
       }
@@ -65,6 +68,7 @@ export const useAuthStore = defineStore("auth-store", {
       this.token = undefined;
       removeToken();
       this.userInfo = {};
+      this.accountBalance = {}
       ElMessage.success("登出账户成功！");
     },
 
@@ -72,6 +76,7 @@ export const useAuthStore = defineStore("auth-store", {
       this.token = undefined;
       removeToken();
       this.userInfo = {};
+      this.accountBalance = {}
       this.loginDialog = true;
     },
   },

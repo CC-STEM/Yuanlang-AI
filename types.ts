@@ -1644,9 +1644,20 @@ export interface User {
   phone?: string
 }
 
+export interface AccountBalance {
+  userId?: number,
+  balance?: number,
+  usedBalance?: number
+}
+
 export interface GetUserRes extends BaseRes {
   data: {
-    userInfo: User
+    userInfo: User,
+    accountBalance: {
+      userId: number;
+      balance: number;
+      usedBalance: number;
+    }
   }
 }
 
