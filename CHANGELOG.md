@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.7...v0.1.14) (2025-01-22)
+
+
+### Bug Fixes
+
+* 测试dev ci ([957031a](https://github.com/CC-STEM/Yuanlang-AI/commit/957031abdf05051969ab9c7ab5fbf4628f77650c))
+* 更改dev cd触发方式 ([98c6877](https://github.com/CC-STEM/Yuanlang-AI/commit/98c68775f2be5a5e6de04ca43818ac36d21ba819))
+* fiux ([a8b7c04](https://github.com/CC-STEM/Yuanlang-AI/commit/a8b7c04154cc3f5965453090dcb596bcee440745))
+* fix ([0745153](https://github.com/CC-STEM/Yuanlang-AI/commit/0745153c76d5e72e7d241705843cebf98c0fd686))
+* fix ([7c5f800](https://github.com/CC-STEM/Yuanlang-AI/commit/7c5f800ba252f7f4991fc525491baf61e3cfc7a4))
+* fix ([fc6294f](https://github.com/CC-STEM/Yuanlang-AI/commit/fc6294fb456a2e8fae541b5262b47125112d19a9))
+* fix ([06665be](https://github.com/CC-STEM/Yuanlang-AI/commit/06665be681a314ff66c3290a10c809e3791f3b7c))
+* fix ([1ab9ca2](https://github.com/CC-STEM/Yuanlang-AI/commit/1ab9ca2021a59f097307fbf744e644e5dea9cf1f))
+* fix ([0683dab](https://github.com/CC-STEM/Yuanlang-AI/commit/0683dab8f027f06574abecc0df3d1eeb8633dd3c))
+* fix balance ([56691f1](https://github.com/CC-STEM/Yuanlang-AI/commit/56691f17946808f50f2ac21a8209dadcf587dabb))
+* temp support create order ([2715244](https://github.com/CC-STEM/Yuanlang-AI/commit/271524444c5c73b22b494ccb016268072fd55b7c))
+
 ### [0.1.13](https://github.com/CC-STEM/Yuanlang-AI/compare/v0.1.12...v0.1.13) (2025-01-21)
 
 
