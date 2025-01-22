@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQRCode } from '@vueuse/integrations/useQRCode'
+// import { useQRCode } from '@vueuse/integrations/useQRCode'
 /*
   参考文档：https://vueuse.org/integrations/useQRCode/
   https://www.npmjs.com/package/qrcode#qr-code-options
