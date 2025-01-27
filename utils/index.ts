@@ -216,3 +216,11 @@ export const MJ_LIGHT_LIST_OPTIONS = [
 export const parsePxNumer = (px: string) => {
   return Number(px.replace('px', ''))
 }
+
+export const SELLING_STATUS_MAP = {
+  "OFF": 0,
+  "ON": 1
+}
+//   { value: 0, label: "未上架" },
+//   { value: 1, label: "已上架" },
+// ];

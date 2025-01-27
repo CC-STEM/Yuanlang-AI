@@ -1,7 +1,7 @@
 <template>
   <div class="h-[93px] flex items-center">
     <img src="~/assets/logo.png" alt="" class="ml-[20px] w-[126px] h-[45px] mr-[44px]">
-    <span class="outerTitle">一站式创作AI工具</span>
+    <span class="outerTitle">一站式AI创作工具</span>
   </div>
 </template>
 
