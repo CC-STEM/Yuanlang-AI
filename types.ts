@@ -1706,3 +1706,25 @@ export interface QueryGoodsOrderRes extends BaseRes {
     closeTime?: string
   }
 }
+
+export interface Goods {
+  id?: number
+  name?: string
+  intro?: string
+  category?: number
+  sellStatus?: number
+  coverImg?: string
+  detail?: string
+  originalPrice?: number
+  sellingPrice?: number
+  stockNum?: number
+  createUser?: number
+  updateUser?: number
+}
+
+export interface QueryGoodsRes extends BaseRes {
+  data: {
+    data: Goods[],
+    total: number
+  }
+}
