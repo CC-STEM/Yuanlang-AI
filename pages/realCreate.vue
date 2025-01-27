@@ -1,7 +1,14 @@
 <template>
   <div class="w-full h-full flex justify-center">
     <div class="w-[95%] h-full flex flex-col items-center">
-      <div class="w-full h-[80px] mb-[12px] bg-[#20283F] rounded-[20px] border-[1px] border-solid border-[#20283F]">
+      <div
+        class="flex items-center w-full h-[80px] mb-[12px] bg-[#20283F] rounded-[20px] border-[1px] border-solid border-[#20283F]">
+        <div v-bind:key="item.id"
+          class="w-[100px] h-[58px] rounded-[10px] bg-[#FF6631] ml-[10px] mr-[10px] flex justify-center items-center text-white"
+          :style="item.id === curSelectedGoods?.id ? { border: '2px solid #00FFFC' } : {}"
+          v-for="item in sellingGoodsList" @click="selectGoods(item)">
+          {{ item.name }}
+        </div>
       </div>
       <div class="w-[800px] h-[600px]" id="create-container" :style="{
         // background: `url('https://cc-web-1313504415.cos.ap-shanghai.myqcloud.com/mj/TTPRO1466632-0.png')`,
@@ -15,14 +22,13 @@
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-        }" :src="curBaseImgSrc" alt="" id="base-img">
+        }" :src="curSelectedGoods?.coverImg" alt="" id="base-img">
         <VueDragResize :isActive="false" :w="200" :h="200" @resizing="onResize" @dragging="onDrag" id="drag-box">
           <img :style="{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-          }" src="https://cc-web-1313504415.cos.ap-shanghai.myqcloud.com/mj/TTPRO1510411-0-sr_x2.0.png" alt=""
-            id="drag-img">
+          }" :src="curBaseImgSrc" alt="" id="drag-img">
 
         </VueDragResize>
       </div>
@@ -97,8 +103,7 @@ cursor: pointer" @click="handleReceiveConfirm">
 </template>
 
 <script lang="ts" setup>
-// import VueDragResize from 'vue-drag-resize/src/components/vue-drag-resize.vue'
-
+import type { Goods } from '../types'
 const router = useRouter()
 const route = useRoute()
 const curBaseImgSrc = ref('')
@@ -120,6 +125,9 @@ const curOrderUrlQRCode = ref('')
 const curOrderNo = ref('')
 const curOrderTotal = ref(0)
 const qrCodeloading = ref(true)
+const sellingGoodsList = ref<Goods[]>([])
+const curSelectedGoods = ref<Goods | null>(null)
+
 let queryOrderStatusTimer: any
 
 const UPLOAD_URL = `${runtimeConfig.public.apiBase
@@ -302,6 +310,18 @@ const handleReceiveConfirm = async () => {
     }
   }
 }
+
+const selectGoods = (goods: Goods) => {
+  curSelectedGoods.value = goods
+}
+
+onMounted(async () => {
+  const { data: { data } } = await queryGoods(SELLING_STATUS_MAP.ON)
+  sellingGoodsList.value = data
+  if (data.length > 0) {
+    curSelectedGoods.value = data[0]
+  }
+})
 
 </script>
 
