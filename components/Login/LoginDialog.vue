@@ -9,7 +9,7 @@ import { computed } from 'vue';
         {{ '登录第一时间掌握最新动态' }}
       </div>
     </template>
-    <div class="h-[315px] w-full flex mt-[44px]">
+    <div class="h-[315px] w-full flex">
       <div class="w-[50%] flex flex-col items-center border-r-[1px] border-r-[#F3F3F3]">
         <span class="first-letter">登录小程序</span>
         <img src="~/assets/code.png" class="w-[153px] h-[153px] mt-[25px]" />

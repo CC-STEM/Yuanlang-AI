@@ -224,3 +224,34 @@ export const SELLING_STATUS_MAP = {
 //   { value: 0, label: "未上架" },
 //   { value: 1, label: "已上架" },
 // ];
+
+export const formatMillSecond = (millSecond: number) => {
+  // 转换成天,时,分,秒
+  const day = Math.floor(millSecond / (24 * 3600 * 1000));
+  const hour = Math.floor((millSecond % (24 * 3600 * 1000)) / (3600 * 1000));
+  const minute = Math.floor((millSecond % (3600 * 1000)) / (60 * 1000));
+  const second = Math.floor((millSecond % (60 * 1000)) / 1000);
+  return { day, hour, minute, second };
+}
+
+export const NEW_ORDER_STATUS_OPTIONS = [
+  { value: 0, label: "待付款" },
+  { value: 1, label: "待发货" },
+  { value: 2, label: "已发货" },
+  { value: 3, label: "交易成功" },
+  { value: 4, label: "售后中" },
+  { value: 5, label: "交易关闭-用户取消" },
+  { value: 6, label: "交易关闭-超时取消" },
+  { value: 7, label: "交易关闭-商家取消" },
+]
+
+export const NEW_ORDER_STATUS_MAP = {
+  0: "待付款",
+  1: "待发货",
+  2: "已发货",
+  3: "交易成功",
+  4: "售后中",
+  5: "交易关闭-用户取消",
+  6: "交易关闭-超时取消",
+  7: "交易关闭-商家取消",
+}
