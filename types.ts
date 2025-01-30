@@ -1728,3 +1728,87 @@ export interface QueryGoodsRes extends BaseRes {
     total: number
   }
 }
+
+export interface Activity {
+  id: number
+  name: string // 活动名称
+  intro?: string // 活动介绍
+  category?: number // 参与方式
+  coverImg: string // 活动图
+  activityRewards?: string // 活动奖励
+  startTime: string // 开始时间
+  endTime: string // 结束时间
+  status?: number // 活动状态
+}
+
+export interface QueryActivityRes extends BaseRes {
+  data: {
+    data: Activity[],
+    total: number
+  }
+}
+
+export interface DictPair {
+  label: string;
+  value: string;
+}
+
+export type DictState = Record<string, DictPair[]>;
+
+
+export interface QueryDictMapRes extends BaseRes {
+  data: DictState
+}
+
+export interface StudyResource {
+  id: number;
+  name: string;
+  intro?: string;
+  level: number;
+  category: number;
+  src: string;
+  createUser?: number;
+  updateUser?: number;
+}
+
+export interface QueryStudyResourceRes extends BaseRes {
+  data: {
+    data: StudyResource[]
+  }
+}
+
+interface GoodsOrderItem {
+  orderNo: string;
+  goodsId: number;
+  goodsName: string; // 下单时商品名称
+  goodsCoverImg?: string; // 下单时商品图
+  sellingPrice: number; // 下单时商品价格
+  goodsCount: number; // 下单商品数量
+}
+
+export interface GoodsOrder {
+  id: number
+  orderNo: string // 订单号
+  payPlatform: string // 支付平台【wechatpay|alipay】
+  total: number // 订单总金额
+  payStatus?: number // 支付状态（0：未支付、1：已支付、-1、支付失败
+  paidAt?: string // 支付时间
+  status?: number // 订单状态（0：待付款（下订单）、1：待发货（支付成功）、2、已发货（待收货）、3：交易成功（确认收货）、4：售后中（申请退货退款）、5：交易关闭-用户取消、6：交易关闭-超时取消、7：交易关闭-商家取消）
+  receiverName?: string // 收货人姓名
+  receiverPhone?: string // 收货人电话
+  receiverAddress?: string // 收货人地址
+  expressTrackingNo?: string // 快递单号
+  shippingTime?: string // 发货时间
+  completeTime?: string // 交易成功时间
+  applyAfterSaleTime?: string // 申请退货退款时间
+  closeTime?: string // 交易关闭时间
+  goodsItems?: GoodsOrderItem[] // 当前订单包含的订单项
+  qrcodeUrl?: string // 二维码地址
+}
+
+export interface QueryGoodsOrderListRes extends BaseRes {
+  data: {
+    data: GoodsOrder[],
+    total: number
+  }
+}
