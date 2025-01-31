@@ -11,7 +11,7 @@
             </div>
           </div>
           <div class="w-full mb-[20px]">
-            <div class="h-[24px] text-left text-white mb-[8px]">* 模型选择</div>
+            <div class="h-[44px] text-left text-white mb-[8px]">* 模型选择</div>
             <div class="h-[112px] flex justify-start items-center pt-[4px] pb-[4px]">
               <div :tabindex="index" v-bind:key="index"
                 :style="{ border: selectedModelType.value === item.value ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
@@ -28,13 +28,14 @@
                 <el-radio-button v-for="item in modelStyleList" :label="item" :value="item" />
               </el-radio-group>
             </div> -->
-            <div class="w-full flex flex-wrap" v-loading="getModelInfoStatus === 'pending'">
+            <div class="w-full flex flex-wrap" v-if="!isModelInfoLoading">
               <div @click="selectModel(item)" v-bind:key="index"
                 class="model-theme-item flex justify-center items-center text-white"
                 :style="{ border: selectedModel === item ? '2px solid rgb(177, 181, 196)' : '2px solid rgb(35, 38, 47)' }"
                 :tabindex="index" v-for="(item, index) in modelList">
                 {{ item.model_desc }}</div>
             </div>
+            <Icon v-else name="svg-spinners:90-ring-with-bg" class="w-full text-[35px] text-white" />
           </div>
           <div class="w-full mb-[40px]">
             <div class="h-[30px] mb-[8px] flex justify-between items-center">
@@ -320,7 +321,6 @@ import { FullScreen, ChatLineRound } from '@element-plus/icons-vue'
 import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
 import type { SelectOption, GetModuleResourceInfoRes, CreateOptionWithPicResponse, CreateOptionResolutionResponse, SimpleOptionResponse, CreateOptionWithDecorationResponse, ResourceOption, ModelFusionTypeOption, DefaultAICreateRequest, MJAICreateRequest, AiArtworkGenerateingInfoVoResponse, GetAiArtWorkHistoryResponse, GetBatchDrawTaskKeysRes, DrawTaskDetailItem } from '../types'
 import { modelFusionOptionsKey, MJ_VIEW_LIST_OPTIONS, MJ_SHOT_LIST_OPTIONS, MJ_LIGHT_LIST_OPTIONS } from '@/utils'
-import { pa } from 'element-plus/es/locale'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -430,6 +430,8 @@ const modelList = computed(() => {
   }
   return []
 })
+
+const isModelInfoLoading = computed(() => getModelInfoStatus.value === 'pending')
 
 const selectedModel = ref()
 watch(modelList, (newVal, oldVal) => {

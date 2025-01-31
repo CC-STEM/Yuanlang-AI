@@ -16,10 +16,12 @@
         分
         <span class="time-unit">{{ timeLeft.second }}</span>
         秒
+        <span>{{ props.status === 0 ? '开始' : '结束' }}</span>
       </span>
       <span v-else class="cardDesc">
-        <span class="partiNum">{{ partiNum }}</span>
-        人已投稿
+        已结束
+        <!-- <span class="partiNum">{{ partiNum }}</span>
+        人已投稿 -->
       </span>
     </div>
   </div>
@@ -33,6 +35,7 @@ interface Props {
   status: number;
   isShowTime: boolean;
   deadline?: number;
+  begin?: number;
   partiNum?: number;
   name: string;
   url: string;
@@ -43,25 +46,40 @@ interface Props {
 const props = defineProps<Props>();
 // 计算剩余时间
 const timeLeft = computed(() => {
-  if (props.isShowTime && props.deadline) {
+  if (props.status === 0 && props.begin) {
     const now = new Date().getTime();
-    const timeLeft = props.deadline - now;
+    const timeLeft = props.begin - now;
     // 转换成天,时,分,秒
-    const day = Math.floor(timeLeft / (24 * 3600 * 1000));
-    const hour = Math.floor((timeLeft % (24 * 3600 * 1000)) / (3600 * 1000));
-    const minute = Math.floor((timeLeft % (3600 * 1000)) / (60 * 1000));
-    const second = Math.floor((timeLeft % (60 * 1000)) / 1000);
+    // const day = Math.floor(timeLeft / (24 * 3600 * 1000));
+    const { day, hour, minute, second } = formatMillSecond(timeLeft)
     return { day, hour, minute, second };
-  } else {
-    return null;
   }
+
+  if (props.status === 1) {
+
+    if (props.isShowTime && props.deadline) {
+      const now = new Date().getTime();
+      const timeLeft = props.deadline - now;
+      // 转换成天,时,分,秒
+      // const day = Math.floor(timeLeft / (24 * 3600 * 1000));
+      // const hour = Math.floor((timeLeft % (24 * 3600 * 1000)) / (3600 * 1000));
+      // const minute = Math.floor((timeLeft % (3600 * 1000)) / (60 * 1000));
+      // const second = Math.floor((timeLeft % (60 * 1000)) / 1000);
+      const { day, hour, minute, second } = formatMillSecond(timeLeft)
+      return { day, hour, minute, second };
+    } else {
+      return null;
+    }
+  }
+
+  return null
 })
 
 const statusImg = computed(() => {
   if (props.status === 0) {
-    return In
+    return ''
   }
-  return Over
+  return props.status === 1 ? In : Over
 })
 </script>
 
