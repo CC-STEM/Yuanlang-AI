@@ -24,10 +24,6 @@ export const commonUseFetch = <T>(apiUrl: string, options: UseFetchOptions) => {
     query,
     // 可以在这里添加通用的请求头等配置
     onResponseError: async (context: any) => {
-      if (!window) {
-        return
-      }
-      // console.log('commonUseFetch response', context)
       const { response } = context;
       switch (response.status) {
         case 401:

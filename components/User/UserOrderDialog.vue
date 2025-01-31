@@ -69,6 +69,7 @@
             }}</span></div>
         <!-- <img class="w-[153px] h-[153px] mt-[33px]" src="" alt=""> -->
         <BuyQRCode v-if="curSelectedOrder.qrcodeUrl" :value="curSelectedOrder.qrcodeUrl" :size="153" />
+        <Icon v-else name="tabler:refresh" style="font-size: 50px" @click="handleRefreshQrcode" />
         <div class="mt-[37px] h-[21px] w-[207px] flex items-center"><img src="~/assets/wxpay.png"
             class="w-[30px] h-[30px] mr-[11px]" alt=""><span class="pay-text">请通过微信扫一扫支付</span>
         </div>
@@ -79,6 +80,7 @@
 
 <script lang="ts" setup>
 import type { GoodsOrder } from '../../types'
+import { Icon } from '../../.nuxt/components';
 
 const page = ref(1)
 const size = ref(10)
@@ -87,6 +89,7 @@ const userOrderRef = ref()
 const payDialogRef = ref()
 const orderList = ref<GoodsOrder[]>([])
 const curSelectedOrder = ref<GoodsOrder | null>(null)
+let queryOrderStatusTimer: any
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)
@@ -107,6 +110,11 @@ const handleDelete = (index: number, row: any) => {
 const handleClickPay = (row: GoodsOrder) => {
   curSelectedOrder.value = row
   payDialogRef.value.dialogVisible = true
+  // 轮训订单状态
+  queryOrderStatusTimer = setInterval(() => {
+    queryOrderStatus()
+  }, 2000)
+
 }
 
 const handleClickSendNotify = (row: GoodsOrder) => {
@@ -125,6 +133,29 @@ const handleClickApplyForSale = (row: GoodsOrder) => {
 
 const handleCloseOrder = (row: GoodsOrder) => {
   // TODO:
+}
+
+const handleRefreshQrcode = () => {
+  // TODO:
+}
+
+const queryOrderStatus = async () => {
+  if (!curSelectedOrder.value?.orderNo)
+    return
+  const result = await queryGoodsOrderByNo(curSelectedOrder.value.orderNo)
+  const { code, data, message } = result
+  if (Number(code) === 200) {
+    const { payStatus } = data
+    if (payStatus === 1) {
+      clearInterval(queryOrderStatusTimer)
+      ElMessage.success('恭喜你支付成功、可通过 “我的订单” 查看订单详情！')
+      setTimeout(() => {
+        if (payDialogRef.value) {
+          payDialogRef.value.dialogVisible = false
+        }
+      }, 2000)
+    }
+  }
 }
 
 // onMounted(async () => {
