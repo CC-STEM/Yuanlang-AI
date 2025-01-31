@@ -77,10 +77,12 @@ export const commoneFetch = async <T>(apiUrl: string, options: UseFetchOptions) 
     baseURL: runtimeConfig.public.apiBase,
     // 可以在这里添加通用的请求头等配置
     onResponseError: async (context: any) => {
+      console.log('context', context)
       const { response } = context;
       switch (response.status) {
         case 401:
           // 处理未授权
+          // console.log('response._data', response._data)
           ElMessage.error(response._data?.message || '没有权限访问')
           authStore.setLoginDialog(true);
           break;

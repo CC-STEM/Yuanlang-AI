@@ -5,7 +5,7 @@
       <span class="text-white text-xs">{{ userInfo.name || userInfo.username }}</span>
       <div v-show="showUserConfigPanel"
         class="w-[107px] h-[187px] bg-[#3413FF] rounded-[10px] flex flex-col absolute left-[114px] top-[0px] z-[999] justify-around">
-        <div class="text-center config-panel-item">订单</div>
+        <div class="text-center config-panel-item" @click="clickShowOrderDialog">订单</div>
         <div class="text-center config-panel-item">资产</div>
         <div class="text-center config-panel-item" @click="clickShowSettingDialog">设置</div>
         <div class="text-center config-panel-item" @click="handleLogout">退出</div>
@@ -55,7 +55,7 @@ const routeInfo: RouteItemInfo[] = [{
   url: CreateImg,
   path: '/create'
 }, {
-  name: '练习场',
+  name: '学习区',
   url: PracticeImg,
   path: '/practice'
 }, {
@@ -91,14 +91,14 @@ const clickShowSettingDialog = () => {
   settingDialogRef.value.userSettingRef.dialogVisible = true
 }
 
-const clickShowLoginDialog = () => {
-  // loginDialogRef.value.loginRef.dialogVisible = true
-  if (!authStore.isLogin) {
-    authStore.setLoginDialog(true)
-  } else {
-    orderDialogRef.value.userOrderRef.dialogVisible = true
-  }
-}
+// const clickShowLoginDialog = () => {
+//   // loginDialogRef.value.loginRef.dialogVisible = true
+//   if (!authStore.isLogin) {
+//     authStore.setLoginDialog(true)
+//   } else {
+//     orderDialogRef.value.userOrderRef.dialogVisible = true
+//   }
+// }
 
 const clickShowPayDialog = () => {
   payDialogRef.value.payRef.dialogVisible = true
