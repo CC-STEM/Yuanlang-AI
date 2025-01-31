@@ -20,10 +20,12 @@
       </div>
     </NuxtLink>
     <!-- <LoginDialog ref="loginDialogRef" /> -->
-    <BuyPayDialog ref="payDialogRef" />
-    <BuyReceiveDialog ref="receiveDialogRef" />
-    <UserSettingDialog ref="settingDialogRef" />
-    <UserOrderDialog ref="orderDialogRef" />
+    <!-- <BuyPayDialog ref="payDialogRef" /> -->
+    <!-- <BuyReceiveDialog ref="receiveDialogRef" /> -->
+    <ClientOnly>
+      <UserSettingDialog ref="settingDialogRef" />
+      <UserOrderDialog ref="orderDialogRef" />
+    </ClientOnly>
   </div>
 </template>
 
