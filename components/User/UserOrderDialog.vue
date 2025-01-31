@@ -78,7 +78,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Row } from 'element-plus/es/components/table-v2/src/components'
 import type { GoodsOrder } from '../../types'
 
 const page = ref(1)
