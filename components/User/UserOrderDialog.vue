@@ -80,7 +80,6 @@
 
 <script lang="ts" setup>
 import type { GoodsOrder } from '../../types'
-import { Icon } from '../../.nuxt/components';
 
 const page = ref(1)
 const size = ref(10)
