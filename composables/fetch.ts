@@ -25,7 +25,6 @@ export const commonUseFetch = <T>(apiUrl: string, options: UseFetchOptions) => {
     // 可以在这里添加通用的请求头等配置
     onResponseError: async (context: any) => {
       const { response } = context;
-      console.log('response', response)
       switch (response.status) {
         case 401:
           // 处理未授权
@@ -77,24 +76,29 @@ export const commoneFetch = async <T>(apiUrl: string, options: UseFetchOptions) 
     baseURL: runtimeConfig.public.apiBase,
     // 可以在这里添加通用的请求头等配置
     onResponseError: async (context: any) => {
+      // if (!window) {
+      //   return
+      // }
+      // console.log('commoneFetch context', context)
       const { response } = context;
       switch (response.status) {
         case 401:
           // 处理未授权
-          ElMessage.error(response._data?.message || '没有权限访问')
+          // console.log('response._data', response._data)
+          window && ElMessage.error(response._data?.message || '没有权限访问')
           authStore.setLoginDialog(true);
           break;
         case 403:
           // 处理禁止访问
-          ElMessage.error(response._data?.message || '没有权限访问')
+          window && ElMessage.error(response._data?.message || '没有权限访问')
           break;
         case 500:
           // 处理服务器错误
-          ElMessage.error(response._data?.message || "服务器错误，请稍后重试");
+          window && ElMessage.error(response._data?.message || "服务器错误，请稍后重试");
           break;
         default:
           // 处理其他错误
-          ElMessage.error(response._data?.message || response.statusText || "请求失败");
+          window && ElMessage.error(response._data?.message || response.statusText || "请求失败");
       }
     },
     onRequest({ options }: any) {
