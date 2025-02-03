@@ -9,7 +9,12 @@ import type {
   MJAICreateRequest,
   GetBatchDrawTaskKeysRes,
   GetBatchDrawTaskDetailsRes,
-  GetGlobalDrawTaskDetailsRes
+  GetGlobalDrawTaskDetailsRes,
+  GetDrawDetailByKeyRes,
+  GetDrawTaskInfoRes,
+  Action,
+  BaseRes,
+  GetDrawCommentListRes
 } from "../types";
 
 export const getModelInfo = () => {
@@ -104,6 +109,34 @@ export const getGlobalDrawTasks = async (page: number, size: number) => {
   );
 }
 
+export const batchGetFinishedDrawInfoByUser = async (userId: number, page: number, size: number) => {
+  return await commoneFetch<GetGlobalDrawTaskDetailsRes>(
+    `/api/wujie/batchGetFinishedDrawInfoByUser`,
+    {
+      method: "POST",
+      body: {
+        userId,
+        page,
+        size
+      },
+    }
+  );
+}
+
+export const batchGetCollectedDrawInfoByUser = async (userId: number, page: number, size: number) => {
+  return await commoneFetch<GetGlobalDrawTaskDetailsRes>(
+    `/api/wujie/batchGetCollectedDrawInfoByUser`,
+    {
+      method: "POST",
+      body: {
+        userId,
+        page,
+        size
+      },
+    }
+  );
+}
+
 export const batchGetDrawTasksDetailByKeys = async (keys: string[]) => {
   return await commoneFetch<GetBatchDrawTaskDetailsRes>(
     `/api/wujie/batchGetDrawTaskInfoByKeys`,
@@ -114,3 +147,77 @@ export const batchGetDrawTasksDetailByKeys = async (keys: string[]) => {
   );
 }
 
+export const getDrawDetailByKey = async (key: string) => {
+  return await commoneFetch<GetDrawDetailByKeyRes>(
+    `/api/wujie/getFinishedDrawDetailInfo`,
+    {
+      method: "POST",
+      body: { key }
+    }
+  );
+}
+
+export const getDrawTaskInfo = async (key: string) => {
+  return await commoneFetch<GetDrawTaskInfoRes>(
+    `/api/wujie/getDrawTaskInfo?key=${key}`,
+    {
+      method: "GET",
+    }
+  );
+}
+
+export const followUser = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/follow`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const unfollowUser = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/unfollow`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const likeDraw = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/like`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const dislikeDraw = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/dislike`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const collectDraw = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/collect`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const uncollectDraw = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/uncollect`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const commentDraw = async (action: Action) => {
+  return await commoneFetch<BaseRes>(`/api/action/comment`, {
+    method: "POST",
+    body: action,
+  });
+}
+
+export const getDrawComments = async (drawId: number) => {
+  return await commoneFetch<GetDrawCommentListRes>(`/api/wujie/getDrawCommentList`, {
+    method: "POST",
+    body: { id: drawId }
+  });
+}

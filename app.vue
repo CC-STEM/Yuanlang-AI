@@ -15,6 +15,7 @@ import { AppFooter } from './.nuxt/components';
   <LoginDialog :visible="authStore.loginDialog" ref="loginDialogRef" />
 </template>
 <script setup lang="ts">
+
 const loginDialogRef = ref()
 const authStore = useAuthStore()
 

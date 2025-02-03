@@ -34,12 +34,11 @@
             <template #default="{ item, url, index }">
               <div
                 class="relative rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-linear hover:shadow-lg group"
-                @click="handleClickImgCard">
-                <!-- <div class="overflow-hidden"> -->
+                @click="handleClickImgCard(item)">
                 <LazyImg :url="url" title="title" :alt="item.name"
                   class="cursor-pointer transition-all duration-300 ease-linear group-hover:scale-110 rounded-[20px]" />
-                <!-- </div> -->
-                <ImgUser class="absolute bottom-0" />
+                <ImgUser class="absolute bottom-0" :name="item.user.name" :head="item.user.head"
+                  :liked="item.likedCount" />
               </div>
             </template>
           </Waterfall>
@@ -50,14 +49,14 @@
 </template>
 
 <script lang="ts" setup>
-useHead({
-  script: [
-    {
-      type: "text/javascript",
-      src: 'https://unpkg.com/better-scroll@latest/dist/better-scroll.min.js'
-    }
-  ]
-})
+// useHead({
+//   script: [
+//     {
+//       type: "text/javascript",
+//       src: 'https://unpkg.com/better-scroll@latest/dist/better-scroll.min.js'
+//     }
+//   ]
+// })
 
 import { LazyImg, Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
@@ -65,6 +64,7 @@ import Img1 from '~/assets/img1.jpeg'
 import ImgError from '~/assets/error.png'
 import ImgLoading from '~/assets/loading.png'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const expandSortOption = ref(false)
 const waterfall = ref(null)
@@ -88,6 +88,10 @@ const pageOptions = ref({
 const globalDrawList = ref<{
   src: string;
   name: string;
+  user: {
+    name: string;
+    head: string;
+  }
 }[]>([])
 
 onMounted(() => {
@@ -98,7 +102,12 @@ const fetchGlobalDrawList = async () => {
   const res = await getGlobalDrawTasks(pageOptions.value.page, pageOptions.value.size)
   globalDrawList.value.push(...(res.data.list.map(item => ({
     src: item.qcloud_cos_url || item.wujie_picture_url || '',
-    name: item.key!
+    name: item.key!,
+    likedCount: item.likedCount || 0,
+    user: {
+      name: item.user?.name || '',
+      head: item.user?.head || ''
+    }
   }))))
 }
 
@@ -121,10 +130,18 @@ const handleClickExpandSortOption = () => {
   expandSortOption.value = !expandSortOption.value
 }
 
-const handleClickImgCard = () => {
+const handleClickImgCard = (item: any) => {
   if (!authStore.isLogin) {
     authStore.setLoginDialog(true)
   }
+
+  // 跳转详情页
+  router.push({
+    path: '/detail',
+    query: {
+      key: item.name
+    }
+  })
 }
 
 const loadProps = {
