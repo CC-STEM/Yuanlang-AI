@@ -25,6 +25,12 @@ export default defineNuxtConfig({
     },
     "/realCreate": {
       ssr: false
+    },
+    "/detail": {
+      ssr: false
+    },
+    "/home": {
+      ssr: false
     }
     // "/": {
     //   redirect: "/explore",
