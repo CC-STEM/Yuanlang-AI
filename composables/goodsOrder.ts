@@ -1,4 +1,4 @@
-import type { CreateGoodsOrderRes, CreateGoodsOrderReq, QueryGoodsOrderRes, QueryGoodsOrderListRes } from '../types'
+import type { ApplyGoodsOrderAfterSaleRes, CompleteGoodsOrderRes, CancelGoodsOrderRes, CreateGoodsOrderRes, CreateGoodsOrderReq, QueryGoodsOrderRes, QueryGoodsOrderListRes } from '../types'
 
 export const createGoodsOrder = async (data: CreateGoodsOrderReq) => {
   return await commoneFetch<CreateGoodsOrderRes>(
@@ -27,6 +27,42 @@ export const queryGoodsOrder = async (page: number, size: number) => {
       body: {
         page,
         size
+      }
+    }
+  );
+}
+
+export const cancelGoodsOrder = async (orderNo: string) => {
+  return await commoneFetch<ApplyGoodsOrderAfterSaleRes>(
+    `/api/goodsOrder/cancelOrder`,
+    {
+      method: "POST",
+      body: {
+        orderNo
+      }
+    }
+  );
+}
+
+export const applyAfterSale = async (orderNo: string) => {
+  return await commoneFetch<CancelGoodsOrderRes>(
+    `/api/goodsOrder/applyAfterSale`,
+    {
+      method: "POST",
+      body: {
+        orderNo
+      }
+    }
+  );
+}
+
+export const completeGoodsOrder = async (orderNo: string) => {
+  return await commoneFetch<CompleteGoodsOrderRes>(
+    `/api/goodsOrder/completeGoodsOrder`,
+    {
+      method: "POST",
+      body: {
+        orderNo
       }
     }
   );

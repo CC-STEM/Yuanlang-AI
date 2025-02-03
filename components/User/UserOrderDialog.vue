@@ -24,11 +24,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="total" label="总价" width="50" />
-        <el-table-column prop="logisticsOrderNum" label="物流单号" width="150" />
+        <el-table-column prop="logisticsOrderNum" label="物流单号" width="100" />
         <el-table-column prop="receiverName" label="收件人" width="70" />
         <el-table-column prop="receiverPhone" label="手机号" width="100" />
         <el-table-column prop="receiverAddress" label="详细地址" width="200" />
-        <el-table-column prop="status" label="订单状态" width="100">
+        <el-table-column prop="status" label="订单状态" width="150">
           <template #default="{ row }">
             <el-tag type="success">{{ NEW_ORDER_STATUS_MAP[row.status] }}</el-tag>
           </template>
@@ -121,17 +121,32 @@ const handleClickSendNotify = (row: GoodsOrder) => {
   console.log(row)
 }
 
-const handleClickConfirmReceive = (row: GoodsOrder) => {
+const handleClickConfirmReceive = async (row: GoodsOrder) => {
   // TODO:
   console.log(row)
+  const { data } = await completeGoodsOrder(row.orderNo)
+  if (data.affected > 0) {
+    ElMessage.success('确认收货成功')
+    fetchOrderList()
+  }
 }
 
-const handleClickApplyForSale = (row: GoodsOrder) => {
+const handleClickApplyForSale = async (row: GoodsOrder) => {
   // TODO:
+  const { data } = await applyAfterSale(row.orderNo)
+  if (data.affected > 0) {
+    ElMessage.success('申请成功，等待平台处理中')
+    fetchOrderList()
+  }
 }
 
-const handleCloseOrder = (row: GoodsOrder) => {
+const handleCloseOrder = async (row: GoodsOrder) => {
   // TODO:
+  const { data } = await cancelGoodsOrder(row.orderNo)
+  if (data.affected > 0) {
+    ElMessage.success('订单取消成功')
+    fetchOrderList()
+  }
 }
 
 const handleRefreshQrcode = () => {
@@ -148,6 +163,8 @@ const queryOrderStatus = async () => {
     if (payStatus === 1) {
       clearInterval(queryOrderStatusTimer)
       ElMessage.success('恭喜你支付成功、可通过 “我的订单” 查看订单详情！')
+      // 刷新订单列表
+      fetchOrderList()
       setTimeout(() => {
         if (payDialogRef.value) {
           payDialogRef.value.dialogVisible = false
@@ -163,10 +180,14 @@ const queryOrderStatus = async () => {
 //   total.value = totalCount
 // })
 
-watch([page, size], async () => {
+const fetchOrderList = async () => {
   const { data: { data, total: totalCount } } = await queryGoodsOrder(page.value, size.value)
   orderList.value = data
   total.value = totalCount
+}
+
+watch([page, size], async () => {
+  fetchOrderList()
 }, {
   immediate: true
 })

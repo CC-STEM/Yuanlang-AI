@@ -1510,6 +1510,8 @@ export interface GetBatchDrawTaskKeysRes extends BaseRes {
 }
 
 export interface DrawTaskDetailItem {
+  id: number;
+
   userId: number;
   /**
    * 作画结果图的审核结果(v1.1.9新增字段，2023年2月23号之后的作画结果会有值。)
@@ -1612,6 +1614,30 @@ export interface DrawTaskDetailItem {
    * 状态(0-已提交 1-排队中 2-生成中 3-生成失败 4-生成成功  -1 - 已撤销)
    */
   status?: number;
+
+  likedCount?: number;
+
+  user?: {
+    name: string;
+    head: string;
+  }
+}
+
+export interface DrawTaskDetailItemByUser extends DrawTaskDetailItem {
+  isFollow: boolean,
+  isLike: boolean,
+  isCollect: boolean,
+  likedCount: number,
+  collectedCount: number,
+  user: {
+    id: number;
+    name: string;
+    head: string;
+  }
+}
+
+export interface GetDrawDetailByKeyRes extends BaseRes {
+  data: DrawTaskDetailItemByUser
 }
 
 export interface GetBatchDrawTaskDetailsRes extends BaseRes {
@@ -1809,6 +1835,64 @@ export interface GoodsOrder {
 export interface QueryGoodsOrderListRes extends BaseRes {
   data: {
     data: GoodsOrder[],
+    total: number
+  }
+}
+
+export interface CancelGoodsOrderRes extends BaseRes {
+  data: {
+    affected: number
+  }
+}
+
+export type ApplyGoodsOrderAfterSaleRes = CancelGoodsOrderRes;
+
+export type CompleteGoodsOrderRes = CancelGoodsOrderRes;
+
+export interface DrawTaskInfo {
+  type: number;
+  width: number;
+  height: number;
+  complete_time: number;
+  integral_cost: number;
+}
+
+export interface GetDrawTaskInfoRes extends BaseRes {
+  data: DrawTaskInfo
+}
+
+export interface Action {
+  sourceType: string;
+  sourceId: number;
+  targetType: string;
+  targetId: number;
+  actionContent?: string;
+}
+
+export interface UserDetail {
+  user: User;
+  followCount: number;
+  fansCount: number;
+  totalLikes: number;
+}
+
+export interface GetUserDetailRes extends BaseRes {
+  data: UserDetail
+}
+
+export interface DrawCommentItem {
+  createdAt: string;
+  user: {
+    id: number;
+    name: string;
+    head: string;
+  }
+  content: string;
+}
+
+export interface GetDrawCommentListRes extends BaseRes {
+  data: {
+    list: DrawCommentItem[]
     total: number
   }
 }
