@@ -30,6 +30,14 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  script: [
+    {
+      type: "text/javascript",
+      src: 'https://unpkg.com/better-scroll@latest/dist/better-scroll.min.js'
+    }
+  ]
+})
 import WorkImg from '~/assets/work.png'
 import CreateImg from '~/assets/create.png'
 import PracticeImg from '~/assets/practice.png'

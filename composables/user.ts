@@ -1,4 +1,4 @@
-import type { User, GetUserRes, BaseRes } from '@/types'
+import type { User, GetUserRes, BaseRes, GetUserDetailRes } from '@/types'
 
 // export const useUser = () => {
 //   return ref()
@@ -16,3 +16,12 @@ export const updateUserInfo = async (data: User) => {
     body: data,
   });
 }
+
+export const getUserDetail = async (userId: number) => {
+  return await commoneFetch<GetUserDetailRes>(`/api/user/queryUserDetail`, {
+    method: "POST",
+    body: { userId },
+  });
+}
+
+
