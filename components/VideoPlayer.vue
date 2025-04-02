@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed, watch } from 'vue';
-import videojs from 'video.js';
-import Player from 'video.js/dist/types/player'
-import 'video.js/dist/video-js.css';
-import PlayPNG from '@/assets/play.png';
-import PausePNG from '@/assets/pause.png';
-import FullScreenPNG from '@/assets/fullScreen.png';
-import ExitFullScreenPNG from '@/assets/exitFullScreen.png';
-import { ElMessage } from 'element-plus';
+import { onMounted, onUnmounted, ref, computed, watch } from "vue";
+import videojs from "video.js";
+import type { Player } from "video.js";
+import "video.js/dist/video-js.css";
+import PlayPNG from "@/assets/play.png";
+import PausePNG from "@/assets/pause.png";
+import FullScreenPNG from "@/assets/fullScreen.png";
+import ExitFullScreenPNG from "@/assets/exitFullScreen.png";
+import { ElMessage } from "element-plus";
 
 interface Props {
   videoUrl: string;
@@ -30,13 +30,13 @@ const curVideoUrl = ref<string>(props.videoUrl);
 watch(
   () => props.videoUrl,
   (newVal) => {
-    console.log('videoUrl', newVal);
+    console.log("videoUrl", newVal);
     curVideoUrl.value = newVal;
     if (myPlayer.value) {
       if (!curVideoUrl.value) {
         ElMessage({
-          type: 'error',
-          message: '当前视频资源异常，请联系管理员检查'
+          type: "error",
+          message: "当前视频资源异常，请联系管理员检查",
         });
       }
       myPlayer.value.src(curVideoUrl.value);
@@ -46,14 +46,14 @@ watch(
 );
 
 onMounted(() => {
-  videojs.hook('error', function (player: Player, err: any) {
+  videojs.hook("error", function (player: Player, err: any) {
     console.log(
-      `player ${player.id()} has errored out with code ${err.code} ${err.message
+      `player ${player.id()} has errored out with code ${err.code} ${
+        err.message
       }`
     );
   });
   if (playerRef.value) {
-
     myPlayer.value = videojs(
       playerRef.value,
       {
@@ -62,64 +62,64 @@ onMounted(() => {
         sources: [
           {
             src: curVideoUrl.value,
-            type: 'video/mp4'
-          }
+            type: "video/mp4",
+          },
         ],
         controlBar: {
           children: [
-            'playToggle',
-            'currentTimeDisplay',
-            'timeDivider',
-            'durationDisplay',
-            'progressControl',
-            'volumePanel',
-            'fullscreenToggle'
+            "playToggle",
+            "currentTimeDisplay",
+            "timeDivider",
+            "durationDisplay",
+            "progressControl",
+            "volumePanel",
+            "fullscreenToggle",
           ],
           remainingTimeDisplay: {
-            displayNegative: false
+            displayNegative: false,
           },
           volumePanel: {
             inline: false,
-            vertical: true
-          }
+            vertical: true,
+          },
         },
-        playbackRates: [0.5, 1, 1.5, 2]
+        playbackRates: [0.5, 1, 1.5, 2],
         // aspectRatio: '16:9' //视频的宽高比
         // fluid: true // 自适应尺寸
       },
       () => {
-        myPlayer.value!.log('play.....');
+        myPlayer.value!.log("play.....");
       }
     );
 
     if (myPlayer.value) {
       // 设置播放器监听器
-      myPlayer.value.on('play', () => {
-        console.log('play');
+      myPlayer.value.on("play", () => {
+        console.log("play");
         isPlay.value = true;
       });
 
-      myPlayer.value.on('pause', async () => {
-        console.log('pause');
-        console.log('myPlayer.value', myPlayer.value);
+      myPlayer.value.on("pause", async () => {
+        console.log("pause");
+        console.log("myPlayer.value", myPlayer.value);
         const totalDuration = myPlayer.value!.duration();
-        console.log('totalDuration', totalDuration);
+        console.log("totalDuration", totalDuration);
         const currentTime = myPlayer.value!.currentTime();
-        console.log('currentTime', currentTime);
+        console.log("currentTime", currentTime);
 
         isPlay.value = false;
         // 暂停时获取播放进度并上报
       });
 
-      myPlayer.value.on('enterFullWindow', () => {
-        console.log('enterFullWindow');
+      myPlayer.value.on("enterFullWindow", () => {
+        console.log("enterFullWindow");
       });
 
-      myPlayer.value.on('exitFullWindow', () => {
-        console.log('exitFullWindow');
+      myPlayer.value.on("exitFullWindow", () => {
+        console.log("exitFullWindow");
       });
 
-      myPlayer.value.on('fullscreenchange', () => {
+      myPlayer.value.on("fullscreenchange", () => {
         console.log(document.fullscreenElement);
         isFullScreen.value = Boolean(document.fullscreenElement);
       });
@@ -136,13 +136,13 @@ onMounted(() => {
 
 const playIcon = computed(
   () =>
-    'no-repeat center center ' +
+    "no-repeat center center " +
     (isPlay.value ? `url(${PausePNG})` : `url(${PlayPNG})`)
 );
 
 const fullScreenBackGround = computed(
   () =>
-    'no-repeat center center ' +
+    "no-repeat center center " +
     (isFullScreen.value ? `url(${ExitFullScreenPNG})` : `url(${FullScreenPNG})`)
 );
 
@@ -158,7 +158,11 @@ onUnmounted(() => {
     <div class="videoTitle">
       {{ props.lessonName }}
     </div>
-    <video ref="playerRef" class="video-js vjs-big-play-centered myVideo" style="margin: auto auto"></video>
+    <video
+      ref="playerRef"
+      class="video-js vjs-big-play-centered myVideo"
+      style="margin: auto auto"
+    ></video>
   </div>
 </template>
 <style>
@@ -181,7 +185,7 @@ onUnmounted(() => {
 
   .myVideo {
     width: 100%;
-    height: calc(100% - 37px)
+    height: calc(100% - 37px);
   }
 
   .pagePtn {
@@ -240,7 +244,7 @@ onUnmounted(() => {
   }
 
   .vjs-control-bar .vjs-play-control .vjs-icon-placeholder:before {
-    content: '';
+    content: "";
     background: v-bind(playIcon);
     border: none !important;
     box-shadow: none !important;
@@ -250,8 +254,8 @@ onUnmounted(() => {
   }
 
   .vjs-control-bar .vjs-mute-control .vjs-icon-placeholder:before {
-    content: '';
-    background: no-repeat url('@/assets/voice.png') center center;
+    content: "";
+    background: no-repeat url("@/assets/voice.png") center center;
     border: none !important;
     box-shadow: none !important;
     width: 1.56vw;
@@ -260,7 +264,7 @@ onUnmounted(() => {
   }
 
   .vjs-control-bar .vjs-fullscreen-control .vjs-icon-placeholder:before {
-    content: '';
+    content: "";
     background: v-bind(fullScreenBackGround);
     border: none !important;
     box-shadow: none !important;
@@ -274,8 +278,8 @@ onUnmounted(() => {
   }
 
   .vjs-control-bar .vjs-progress-control .vjs-play-progress:before {
-    content: '';
-    background-image: url('@/assets/progressLogo.png');
+    content: "";
+    background-image: url("@/assets/progressLogo.png");
     border: none !important;
     box-shadow: none !important;
     background-size: 100% 100%;

@@ -90,6 +90,17 @@ export default defineNuxtConfig({
   },
   nitro: {
     devProxy: {
+      
+      "/testApi":{
+        target: "https://yuanlang-test.jkcspace.com",
+        changeOrigin: true,
+        prependPath: true,
+      },
+      '/internal':{
+        target: "https://yuanlang-test.jkcspace.com/internal",
+        changeOrigin: true,
+        prependPath: true,
+      },
       "/api": {
         target: "https://yuanlang-test.jkcspace.com/api",
         changeOrigin: true,

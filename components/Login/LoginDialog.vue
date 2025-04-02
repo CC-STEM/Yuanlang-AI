@@ -114,7 +114,7 @@ const handleClickLogin = async () => {
       authStore.setToken(data)
       authStore.getUserInfo()
       // 刷新页面
-      location.reload()
+      // location.reload()
     } else {
       ElMessage.error('登录失败，错误信息：' + message)
     }
