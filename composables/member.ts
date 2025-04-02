@@ -1,17 +1,17 @@
 export const getPackage = async () => {
-  return await commoneFetch<any>(`testApi/internal/member/package/all`, {
+  return await commoneFetch<any>(`internal/member/package/all`, {
     method: "GET",
   });
 };
 
 export const findByUserId = async () => {
-  return await commoneFetch<any>(`testApi/internal/member/findByUserId`, {
+  return await commoneFetch<any>(`internal/member/findByUserId`, {
     method: "GET",
   });
 };
 
 export const freeRegister = async () => {
-  return await commoneFetch<any>(`testApi/internal/member/freeRegister`, {
+  return await commoneFetch<any>(`internal/member/freeRegister`, {
     method: "GET",
   });
 };
