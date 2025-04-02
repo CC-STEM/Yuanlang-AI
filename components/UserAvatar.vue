@@ -79,8 +79,8 @@ import { ref, computed, watch } from "vue";
 import { useAuthStore } from "~/composables/auth";
 import { useRoute, useRouter } from "vue-router";
 import DefaultAvatar from "~/assets/cclogo.png";
-import ProMemberIcon from "~/assets/topNavBar/member1.jpg";
-import AdvancedMemberIcon from "~/assets/topNavBar/member.jpg";
+import ProMemberIcon from "~/assets/topNavBar/member1.png";
+import AdvancedMemberIcon from "~/assets/topNavBar/member.png";
 
 const route = useRoute();
 const router = useRouter();
