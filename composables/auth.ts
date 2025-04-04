@@ -12,10 +12,10 @@ interface AuthState {
 
 export const useAuthStore = defineStore("auth-store", {
   state: (): AuthState => ({
-    token: '',
+    token: "",
     loginDialog: false,
     userInfo: {} as User,
-    accountBalance: {} as AccountBalance
+    accountBalance: {} as AccountBalance,
   }),
 
   getters: {
@@ -26,23 +26,21 @@ export const useAuthStore = defineStore("auth-store", {
     initializeToken() {
       if (import.meta.client) {
         this.token = getToken(); // 仅在客户端获取 token
-        console.log('this.token', this.token)
+        console.log("this.token", this.token);
       }
     },
     async getUserInfo(): Promise<any> {
       try {
-        const res = await getUserInfo()
-        if (!res)
-          return Promise.resolve(res)
-        const { data } = res
-        const { userInfo, accountBalance } = data
-        this.userInfo = { ...userInfo }
-        this.accountBalance = { ...accountBalance }
+        const res = await getUserInfo();
+        if (!res) return Promise.resolve(res);
+        const { data } = res;
+        // const { userInfo, accountBalance } = data
+        this.userInfo = { ...data };
+        // this.accountBalance = { ...accountBalance }
         // this.userBalance = { ...userBalance }
-        return Promise.resolve(data)
-      }
-      catch (error) {
-        return Promise.reject(error)
+        return Promise.resolve(data);
+      } catch (error) {
+        return Promise.reject(error);
       }
     },
 
@@ -68,7 +66,7 @@ export const useAuthStore = defineStore("auth-store", {
       this.token = undefined;
       removeToken();
       this.userInfo = {};
-      this.accountBalance = {}
+      this.accountBalance = {};
       ElMessage.success("登出账户成功！");
     },
 
@@ -76,7 +74,7 @@ export const useAuthStore = defineStore("auth-store", {
       this.token = undefined;
       removeToken();
       this.userInfo = {};
-      this.accountBalance = {}
+      this.accountBalance = {};
       this.loginDialog = true;
     },
   },
@@ -110,4 +108,4 @@ export const loginByUserName = async (username: string, password: string) => {
     body: { username, password },
     baseURL: runtimeConfig.public.apiBase,
   });
-}
+};

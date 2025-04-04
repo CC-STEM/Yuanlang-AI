@@ -5,7 +5,7 @@ import type { User, GetUserRes, BaseRes, GetUserDetailRes } from '@/types'
 // }
 
 export const getUserInfo = async () => {
-  return await commoneFetch<GetUserRes>(`/api/auth/getInfoNew`, {
+  return await commoneFetch<GetUserRes>(`/internal/user/findById`, {
     method: "GET",
   });
 }

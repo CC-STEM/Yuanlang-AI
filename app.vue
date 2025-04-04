@@ -1,30 +1,42 @@
 import { AppFooter } from './.nuxt/components';
 <template>
-  <div class="contain">
-    <AppHeader />
-    <div class="h-[calc(100vh-169px)] w-full flex">
-      <div class="w-[157px] h-full">
-        <AppSidebar />
+  <div>
+    <div class="contain">
+      <div class="w-full flex items-center h-[96px] pr-[47px]">
+        <AppHeader />
+
+        <div class="flex-1 flex justify-end items-center gap-6">
+          <TopNavBar />
+          <UserAvatar />
+        </div>
       </div>
-      <div class="w-[calc(100%-157px)] h-full ">
-        <NuxtPage />
+
+      <div class="h-[calc(100vh-217px)] w-full flex">
+        <div class="w-[157px] h-full pt-6">
+          <AppSidebar />
+        </div>
+        <div class="w-[calc(100%-157px)] h-full">
+          <NuxtPage />
+        </div>
       </div>
+      <AppFooter />
     </div>
-    <AppFooter />
+    <LoginDialog :visible="authStore.loginDialog" ref="loginDialogRef" />
   </div>
-  <LoginDialog :visible="authStore.loginDialog" ref="loginDialogRef" />
 </template>
 <script setup lang="ts">
+import { ref } from "vue";
+import { useAuthStore } from "~/composables/auth";
 
-const loginDialogRef = ref()
-const authStore = useAuthStore()
+const loginDialogRef = ref();
+const authStore = useAuthStore();
 
 onBeforeMount(() => {
-  authStore.initializeToken()
+  authStore.initializeToken();
   if (authStore.token) {
-    authStore.getUserInfo()
+    authStore.getUserInfo();
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 .contain {
