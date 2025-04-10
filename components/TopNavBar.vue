@@ -2,9 +2,11 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { findByUserId, freeRegister } from "~/composables/member";
 import { useAuthStore } from "~/composables/auth";
+import { useRouter } from "vue-router";
 import PricingDialog from "../components/pricing/PricingDialog.vue";
 import CustomizeIcon from "~/assets/topNavBar/customize_button_normal.png";
 
+const router = useRouter();
 const authStore = useAuthStore();
 const memberInfo = ref({
   diamonds: 0,
@@ -148,11 +150,16 @@ const handleMemberClick = () => {
     showPricingDialog.value = true;
   }
 };
+
+// 处理定制商品点击
+const handleCustomizeClick = () => {
+  router.push("/goods/customize");
+};
 </script>
 
 <template>
   <div class="flex items-center space-x-8">
-    <div class="nav-item custom-item">
+    <div class="nav-item custom-item" @click="handleCustomizeClick">
       <img :src="CustomizeIcon" class="custom-icon" alt="定制" />
       <span>定制实物商品</span>
     </div>
