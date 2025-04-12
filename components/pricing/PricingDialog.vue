@@ -327,6 +327,7 @@ const handlePaymentSuccess = () => {
       :amount="selectedPlan?.price || 0"
       :package-id="selectedPlan?.id || 0"
       :user-id="authStore.userInfo?.id"
+      :package-title="selectedPlan?.type || ''"
       @payment-success="handlePaymentSuccess"
     />
   </el-dialog>
