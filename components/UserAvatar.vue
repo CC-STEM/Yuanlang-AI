@@ -81,6 +81,7 @@ import { useRoute, useRouter } from "vue-router";
 import DefaultAvatar from "~/assets/cclogo.png";
 import ProMemberIcon from "~/assets/topNavBar/member1.png";
 import AdvancedMemberIcon from "~/assets/topNavBar/member.png";
+import { ElMessage } from "element-plus";
 
 const route = useRoute();
 const router = useRouter();
@@ -175,6 +176,24 @@ const closePanel = (e: MouseEvent) => {
   }
 };
 
+// 监听支付成功事件
+const handlePaymentSuccess = async () => {
+  // 延迟1秒后重新获取会员信息，确保后端数据已更新
+  setTimeout(async () => {
+    await getMemberInfo();
+  }, 1000);
+};
+
+// 监听支付失败事件
+const handlePaymentFailure = () => {
+  ElMessage.error("支付失败，请稍后重试");
+};
+
+// 监听会员信息更新事件
+const handleUpdateMemberInfo = async () => {
+  await getMemberInfo();
+};
+
 onMounted(async () => {
   document.addEventListener("click", closePanel);
 
@@ -187,10 +206,18 @@ onMounted(async () => {
       console.error("Error fetching user info:", error);
     }
   }
+
+  // 添加事件监听
+  window.addEventListener("payment-success", handlePaymentSuccess);
+  window.addEventListener("payment-failure", handlePaymentFailure);
+  window.addEventListener("update-member-info", handleUpdateMemberInfo);
 });
 
 onUnmounted(() => {
   document.removeEventListener("click", closePanel);
+  window.removeEventListener("payment-success", handlePaymentSuccess);
+  window.removeEventListener("payment-failure", handlePaymentFailure);
+  window.removeEventListener("update-member-info", handleUpdateMemberInfo);
 });
 </script>
 

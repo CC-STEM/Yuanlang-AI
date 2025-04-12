@@ -15,6 +15,7 @@ const props = defineProps<{
   amount: number;
   packageId: number;
   userId?: number;
+  packageTitle: string;
 }>();
 
 const emit = defineEmits<{
@@ -72,12 +73,17 @@ const startPolling = async () => {
         emit("close-package-dialog"); // 关闭套餐弹窗
         emit("update-member-info"); // 更新会员信息
         dialogVisible.value = false; // 关闭支付弹窗
+        // 触发全局事件
+        window.dispatchEvent(new Event("payment-success"));
+        window.dispatchEvent(new Event("update-member-info"));
       } else if (res?.data === "支付失败") {
         stopPolling();
         stopExpirationTimer();
         stopCountdown();
         emit("payment-failure");
         dialogVisible.value = false;
+        // 触发全局事件
+        window.dispatchEvent(new Event("payment-failure"));
       }
     } catch (error) {
       console.error("查询订单状态失败:", error);
@@ -126,7 +132,7 @@ const getPayQrCode = async () => {
 
   try {
     const params = {
-      productDesc: "11",
+      productDesc: `开通${props.packageTitle}`,
       productId: props.packageId,
       productNum: 1,
       totalPrice: props.amount,

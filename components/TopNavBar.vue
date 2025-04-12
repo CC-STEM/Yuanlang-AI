@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, onUnmounted } from "vue";
 import { findByUserId, freeRegister } from "~/composables/member";
 import { useAuthStore } from "~/composables/auth";
 import { useRouter } from "vue-router";
 import PricingDialog from "../components/pricing/PricingDialog.vue";
 import CustomizeIcon from "~/assets/topNavBar/customize_button_normal.png";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -134,11 +135,23 @@ watch(
   { immediate: true }
 );
 
-onMounted(() => {
-  if (authStore.isLogin) {
-    checkAndRegisterMember();
-  }
-});
+// 监听支付成功事件
+const handlePaymentSuccess = async () => {
+  // 延迟1秒后重新获取会员信息，确保后端数据已更新
+  setTimeout(async () => {
+    await getMemberInfo();
+  }, 1000);
+};
+
+// 监听支付失败事件
+const handlePaymentFailure = () => {
+  ElMessage.error("支付失败，请稍后重试");
+};
+
+// 监听会员信息更新事件
+const handleUpdateMemberInfo = async () => {
+  await getMemberInfo();
+};
 
 // 控制会员套餐弹窗
 const showPricingDialog = ref(false);
@@ -155,6 +168,24 @@ const handleMemberClick = () => {
 const handleCustomizeClick = () => {
   router.push("/goods/customize");
 };
+
+// 在组件挂载时添加事件监听
+onMounted(() => {
+  if (authStore.isLogin) {
+    checkAndRegisterMember();
+  }
+  // 添加事件监听
+  window.addEventListener("payment-success", handlePaymentSuccess);
+  window.addEventListener("payment-failure", handlePaymentFailure);
+  window.addEventListener("update-member-info", handleUpdateMemberInfo);
+});
+
+// 在组件卸载时移除事件监听
+onUnmounted(() => {
+  window.removeEventListener("payment-success", handlePaymentSuccess);
+  window.removeEventListener("payment-failure", handlePaymentFailure);
+  window.removeEventListener("update-member-info", handleUpdateMemberInfo);
+});
 </script>
 
 <template>
