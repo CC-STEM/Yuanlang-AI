@@ -304,11 +304,23 @@ const handlePaymentSuccess = () => {
           <!-- 订阅按钮 -->
           <button
             class="subscribe-btn"
-            :class="plan.buttonClass"
+            :class="[
+              plan.buttonClass,
+              Number(props.currentLevel) === plan.level ? 'btn-current' : '',
+            ]"
             v-if="plan.buttonText"
             @click="handleSubscribe(plan)"
+            :disabled="
+              props.currentLevel !== undefined && props.currentLevel > 0
+            "
           >
-            {{ plan.buttonText }}
+            {{
+              Number(props.currentLevel) === plan.level
+                ? "已开通"
+                : props.currentLevel !== undefined && props.currentLevel > 0
+                ? "不可购买"
+                : plan.buttonText
+            }}
           </button>
           <!-- 功能列表 -->
           <ul class="feature-list">
@@ -499,30 +511,56 @@ const handlePaymentSuccess = () => {
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: 24px;
-  box-shadow: 0px 2px 8px ；;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn-current {
-  background: #404040;
-  color: #ffffff;
+.subscribe-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.btn-premium {
+.btn-current:disabled {
+  opacity: 1;
+}
+
+.btn-premium:disabled {
   background: #ff9f40;
   color: #ffffff;
 }
 
-.btn-premium:hover {
-  background: #f28c30;
-}
-
-.btn-pro {
+.btn-pro:disabled {
   background: #ff4d4f;
   color: #ffffff;
 }
 
-.btn-pro:hover {
-  background: #f03f41;
+.current-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #52c41a, #7cb305);
+  border-radius: 4px;
+  margin-left: 8px;
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+  transform-origin: center;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% {
+    opacity: 1;
+    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.4);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+  }
 }
 
 @media (max-width: 768px) {
@@ -562,36 +600,6 @@ const handlePaymentSuccess = () => {
 
 :deep(.el-dialog__headerbtn .el-dialog__close) {
   color: #ffffff;
-}
-
-.current-tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 12px;
-  padding: 2px 8px;
-  background: linear-gradient(135deg, #52c41a, #7cb305);
-  border-radius: 4px;
-  margin-left: 8px;
-  color: #ffffff;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
-  transform-origin: center;
-  animation: glow 2s ease-in-out infinite;
-}
-
-@keyframes glow {
-  0% {
-    opacity: 1;
-    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
-  }
-  50% {
-    opacity: 0.8;
-    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.4);
-  }
-  100% {
-    opacity: 1;
-    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
-  }
 }
 </style>
 
