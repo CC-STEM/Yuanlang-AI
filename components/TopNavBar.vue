@@ -159,9 +159,10 @@ const showPricingDialog = ref(false);
 // 处理会员点击
 const handleMemberClick = () => {
   // 只有免费会员才显示购买弹窗
-  if (memberInfo.value.memberPackage?.level === 0) {
-    showPricingDialog.value = true;
-  }
+  // if (memberInfo.value.memberPackage?.level === 0) {
+  //   showPricingDialog.value = true;
+  // }
+  showPricingDialog.value = true;
 };
 
 // 处理定制商品点击
